@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+        xsi:schemaLocation="http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/data/mongo
+                            http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+                            http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <mongo:mongo host="${mongo.host}" port="${mongo.port}"/>
+
+    <mongo:db-factory
+            username="${mongo.username}"
+            password="${mongo.password}"
+            dbname="${mongo.db}"
+            mongo-ref="mongo"/>
+</beans>
