@@ -3,31 +3,43 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<script src="${contextPath}/resources/js/bootstrap.js"></script>
+
 <html>
 <head>
-    <title>Title</title>
+    <title>Guest Blog</title>
+    <link href="${contextPath}/resources/css/bootstrap.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <form:form method="POST" modelAttribute="messageForm">
+
+    <form:form class="form-horizontal" method="POST" modelAttribute="messageForm">
+
+        <div class="form-group ${status.error ? 'has-error' : ''}">
+            <label for="title" class="col-sm-2 control-label">Title</label>
             <spring:bind path="title">
-                <div class="form-group ${status.error ? 'has-error' : ''}">
-                    <form:input type="text" path="title" class="form-control" placeholder="Title"
-                                autofocus="true"></form:input>
+                <div class="col-sm-4">
+                    <form:input path="title" type="text" class="form-control" id="title" name="title" placeholder="Title"/>
                     <form:errors path="title"></form:errors>
                 </div>
             </spring:bind>
+        </div>
 
+        <div class="form-group ${status.error ? 'has-error' : ''}">
+            <label for="message" class="col-sm-2 control-label">Message</label>
             <spring:bind path="body">
-                <div class="form-group ${status.error ? 'has-error' : ''}">
-                    <form:input type="text" path="body" class="form-control" placeholder="The body of the post"
-                                autofocus="true"></form:input>
+                <div class="col-sm-6">
+                    <form:textarea path="body" id="message" name="message" class="form-control" placeholder="Your Message" rows="5"/>
                     <form:errors path="body"></form:errors>
                 </div>
             </spring:bind>
+        </div>
 
-            <button class="button" type="submit">Submit</button>
-        </form:form>
-    </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-6">
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </div>
+        </div>
+    </form:form>
+
 </body>
 </html>
