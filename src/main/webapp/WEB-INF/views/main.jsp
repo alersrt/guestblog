@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: jogg
@@ -11,6 +12,15 @@
     <title>The Start page</title>
 </head>
 <body>
-Test
+    <c:forEach var="message" items="${listMessages}">
+        <table>
+            <tbody>
+                <tr>
+                    <th>${message.title}</th>
+                    <th>${message.body}</th>
+                </tr>
+            </tbody>
+        </table>
+    </c:forEach>
 </body>
 </html>
