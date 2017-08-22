@@ -10,11 +10,7 @@
                             http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <mongo:mongo host="${mongo.host}" port="${mongo.port}"/>
+    <mongo:mongo replica-set="${mongo.uri}"/>
 
-    <mongo:db-factory
-            username="${mongo.username}"
-            password="${mongo.password}"
-            dbname="${mongo.db}"
-            mongo-ref="mongo"/>
+    <mongo:db-factory uri="${mongo.uri}" mongo-ref="mongo"/>
 </beans>
