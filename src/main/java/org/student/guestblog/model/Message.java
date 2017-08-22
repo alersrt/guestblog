@@ -2,7 +2,9 @@ package org.student.guestblog.model;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -11,17 +13,25 @@ public class Message {
 	@Id
 	private String id;
 
-	private LocalDateTime localDateTime;
-	private String title;
-	private String txtOfMessage;
+	private LocalDateTime timestamp;
 
-	public Message() {
+	private String title;
+
+	private String body;
+
+	@PersistenceConstructor
+	public Message(String title, String body) {
+		this.timestamp = LocalDateTime.now();
+		this.title = title;
+		this.body = body;
 	}
 
-	public Message(String title, String txtOfMessage) {
-		this.localDateTime = LocalDateTime.now();
-		this.title = title;
-		this.txtOfMessage = txtOfMessage;
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public String getTitle() {
@@ -32,21 +42,43 @@ public class Message {
 		this.title = title;
 	}
 
-	public String getTxtOfMessage() {
-		return txtOfMessage;
+	public String getBody() {
+		return body;
 	}
 
-	public void setTxtOfMessage(String txtOfMessage) {
-		this.txtOfMessage = txtOfMessage;
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Message message = (Message) o;
+
+		if (!id.equals(message.id)) return false;
+		if (!timestamp.equals(message.timestamp)) return false;
+		if (!title.equals(message.title)) return false;
+		return body.equals(message.body);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id.hashCode();
+		result = 31 * result + timestamp.hashCode();
+		result = 31 * result + title.hashCode();
+		result = 31 * result + body.hashCode();
+		return result;
 	}
 
 	@Override
 	public String toString() {
 		return "Message{" +
 				"id='" + id + '\'' +
-				", localDateTime=" + localDateTime +
+				", timestamp=" + timestamp +
 				", title='" + title + '\'' +
-				", txtOfMessage='" + txtOfMessage + '\'' +
+				", body='" + body + '\'' +
 				'}';
 	}
 }

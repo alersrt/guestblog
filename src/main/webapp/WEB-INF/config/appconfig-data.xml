@@ -10,7 +10,21 @@
                             http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <mongo:mongo replica-set="${mongo.uri}"/>
+    <mongo:db-factory uri="${mongo.uri}" />
 
-    <mongo:db-factory uri="${mongo.uri}" mongo-ref="mongo"/>
+    <mongo:mapping-converter>
+        <mongo:custom-converters>
+            <mongo:converter>
+                <bean class="org.student.guestblog.utils.LocalDateTimeToStringConverter"/>
+            </mongo:converter>
+            <mongo:converter>
+                <bean class="org.student.guestblog.utils.StringToLocalDateTimeConverter"/>
+            </mongo:converter>
+        </mongo:custom-converters>
+    </mongo:mapping-converter>
+
+    <mongo:template db-factory-ref="mongoDbFactory" converter-ref="mappingConverter"/>
+
+    <mongo:repositories base-package="org.student.guestblog.dao" mongo-template-ref="mongoTemplate"/>
+
 </beans>

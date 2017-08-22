@@ -10,10 +10,10 @@
     <import resource="appconfig-mvc.xml"/>
     <import resource="appconfig-data.xml"/>
 
-    <context:annotation-config/>
+    <!--<context:annotation-config/>-->
 
     <context:component-scan base-package="org.student.guestblog.*">
-        <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+        <!--<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
     </context:component-scan>
 
     <context:property-placeholder location="classpath:db/database.properties"/>
