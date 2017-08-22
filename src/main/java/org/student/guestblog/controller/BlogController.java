@@ -24,7 +24,14 @@ public class BlogController {
 		return model;
 	}
 
-	@RequestMapping(value = "add", method = RequestMethod.POST)
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	public String registration(Model model) {
+		model.addAttribute("messageForm", new Message());
+
+		return "add";
+	}
+
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(@ModelAttribute("messageForm") Message messageForm, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			return "add";

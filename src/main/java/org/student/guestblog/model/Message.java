@@ -19,19 +19,18 @@ public class Message {
 
 	private String body;
 
-	@PersistenceConstructor
+	public Message() {
+		this.timestamp = LocalDateTime.now();
+	}
+
 	public Message(String title, String body) {
 		this.timestamp = LocalDateTime.now();
 		this.title = title;
 		this.body = body;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
+	public LocalDateTime getTimestamp() {
+		return timestamp;
 	}
 
 	public String getTitle() {
