@@ -14,4 +14,5 @@ public class Utils {
 	public static String byteArrayToString (byte[] bytes) {
 		return new String(bytes);
 	}
+
 }

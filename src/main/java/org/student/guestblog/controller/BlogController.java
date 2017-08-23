@@ -11,6 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.student.guestblog.model.Message;
 import org.student.guestblog.service.MessageService;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 public class BlogController {
 

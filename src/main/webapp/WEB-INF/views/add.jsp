@@ -29,8 +29,18 @@
             <label for="message" class="col-sm-2 control-label">Message</label>
             <spring:bind path="body">
                 <div class="col-sm-6">
-                    <form:textarea path="body" id="message" name="message" class="form-control" placeholder="Your Message" rows="5"/>
+                    <form:textarea path="body" id="message" name="message" class="form-control" placeholder="Your Message"/>
                     <form:errors path="body"></form:errors>
+                </div>
+            </spring:bind>
+        </div>
+
+        <div class="form-group ${status.error ? 'has-error' : ''}">
+            <label for="message" class="col-sm-2 control-label">Message</label>
+            <spring:bind path="image">
+                <div class="col-sm-6">
+                    <form:input type="file" path="image" id="image" name="image" class="form-control" placeholder="Your image"/>
+                    <form:errors path="image"></form:errors>
                 </div>
             </spring:bind>
         </div>

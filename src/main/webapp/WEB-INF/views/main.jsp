@@ -35,6 +35,9 @@
                         <tr>
                             <th>${message.body}</th>
                         </tr>
+                        <tr>
+                            <th><img class="img-thumbnail" width="100" src="data:image;base64,${message.image}"/></th>
+                        </tr>
                         </tbody>
                     </table>
                 </c:forEach>
