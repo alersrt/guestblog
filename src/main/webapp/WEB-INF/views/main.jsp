@@ -4,6 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="utils" uri="/WEB-INF/tld/utils.tld" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <script src="${contextPath}/resources/js/bootstrap.js"></script>

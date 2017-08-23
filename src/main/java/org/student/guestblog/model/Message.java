@@ -2,10 +2,9 @@ package org.student.guestblog.model;
 
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Document(collection = "messages")
@@ -13,11 +12,16 @@ public class Message {
 	@Id
 	private String id;
 
+	@NotNull(message = "Timestamp must be not null")
 	private LocalDateTime timestamp;
 
+	@NotNull(message = "Title must be not null")
 	private String title;
 
+	@NotNull(message = "Text of message must be not null")
 	private String body;
+
+	private byte[] image;
 
 	public Message() {
 		this.timestamp = LocalDateTime.now();
@@ -47,6 +51,14 @@ public class Message {
 
 	public void setBody(String body) {
 		this.body = body;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 	@Override
