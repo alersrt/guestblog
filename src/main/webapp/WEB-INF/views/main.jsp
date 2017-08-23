@@ -42,7 +42,7 @@
     </div>
 </div>
 
-<script type="text/javascript" src="webjars/jquery/3.2.1/jquery.js"></script>
-<script type="text/javascript" src="webjars/bootstrap/4.0.0-beta/css/bootstrap.css"></script>
+<script type="text/javascript" src="${contextPath}/webjars/jquery/3.2.1/jquery.js"></script>
+<script type="text/javascript" src="${contextPath}/webjars/bootstrap/4.0.0-beta/css/bootstrap.css"></script>
 </body>
 </html>
