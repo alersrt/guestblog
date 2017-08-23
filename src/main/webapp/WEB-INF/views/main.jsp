@@ -11,40 +11,35 @@
 <html>
 <head>
     <title>The Start page</title>
-    <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
 
-<div class="container">
-    <form:form id="addForm" method="GET" action="${contextPath}/add">
-        <button type="submit" class="btn btn-primary">Add post</button>
-    </form:form>
+<form:form id="addForm" method="GET" action="${contextPath}/add">
+    <button type="submit" class="btn btn-primary">Add post</button>
+</form:form>
+<c:forEach var="message" items="${listMessages}">
+    <table>
+        <tbody>
+        <tr>
+            <th>${message.title}</th>
+        </tr>
+        <tr>
+            <th>${message.timestamp}</th>
+        </tr>
+        <tr>
+            <th>${message.body}</th>
+        </tr>
+        <tr>
+            <th><img class="img-thumbnail" width="250"
+                     src="${utils:byteArrayToString(message.image)}"/>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+</c:forEach>
 
-    <div class="col-sm-5">
-        <c:forEach var="message" items="${listMessages}">
-            <table>
-                <tbody>
-                <tr>
-                    <th>${message.title}</th>
-                </tr>
-                <tr>
-                    <th>${message.timestamp}</th>
-                </tr>
-                <tr>
-                    <th>${message.body}</th>
-                </tr>
-                <tr>
-                    <th><img class="img-thumbnail" width="250"
-                             src="${utils:byteArrayToString(message.image)}"/>
-                    </th>
-                </tr>
-                </tbody>
-            </table>
-        </c:forEach>
-    </div>
-</div>
 
+<script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
+<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
 </body>
 </html>

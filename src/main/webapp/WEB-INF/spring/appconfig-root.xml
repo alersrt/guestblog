@@ -12,9 +12,7 @@
 
     <!--<context:annotation-config/>-->
 
-    <context:component-scan base-package="org.student.guestblog.*">
-        <!--<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>-->
-    </context:component-scan>
+    <context:component-scan base-package="org.student.guestblog.*"/>
 
     <context:property-placeholder location="classpath:db/database.properties"/>
 

@@ -11,9 +11,6 @@
 <html>
 <head>
     <title>Add post</title>
-    <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
 
@@ -65,7 +62,7 @@
         </spring:bind>
     </div>
 
-    <div class="form-group">
+    <div class="form-actions">
         <div class="col-sm-offset-2 col-sm-6">
             <button type="submit" class="btn btn-primary">Send Message</button>
         </div>
@@ -73,5 +70,8 @@
 
 </form:form>
 
+
+<script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
+<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
 </body>
 </html>
