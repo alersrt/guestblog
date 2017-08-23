@@ -11,6 +11,9 @@
 <html>
 <head>
     <title>Add post</title>
+    <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
 
@@ -70,7 +73,5 @@
 
 </form:form>
 
-<script type="text/javascript" src="${contextPath}/webjars/jquery/3.2.1/jquery.js"></script>
-<script type="text/javascript" src="${contextPath}/webjars/bootstrap/4.0.0-beta/css/bootstrap.css"></script>
 </body>
 </html>

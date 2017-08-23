@@ -11,6 +11,9 @@
 <html>
 <head>
     <title>The Start page</title>
+    <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="webjars/bootstrap/css/bootstrap.min.css" />
 </head>
 <body>
 
@@ -18,6 +21,7 @@
     <form:form id="addForm" method="GET" action="${contextPath}/add">
         <button type="submit" class="btn btn-primary">Add post</button>
     </form:form>
+
     <div class="col-sm-5">
         <c:forEach var="message" items="${listMessages}">
             <table>
@@ -32,7 +36,7 @@
                     <th>${message.body}</th>
                 </tr>
                 <tr>
-                    <th><img class="img-thumbnail" width="150"
+                    <th><img class="img-thumbnail" width="250"
                              src="${utils:byteArrayToString(message.image)}"/>
                     </th>
                 </tr>
@@ -42,7 +46,5 @@
     </div>
 </div>
 
-<script type="text/javascript" src="${contextPath}/webjars/jquery/3.2.1/jquery.js"></script>
-<script type="text/javascript" src="${contextPath}/webjars/bootstrap/4.0.0-beta/css/bootstrap.css"></script>
 </body>
 </html>
