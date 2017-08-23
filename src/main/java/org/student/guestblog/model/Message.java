@@ -2,6 +2,7 @@ package org.student.guestblog.model;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,16 +23,17 @@ public class Message {
 	private String body;
 
 	@Field("image")
-	private Byte[] image;
+	private byte[] image;
 
 	public Message() {
 		this.timestamp = LocalDateTime.now();
 	}
 
-	public Message(String title, String body) {
+	public Message(String title, String body, byte[] image) {
 		this.timestamp = LocalDateTime.now();
 		this.title = title;
 		this.body = body;
+		this.image = image;
 	}
 
 	public LocalDateTime getTimestamp() {
@@ -54,11 +56,11 @@ public class Message {
 		this.body = body;
 	}
 
-	public Byte[] getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(Byte[] image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 

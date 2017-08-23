@@ -27,11 +27,4 @@
 
     <mongo:repositories base-package="org.student.guestblog.dao" mongo-template-ref="mongoTemplate"/>
 
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-
-    <bean id="validatingMongoEventListener" class="org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener">
-        <constructor-arg ref="validator"/>
-    </bean>
-
-
 </beans>
