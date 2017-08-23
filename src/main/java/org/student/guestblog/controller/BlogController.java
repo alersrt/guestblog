@@ -12,6 +12,7 @@ import org.student.guestblog.model.Message;
 import org.student.guestblog.service.MessageService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class BlogController {
@@ -22,6 +23,8 @@ public class BlogController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView main(ModelAndView model) {
 		model.addObject("listMessages", messageService.findAll());
+		model.addObject("timeFormatter", DateTimeFormatter.ofPattern("K:m a"));
+		model.addObject("dateFormatter", DateTimeFormatter.ofPattern("d MMM uuuu"));
 		model.setViewName("main");
 		return model;
 	}

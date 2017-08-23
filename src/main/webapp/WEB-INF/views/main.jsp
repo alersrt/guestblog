@@ -10,34 +10,49 @@
 
 <html>
 <head>
-    <title>The Start page</title>
+    <title>The start page</title>
 </head>
 <body>
 
-<form:form id="addForm" method="GET" action="${contextPath}/add">
-    <button type="submit" class="btn btn-primary">Add post</button>
-</form:form>
-<c:forEach var="message" items="${listMessages}">
-    <table>
-        <tbody>
-        <tr>
-            <th>${message.title}</th>
-        </tr>
-        <tr>
-            <th>${message.timestamp}</th>
-        </tr>
-        <tr>
-            <th>${message.body}</th>
-        </tr>
-        <tr>
-            <th><img class="img-thumbnail" width="250"
-                     src="${utils:byteArrayToString(message.image)}"/>
-            </th>
-        </tr>
-        </tbody>
-    </table>
-</c:forEach>
+<div class="container-fluid">
 
+    <div class="row m-2">
+        <div class="col">
+            <form:form method="GET" action="${contextPath}/add">
+                <button type="submit" class="btn btn-primary">Add post</button>
+            </form:form>
+        </div>
+    </div>
+
+    <c:forEach var="message" items="${listMessages}">
+        <div class="col-auto m-2">
+            <div class="row">
+                <div class="col-auto">
+                    <img class="img-thumbnail" width="250"
+                         src="${utils:byteArrayToString(message.image)}"/>
+                </div>
+                <div class="col-auto">
+                    <div class="row text-left">
+                        <p class="font-weight-bold">${message.title}</p>
+                    </div>
+                    <div class="row justify-content-between">
+                        <div class="col-auto text-center">
+                            <p><em><small>${message.timestamp.toLocalDate().format(dateFormatter)}</small></em></p>
+                        </div>
+                        <div class="col-auto text-center">
+                            <p><em><small>${message.timestamp.toLocalTime().format(timeFormatter)}</small></em></p>
+                        </div>
+                    </div>
+                    <div class="row text-left">
+                        <p>${message.body}</p>
+                    </div>
+                </div>
+                <div></div>
+            </div>
+        </div>
+
+    </c:forEach>
+</div>
 
 <script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
 <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>

@@ -14,61 +14,68 @@
 </head>
 <body>
 
-<form:form class="form-horizontal" method="POST" modelAttribute="messageForm">
+<div class="container-fluid m-2">
 
-    <div class="form-group ${status.error ? 'has-error' : ''}">
-        <spring:bind path="title">
-            <form:input path="title" type="text" class="form-control" id="title"
-                        placeholder="Title"/>
-            <form:errors path="title"/>
-        </spring:bind>
-    </div>
+    <form:form method="POST" modelAttribute="messageForm">
 
-    <div class="form-group ${status.error ? 'has-error' : ''}">
-        <spring:bind path="body">
-            <form:textarea path="body" id="message" class="form-control"
-                           placeholder="Your Message"/>
-            <form:errors path="body"/>
-        </spring:bind>
-    </div>
+        <div class="col-auto">
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <spring:bind path="title">
+                   <i class=""></i> <form:input path="title" type="text"
+                                id="title"
+                                placeholder="Title" class=""/>
+                    <form:errors path="title"/>
+                </spring:bind>
+            </div>
 
-    <div class="form-group ${status.error ? 'has-error' : ''}">
-        <spring:bind path="image">
-            <input id="imageButton" type="file"/>
-            <form:hidden path="image" id="dataImage" value=""/>
-            <form:errors path="image"/>
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <spring:bind path="body">
+                    <form:textarea path="body" id="message"
+                                   placeholder="Your Message"/>
+                    <form:errors path="body"/>
+                </spring:bind>
+            </div>
 
-            <script type="text/javascript">
-                document.getElementById('imageButton').addEventListener('change', function () {
-                    var files = document.getElementById('imageButton').files;
-                    if (files.length > 0) {
-                        getBase64(files[0]);
-                    }
-                });
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <spring:bind path="image">
+                    <input id="imageButton" type="file">
+                    <form:hidden path="image" id="dataImage" value=""/>
+                    <form:errors path="image"/>
 
-                function getBase64(file) {
-                    var reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function () {
-                        document.getElementById('dataImage').value = reader.result;
-                        console.log(reader.result);
-                    };
-                    reader.onerror = function (error) {
-                        console.log('Error: ', error);
-                    };
-                }
-            </script>
+                    <script type="text/javascript">
+                        document.getElementById('imageButton').addEventListener('change', function () {
+                            var files = document.getElementById('imageButton').files;
+                            if (files.length > 0) {
+                                getBase64(files[0]);
+                            }
+                        });
 
-        </spring:bind>
-    </div>
+                        function getBase64(file) {
+                            var reader = new FileReader();
+                            reader.readAsDataURL(file);
+                            reader.onload = function () {
+                                document.getElementById('dataImage').value = reader.result;
+                                console.log(reader.result);
+                            };
+                            reader.onerror = function (error) {
+                                console.log('Error: ', error);
+                            };
+                        }
+                    </script>
 
-    <div class="form-actions">
-        <div class="col-sm-offset-2 col-sm-6">
-            <button type="submit" class="btn btn-primary">Send Message</button>
+                </spring:bind>
+
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </div>
+
         </div>
-    </div>
 
-</form:form>
+    </form:form>
+
+</div>
 
 
 <script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
