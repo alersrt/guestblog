@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.student.guestblog.model.Message;
 import org.student.guestblog.service.MessageService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.format.DateTimeFormatter;
 
@@ -42,6 +43,12 @@ public class BlogController {
 			return "add";
 		}
 		messageService.save(messageForm);
+		return "redirect:/";
+	}
+
+	@RequestMapping(value = "/del", method = RequestMethod.GET)
+	public String delete(HttpServletRequest request) {
+		messageService.deleteById(request.getParameter("id"));
 		return "redirect:/";
 	}
 }

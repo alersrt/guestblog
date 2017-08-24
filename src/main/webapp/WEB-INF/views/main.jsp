@@ -37,10 +37,14 @@
                     </div>
                     <div class="row justify-content-between">
                         <div class="col text-center">
-                            <p><em><small>${message.timestamp.toLocalDate().format(dateFormatter)}</small></em></p>
+                            <p><em>
+                                <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
+                            </em></p>
                         </div>
                         <div class="col text-center">
-                            <p><em><small>${message.timestamp.toLocalTime().format(timeFormatter)}</small></em></p>
+                            <p><em>
+                                <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+                            </em></p>
                         </div>
                     </div>
                     <div class="row text-left">
@@ -48,6 +52,9 @@
                     </div>
                 </div>
                 <div></div>
+            </div>
+            <div class="row m-2">
+                <a href="${contextPath}/del?id=${message.id}" class="btn btn-danger">Del post</a>
             </div>
         </div>
 

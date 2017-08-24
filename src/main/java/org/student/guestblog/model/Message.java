@@ -25,6 +25,10 @@ public class Message {
 	@Field("image")
 	private byte[] image;
 
+	public String getId() {
+		return id;
+	}
+
 	public Message() {
 		this.timestamp = LocalDateTime.now();
 	}

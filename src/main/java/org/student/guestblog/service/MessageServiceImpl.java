@@ -18,6 +18,11 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
+	public void deleteById(String id) {
+		messageDAO.delete(messageDAO.findOne(id));
+	}
+
+	@Override
 	public List<Message> findAll() {
 		return messageDAO.findAll();
 	}
