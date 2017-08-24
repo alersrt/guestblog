@@ -21,9 +21,9 @@
         <div class="col-auto">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <spring:bind path="title">
-                   <i class=""></i> <form:input path="title" type="text"
+                   <form:input path="title" type="text"
                                 id="title"
-                                placeholder="Title" class=""/>
+                                placeholder="Title" class="form-control"/>
                     <form:errors path="title"/>
                 </spring:bind>
             </div>
@@ -31,7 +31,7 @@
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <spring:bind path="body">
                     <form:textarea path="body" id="message"
-                                   placeholder="Your Message"/>
+                                   placeholder="Your Message" class="form-control"/>
                     <form:errors path="body"/>
                 </spring:bind>
             </div>

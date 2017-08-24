@@ -25,21 +25,21 @@
     </div>
 
     <c:forEach var="message" items="${listMessages}">
-        <div class="col-auto m-2">
+        <div class="col m-2">
             <div class="row">
-                <div class="col-auto">
+                <div class="col">
                     <img class="img-thumbnail" width="250"
                          src="${utils:byteArrayToString(message.image)}"/>
                 </div>
-                <div class="col-auto">
+                <div class="col">
                     <div class="row text-left">
                         <p class="font-weight-bold">${message.title}</p>
                     </div>
                     <div class="row justify-content-between">
-                        <div class="col-auto text-center">
+                        <div class="col text-center">
                             <p><em><small>${message.timestamp.toLocalDate().format(dateFormatter)}</small></em></p>
                         </div>
-                        <div class="col-auto text-center">
+                        <div class="col text-center">
                             <p><em><small>${message.timestamp.toLocalTime().format(timeFormatter)}</small></em></p>
                         </div>
                     </div>
