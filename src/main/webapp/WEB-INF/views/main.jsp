@@ -25,10 +25,10 @@
     </div>
 
     <c:forEach var="message" items="${listMessages}">
-        <div class="col m-2">
+        <div class="col m-2 border border-primary rounded">
             <div class="row">
                 <div class="col">
-                    <img class="img-thumbnail" width="250"
+                    <img class="img-thumbnail rounded" width="250"
                          src="${utils:byteArrayToString(message.image)}"/>
                 </div>
                 <div class="col">
