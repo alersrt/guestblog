@@ -10,13 +10,13 @@
 
 <html>
 <head>
-    <title>The start page</title>
+    <title>Guest blog</title>
 </head>
 <body>
 
 <div class="container-fluid">
 
-    <div class="row m-2">
+    <div class="row">
         <div class="col">
             <form:form method="GET" action="${contextPath}/add">
                 <button type="submit" class="btn btn-primary">Add post</button>
@@ -24,41 +24,39 @@
         </div>
     </div>
 
-    <c:forEach var="message" items="${listMessages}">
-        <div class="col m-2 border border-primary rounded">
-            <div class="row">
-                <div class="col">
-                    <img class="img-thumbnail rounded" width="250"
-                         src="${utils:byteArrayToString(message.image)}"/>
-                </div>
-                <div class="col">
-                    <div class="row text-left">
-                        <p class="font-weight-bold">${message.title}</p>
-                    </div>
-                    <div class="row justify-content-between">
-                        <div class="col text-center">
-                            <p><em>
-                                <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
-                            </em></p>
-                        </div>
-                        <div class="col text-center">
-                            <p><em>
-                                <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
-                            </em></p>
-                        </div>
-                    </div>
-                    <div class="row text-left">
-                        <p>${message.body}</p>
-                    </div>
-                </div>
-                <div></div>
-            </div>
-            <div class="row m-2">
-                <a href="${contextPath}/del?id=${message.id}" class="btn btn-danger">Del post</a>
-            </div>
-        </div>
+    <div class="row">
+        <c:forEach var="message" items="${listMessages}">
 
-    </c:forEach>
+            <div class="col-xs-18 col-sm-6 col-md-3">
+                <div class="thumbail">
+                    <img class="img-thumbnail" width="100%"
+                         src="${utils:byteArrayToString(message.image)}"/>
+                    <div class="caption">
+                        <h4>${message.title}</h4>
+
+                        <div class="row justify-content-between">
+                            <div class="col text-left">
+                                <p><em>
+                                    <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
+                                </em></p>
+                            </div>
+                            <div class="col text-right">
+                                <p><em>
+                                    <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+                                </em></p>
+                            </div>
+                        </div>
+                        <p>${message.body}</p>
+
+                        <a href="${contextPath}/del?id=${message.id}"
+                           class="btn btn-danger">Del post</a>
+                    </div>
+                </div>
+            </div>
+
+        </c:forEach>
+    </div>
+
 </div>
 
 <script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>

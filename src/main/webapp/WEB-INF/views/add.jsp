@@ -15,9 +15,7 @@
 <body>
 
 <div class="container-fluid m-2">
-
     <form:form method="POST" modelAttribute="messageForm">
-
         <div class="col-auto">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <spring:bind path="title">
@@ -35,46 +33,42 @@
                     <form:errors path="body"/>
                 </spring:bind>
             </div>
+            <div class="row">
+                <div class="col text-left" ${status.error ? 'has-error' : ''}">
+                    <spring:bind path="image">
+                        <input id="imageButton" type="file">
+                        <form:hidden path="image" id="dataImage" value=""/>
+                        <form:errors path="image"/>
 
-            <div class="form-group ${status.error ? 'has-error' : ''}">
-                <spring:bind path="image">
-                    <input id="imageButton" type="file">
-                    <form:hidden path="image" id="dataImage" value=""/>
-                    <form:errors path="image"/>
+                        <script type="text/javascript">
+                            document.getElementById('imageButton').addEventListener('change', function () {
+                                var files = document.getElementById('imageButton').files;
+                                if (files.length > 0) {
+                                    getBase64(files[0]);
+                                }
+                            });
 
-                    <script type="text/javascript">
-                        document.getElementById('imageButton').addEventListener('change', function () {
-                            var files = document.getElementById('imageButton').files;
-                            if (files.length > 0) {
-                                getBase64(files[0]);
+                            function getBase64(file) {
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    document.getElementById('dataImage').value = reader.result;
+                                    console.log(reader.result);
+                                };
+                                reader.onerror = function (error) {
+                                    console.log('Error: ', error);
+                                };
                             }
-                        });
+                        </script>
+                    </spring:bind>
+                </div>
 
-                        function getBase64(file) {
-                            var reader = new FileReader();
-                            reader.readAsDataURL(file);
-                            reader.onload = function () {
-                                document.getElementById('dataImage').value = reader.result;
-                                console.log(reader.result);
-                            };
-                            reader.onerror = function (error) {
-                                console.log('Error: ', error);
-                            };
-                        }
-                    </script>
-
-                </spring:bind>
-
+                <div class="col text-right">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
             </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </div>
-
         </div>
-
     </form:form>
-
 </div>
 
 
