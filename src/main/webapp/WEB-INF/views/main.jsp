@@ -19,7 +19,8 @@
     <div class="row">
         <div class="col">
             <form:form method="GET" action="${contextPath}/add">
-                <button type="submit" class="btn btn-primary m-2">Add post</button>
+                <button type="submit" class="btn btn-primary m-2">Add post
+                </button>
             </form:form>
         </div>
     </div>
@@ -27,31 +28,30 @@
     <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
-            <div class="col-xs-18 col-sm-6 col-md-3 rounded" style="background-color: lightgray">
-                <div class="my-2 my-sm-2 my-md-2">
-                    <div class="thumbail">
-                        <img class="img-thumbnail" width="100%"
-                             src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
-                        <div class="caption">
-                            <h4>${message.title}</h4>
+            <div class="col-xs-18 col-sm-6 col-md-3 m-1 m-sm-1 m-md-1 rounded"
+                 style="background-color: lightgray">
+                <div class="thumbail">
+                    <img class="img-thumbnail" width="100%"
+                         src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
+                    <div class="caption">
+                        <h4>${message.title}</h4>
 
-                            <div class="row justify-content-between">
-                                <div class="col text-left">
-                                    <p><em>
-                                        <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
-                                    </em></p>
-                                </div>
-                                <div class="col text-right">
-                                    <p><em>
-                                        <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
-                                    </em></p>
-                                </div>
+                        <div class="row justify-content-between">
+                            <div class="col text-left">
+                                <p><em>
+                                    <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
+                                </em></p>
                             </div>
-                            <p>${message.body}</p>
-
-                            <a href="${contextPath}/del?id=${message.id}"
-                               class="btn btn-danger m-2">Del post</a>
+                            <div class="col text-right">
+                                <p><em>
+                                    <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+                                </em></p>
+                            </div>
                         </div>
+                        <p>${message.body}</p>
+
+                        <a href="${contextPath}/del?id=${message.id}"
+                           class="btn btn-danger m-2">Del post</a>
                     </div>
                 </div>
             </div>
