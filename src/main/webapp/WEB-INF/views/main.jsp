@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark" style="box-shadow: 4px 4px 5px gray">
     <form:form method="GET" action="${contextPath}/add">
         <button type="submit" class="btn btn-primary btn-lg" >Add post
         </button>
