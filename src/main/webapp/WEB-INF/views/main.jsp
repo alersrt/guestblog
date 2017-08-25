@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col">
             <form:form method="GET" action="${contextPath}/add">
-                <button type="submit" class="btn btn-primary">Add post</button>
+                <button type="submit" class="btn btn-primary m-2">Add post</button>
             </form:form>
         </div>
     </div>
@@ -27,7 +27,7 @@
     <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
-            <div class="col-xs-18 col-sm-6 col-md-3 my-3 my-sm-3 my-md-3">
+            <div class="col-xs-18 col-sm-6 col-md-3 m-2 m-sm-2 m2-md-2 rounded" style="background-color: lightgray">
                 <div class="thumbail">
                     <img class="img-thumbnail" width="100%"
                          src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
@@ -49,7 +49,7 @@
                         <p>${message.body}</p>
 
                         <a href="${contextPath}/del?id=${message.id}"
-                           class="btn btn-danger">Del post</a>
+                           class="btn btn-danger m-2">Del post</a>
                     </div>
                 </div>
             </div>
