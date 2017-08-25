@@ -28,9 +28,9 @@
     <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
-            <div class="col-xs-18 col-sm-6 col-md-3 m-1 m-sm-1 m-md-1 rounded"
-                 style="background-color: lightgray">
-                <div class="thumbail">
+            <div class="col-xs-18 col-sm-6 col-md-3">
+                <div class="thumbail m-1 m-sm-1 m-md-1 rounded"
+                     style="background-color: lightgray">
                     <img class="img-thumbnail" width="100%"
                          src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
                     <div class="caption">
@@ -51,7 +51,8 @@
                         <p>${message.body}</p>
 
                         <a href="${contextPath}/del?id=${message.id}"
-                           class="btn btn-danger m-2">Del post</a>
+                           class="btn btn-danger m-2 align-items-end">Del
+                            post</a>
                     </div>
                 </div>
             </div>
