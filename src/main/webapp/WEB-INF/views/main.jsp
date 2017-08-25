@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<div class="container-fluid">
+<div class="container-fluid my-3 my-sm-3 my-md-3">
 
     <div class="row">
         <div class="col">
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="row my-3">
+    <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
             <div class="col-xs-18 col-sm-6 col-md-3">
