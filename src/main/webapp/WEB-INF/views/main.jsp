@@ -31,9 +31,10 @@
             <div class="col-xs-18 col-sm-6 col-md-3">
                 <div class="thumbail m-1 m-sm-1 m-md-1 rounded"
                      style="background-color: lightgray">
-                    <img class="img-thumbnail m-1 m-sm-1 m-md-1" width="100%"
+                    <img class="img-thumbnail" width="100%"
                          src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
-                    <div class="caption">
+
+                    <div class="caption m-1 m-sm-1 m-md-1">
                         <h4>${message.title}</h4>
 
                         <div class="row justify-content-between m-1 m-sm-1 m-md-1">
@@ -42,13 +43,13 @@
                                     <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
                                 </em></p>
                             </div>
-                            <div class="col text-right m-1 m-sm-1 m-md-1">
+                            <div class="col text-right">
                                 <p><em>
                                     <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
                                 </em></p>
                             </div>
                         </div>
-                        <p class=" m-1 m-sm-1 m-md-1">${message.body}</p>
+                        <p class="m-1 m-sm-1 m-md-1">${message.body}</p>
 
                         <a href="${contextPath}/del?id=${message.id}"
                            class="btn btn-danger m-2 align-items-end">Del
