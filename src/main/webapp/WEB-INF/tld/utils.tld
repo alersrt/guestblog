@@ -16,10 +16,17 @@
         </function-signature>
     </function>
     <function>
-        <name>byteArrayToString</name>
+        <name>binaryDataToBase64String</name>
         <function-class>org.student.guestblog.utils.Utils</function-class>
         <function-signature>
-            java.lang.String byteArrayToString(byte[])
+            java.lang.String binaryDataToBase64String(byte[])
+        </function-signature>
+    </function>
+    <function>
+        <name>getMimeTypeFromBynary</name>
+        <function-class>org.student.guestblog.utils.Utils</function-class>
+        <function-signature>
+            java.lang.String getMimeTypeFromBynary(byte[])
         </function-signature>
     </function>
 </taglib>

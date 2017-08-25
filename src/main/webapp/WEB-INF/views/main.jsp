@@ -30,7 +30,7 @@
             <div class="col-xs-18 col-sm-6 col-md-3">
                 <div class="thumbail">
                     <img class="img-thumbnail" width="100%"
-                         src="${utils:byteArrayToString(message.image)}"/>
+                         src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
                     <div class="caption">
                         <h4>${message.title}</h4>
 

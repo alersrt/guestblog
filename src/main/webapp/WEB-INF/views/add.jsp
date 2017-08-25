@@ -15,64 +15,50 @@
 <body>
 
 <div class="container-fluid m-2">
-    <form:form method="POST" modelAttribute="messageForm">
+    <form:form method="POST" modelAttribute="messageForm" enctype="multipart/form-data" >
         <div class="col-auto">
-            <div class="form-group ${status.error ? 'has-error' : ''}">
-                <spring:bind path="title">
-                   <form:input path="title" type="text"
+            <spring:bind path="title">
+                <div class="form-group">
+                    <form:input path="title" type="text"
                                 id="title"
-                                placeholder="Title" class="form-control"/>
-                    <form:errors path="title"/>
-                </spring:bind>
-            </div>
-
-            <div class="form-group ${status.error ? 'has-error' : ''}">
-                <spring:bind path="body">
-                    <form:textarea path="body" id="message"
-                                   placeholder="Your Message" class="form-control"/>
-                    <form:errors path="body"/>
-                </spring:bind>
-            </div>
-            <div class="row">
-                <div class="col text-left" ${status.error ? 'has-error' : ''}">
-                    <spring:bind path="image">
-                        <input id="imageButton" type="file">
-                        <form:hidden path="image" id="dataImage" value=""/>
-                        <form:errors path="image"/>
-
-                        <script type="text/javascript">
-                            document.getElementById('imageButton').addEventListener('change', function () {
-                                var files = document.getElementById('imageButton').files;
-                                if (files.length > 0) {
-                                    getBase64(files[0]);
-                                }
-                            });
-
-                            function getBase64(file) {
-                                var reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = function () {
-                                    document.getElementById('dataImage').value = reader.result;
-                                    console.log(reader.result);
-                                };
-                                reader.onerror = function (error) {
-                                    console.log('Error: ', error);
-                                };
-                            }
-                        </script>
-                    </spring:bind>
+                                placeholder="Title"
+                                class="form-control ${status.error ? 'is-invalid' : 'is-valid'}"/>
                 </div>
+            </spring:bind>
+
+            <spring:bind path="body">
+                <div class="form-group">
+                    <form:textarea path="body" id="message"
+                                   placeholder="Your Message"
+                                   class="form-control  ${status.error ? 'is-invalid' : 'is-valid'}"/>
+                </div>
+            </spring:bind>
+
+            <div class="row">
+                <spring:bind path="image">
+                    <div class="col text-left ${status.error ? 'has-error' : ''}">
+                        <form:errors path="image"/>
+                        <form:input id="imageButton" type="file" path="image" class="form-control input-sm"/>
+                    </div>
+                </spring:bind>
+
 
                 <div class="col text-right">
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <a href="${contextPath}/"
+                       class="btn btn-danger">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Send Message
+                    </button>
                 </div>
+
             </div>
         </div>
     </form:form>
 </div>
 
 
-<script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
-<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
+<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
+<script type="text/javascript"
+        src="/resources/bootstrap/js/bootstrap.js"></script>
+<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.css'/>
 </body>
 </html>

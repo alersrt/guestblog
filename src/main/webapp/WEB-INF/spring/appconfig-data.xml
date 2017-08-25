@@ -13,13 +13,7 @@
     <mongo:db-factory uri="${mongo.uri}" />
 
     <mongo:mapping-converter>
-        <mongo:custom-converters>
-            <mongo:converter>
-                <bean class="org.student.guestblog.utils.LocalDateTimeToStringConverter"/>
-            </mongo:converter>
-            <mongo:converter>
-                <bean class="org.student.guestblog.utils.StringToLocalDateTimeConverter"/>
-            </mongo:converter>
+        <mongo:custom-converters base-package="org.student.guestblog.converters">
         </mongo:custom-converters>
     </mongo:mapping-converter>
 
@@ -27,4 +21,14 @@
 
     <mongo:repositories base-package="org.student.guestblog.dao" mongo-template-ref="mongoTemplate"/>
 
+    <!--Multipart resolver-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="16777216" />
+    </bean>
+
+    <!-- MongoDB GridFS Template -->
+    <bean id="gridFsTemplate" class="org.springframework.data.mongodb.gridfs.GridFsTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+        <constructor-arg ref="mappingConverter"/>
+    </bean>
 </beans>

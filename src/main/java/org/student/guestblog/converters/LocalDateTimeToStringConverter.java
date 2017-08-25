@@ -1,4 +1,4 @@
-package org.student.guestblog.utils;
+package org.student.guestblog.converters;
 
 import org.springframework.core.convert.converter.Converter;
 
