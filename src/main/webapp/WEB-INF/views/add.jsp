@@ -38,7 +38,7 @@
                 <spring:bind path="image">
                     <div class="col text-left ${status.error ? 'has-error' : ''}">
                         <form:errors path="image"/>
-                        <form:input id="imageButton" type="file" path="image" class="form-control input-sm"/>
+                        <form:input id="imageButton" type="file" path="image" />
                     </div>
                 </spring:bind>
 

@@ -23,9 +23,6 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 public class BlogController {
-
-	private static final Logger logger = LoggerFactory.getLogger(BlogController.class);
-
 	@Autowired
 	private MessageService messageService;
 
@@ -38,14 +35,12 @@ public class BlogController {
 		model.addObject("timeFormatter", DateTimeFormatter.ofPattern("KK:mm a"));
 		model.addObject("dateFormatter", DateTimeFormatter.ofPattern("d MMM uuuu"));
 		model.setViewName("main");
-		logger.info("Return main page");
 		return model;
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String registration(Model model) {
 		model.addAttribute("messageForm", new Message());
-		logger.info("Return page of post adding");
 		return "add";
 	}
 
@@ -58,14 +53,12 @@ public class BlogController {
 		}
 
 		messageService.save(messageForm);
-		logger.info("This post is added");
 		return "redirect:/";
 	}
 
 	@RequestMapping(value = "/del", method = RequestMethod.GET)
 	public String delete(HttpServletRequest request) {
 		messageService.deleteById(request.getParameter("id"));
-		logger.info("This post is deleted");
 		return "redirect:/";
 	}
 
