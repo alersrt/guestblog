@@ -27,8 +27,8 @@
     <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
-            <div class="col-xs-18 col-sm-6 col-md-3">
-                <div class="my-2 my-sm-2 my-md-2 rounded" style="background-color: lightgray">
+            <div class="col-xs-18 col-sm-6 col-md-3 rounded" style="background-color: lightgray">
+                <div class="my-2 my-sm-2 my-md-2">
                     <div class="thumbail">
                         <img class="img-thumbnail" width="100%"
                              src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
