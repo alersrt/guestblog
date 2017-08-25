@@ -35,7 +35,7 @@ public class BlogController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView main(ModelAndView model) {
 		model.addObject("listMessages", messageService.findAll());
-		model.addObject("timeFormatter", DateTimeFormatter.ofPattern("K:m a"));
+		model.addObject("timeFormatter", DateTimeFormatter.ofPattern("KK:mm a"));
 		model.addObject("dateFormatter", DateTimeFormatter.ofPattern("d MMM uuuu"));
 		model.setViewName("main");
 		logger.info("Return main page");
