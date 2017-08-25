@@ -11,12 +11,20 @@
 <html>
 <head>
     <title>Add post</title>
+
+    <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
+    <script src="/resources/jquery/jquery.min.js"
+            type="text/javascript"></script>
+    <script src="/resources/popper.js/dist/umd/popper.min.js"
+            type="text/javascript"></script>
+    <script src="/resources/bootstrap/js/bootstrap.min.js"
+            type="text/javascript"></script>
 </head>
 <body>
 
 <div class="container-fluid m-2">
     <form:form method="POST" modelAttribute="messageForm" enctype="multipart/form-data" >
-        <div class="col-auto">
+        <div class="col-xl-12 col-sm-6 col-md-2 justify-content-center">
             <spring:bind path="title">
                 <div class="form-group">
                     <form:input path="title" type="text"
@@ -34,31 +42,29 @@
                 </div>
             </spring:bind>
 
-            <div class="row">
-                <spring:bind path="image">
-                    <div class="col text-left ${status.error ? 'has-error' : ''}">
-                        <form:errors path="image"/>
-                        <form:input id="imageButton" type="file" path="image" />
+            <div class="form-group">
+                <div class="row">
+                    <spring:bind path="image">
+                        <div class="col text-left ${status.error ? 'has-error' : ''}">
+                            <form:errors path="image"/>
+                            <form:input id="imageButton" type="file" path="image" />
+                        </div>
+                    </spring:bind>
+
+
+                    <div class="col text-right">
+                        <a href="${contextPath}/"
+                           class="btn btn-danger">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Send Message
+                        </button>
                     </div>
-                </spring:bind>
 
-
-                <div class="col text-right">
-                    <a href="${contextPath}/"
-                       class="btn btn-danger">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Send Message
-                    </button>
                 </div>
-
             </div>
+
         </div>
     </form:form>
 </div>
 
-
-<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
-<script type="text/javascript"
-        src="/resources/bootstrap/js/bootstrap.js"></script>
-<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.css'/>
 </body>
 </html>

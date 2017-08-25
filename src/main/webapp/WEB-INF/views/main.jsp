@@ -8,29 +8,37 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
+<!DOCTYPE html>
 <html>
 <head>
     <title>Guest blog</title>
+
+    <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
+    <script src="/resources/jquery/jquery.min.js"
+            type="text/javascript"></script>
+    <script src="/resources/popper.js/dist/umd/popper.min.js"
+            type="text/javascript"></script>
+    <script src="/resources/bootstrap/js/bootstrap.min.js"
+            type="text/javascript"></script>
 </head>
 <body>
 
+<nav class="navbar navbar-dark bg-dark">
+    <form:form method="GET" action="${contextPath}/add">
+        <button type="submit" class="btn btn-primary btn-lg" >Add post
+        </button>
+    </form:form>
+</nav>
+
 <div class="container-fluid">
 
-    <div class="row">
-        <div class="col">
-            <form:form method="GET" action="${contextPath}/add">
-                <button type="submit" class="btn btn-primary m-2">Add post
-                </button>
-            </form:form>
-        </div>
-    </div>
 
     <div class="row">
         <c:forEach var="message" items="${listMessages}">
 
             <div class="col-xs-18 col-sm-6 col-md-3">
                 <div class="thumbail m-1 m-sm-1 m-md-1 rounded"
-                     style="background-color: lightgray">
+                     style="background-color: lightgray; box-shadow: 4px 4px 5px gray;">
                     <img class="img-thumbnail" width="100%"
                          src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
 
@@ -63,7 +71,5 @@
 
 </div>
 
-<script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
-<link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
 </body>
 </html>
