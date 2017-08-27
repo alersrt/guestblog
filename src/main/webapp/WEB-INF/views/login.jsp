@@ -31,11 +31,13 @@
             <h5 class="form-heading">Log in</h5>
 
             <div class="form-group ${error != null ? 'has-error' : ''}">
-                <input name="name" type="text" class="form-control"
+                <input name="username" type="text" class="form-control"
                        placeholder="Username"
+                       path="username"
                        autofocus="true"/>
                 <input name="password" type="password" class="form-control"
-                       placeholder="Password"/>
+                       placeholder="Password"
+                       path="password"/>
                 <span class="alert-danger">${error}</span>
                 <input type="hidden" name="${_csrf.parameterName}"
                        value="${_csrf.token}"/>

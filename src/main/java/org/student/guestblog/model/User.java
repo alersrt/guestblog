@@ -33,6 +33,7 @@ public class User {
 	@Field("email")
 	private String email;
 
+	@Field("roles")
 	private Set<Role> roles;
 
 	public String getId() {
@@ -111,9 +112,9 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{" +
-				"id='" + id + '\'' +
-				", username='" + username + '\'' +
+				"username='" + username + '\'' +
 				", email='" + email + '\'' +
+				", roles=" + roles +
 				'}';
 	}
 }

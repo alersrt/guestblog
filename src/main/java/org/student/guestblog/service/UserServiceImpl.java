@@ -27,10 +27,9 @@ public class UserServiceImpl implements UserService {
 		user.setUsername(user.getUsername().toLowerCase());
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		Set<Role> roles = new HashSet<>();
-		roles.add(new Role());
-		LOGGER.info("Roles: " + roles.toString());
+		roles.add(Role.USER);
 		user.setRoles(roles);
-		LOGGER.info("User[" + user.toString() + "] was added");
+		LOGGER.info(user.toString() + " was added");
 		userDAO.save(user);
 	}
 
@@ -41,6 +40,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByUsername(String username) {
-		return userDAO.findByUsername(username);
+		return userDAO.findFirstByUsername(username);
 	}
 }
