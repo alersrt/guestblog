@@ -22,11 +22,15 @@
 </head>
 <body>
 
-<div class="container-fluid m-2">
-    <form:form method="POST" modelAttribute="messageForm" enctype="multipart/form-data" >
-        <div class="col-xl-12 col-sm-6 col-md-2 justify-content-center">
+<div class="row justify-content-center">
+    <div class="col-xs-9 col-sm-6 col-md-3">
+        <form:form method="POST" modelAttribute="messageForm"
+                   action="/add?${_csrf.parameterName}=${_csrf.token}"
+                   enctype="multipart/form-data">
+
             <spring:bind path="title">
                 <div class="form-group">
+                    <form:errors path="title" cssClass="alert-danger"/>
                     <form:input path="title" type="text"
                                 id="title"
                                 placeholder="Title"
@@ -36,6 +40,7 @@
 
             <spring:bind path="body">
                 <div class="form-group">
+                    <form:errors path="body" cssClass="alert-danger"/>
                     <form:textarea path="body" id="message"
                                    placeholder="Your Message"
                                    class="form-control  ${status.error ? 'is-invalid' : 'is-valid'}"/>
@@ -46,8 +51,9 @@
                 <div class="row">
                     <spring:bind path="image">
                         <div class="col text-left ${status.error ? 'has-error' : ''}">
-                            <form:errors path="image"/>
-                            <form:input id="imageButton" type="file" path="image" />
+                            <form:errors path="image" cssClass="alert-danger"/>
+                            <form:input id="imageButton" type="file"
+                                        path="image"/>
                         </div>
                     </spring:bind>
 
@@ -55,15 +61,15 @@
                     <div class="col text-right">
                         <a href="${contextPath}/"
                            class="btn btn-danger">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Send Message
+                        <button type="submit" class="btn btn-primary">Send
+                            Message
                         </button>
                     </div>
 
                 </div>
             </div>
-
-        </div>
-    </form:form>
+        </form:form>
+    </div>
 </div>
 
 </body>

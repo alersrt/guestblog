@@ -1,25 +1,30 @@
 package org.student.guestblog.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotNull;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
 
 @Document(collection = "roles")
 public class Role {
 	@Id
 	private String id;
 
-	@NotNull
+	@NotBlank
 	@Field("rolename")
 	private String rolename;
 
-	@NotNull
-	@DBRef(lazy = true)
-	private Set<User> users;
+	public String getId() {
+		return id;
+	}
+
+	public Role() {
+	}
+
+	public Role(@NotBlank String rolename) {
+		this.rolename = rolename;
+	}
 
 	public String getRolename() {
 		return rolename;
@@ -27,14 +32,6 @@ public class Role {
 
 	public void setRolename(String rolename) {
 		this.rolename = rolename;
-	}
-
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
 	}
 
 	@Override

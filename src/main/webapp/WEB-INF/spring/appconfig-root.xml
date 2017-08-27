@@ -9,6 +9,7 @@
 
     <import resource="appconfig-mvc.xml"/>
     <import resource="appconfig-data.xml"/>
+    <import resource="appconfig-security.xml"/>
 
     <!--<context:annotation-config/>-->
 

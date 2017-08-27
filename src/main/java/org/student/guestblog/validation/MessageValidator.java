@@ -18,8 +18,8 @@ public class MessageValidator implements Validator {
 	public void validate(Object o, Errors errors) {
 		Message message = (Message) o;
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "body", "required");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "required");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "body", "required");
 		ValidationUtils.rejectIfEmpty(errors, "image", "required");
 
 		if (message.getImage().length > 0) {

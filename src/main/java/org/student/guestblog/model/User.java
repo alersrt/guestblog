@@ -1,12 +1,13 @@
 package org.student.guestblog.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -14,22 +15,38 @@ public class User {
 	@Id
 	private String id;
 
-	@NotNull(message = "required")
+	@NotBlank
+	@Size(min = 8, max = 32)
 	@Field("username")
 	private String username;
 
-	@NotNull(message = "required")
+	@NotBlank
 	@Field("password")
 	private String password;
 
-	@NotNull(message = "required")
-	@Email(message = "email.correct")
+	@NotBlank
+	@Transient
+	private String confirmPassword;
+
+	@NotBlank
+	@Email
 	@Field("email")
 	private String email;
 
-	@NotNull
-	@DBRef(lazy = true)
 	private Set<Role> roles;
+
+	public String getId() {
+		return id;
+	}
+
+	public User() {
+	}
+
+	public User(@NotBlank @Size(min = 8, max = 32) String username, @NotBlank String password, @NotBlank @Email String email) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+	}
 
 	public String getUsername() {
 		return username;
@@ -45,6 +62,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
 	}
 
 	public String getEmail() {
@@ -70,7 +95,6 @@ public class User {
 
 		User user = (User) o;
 
-		if (!id.equals(user.id)) return false;
 		if (!username.equals(user.username)) return false;
 		if (!password.equals(user.password)) return false;
 		return email.equals(user.email);
@@ -78,8 +102,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		int result = id.hashCode();
-		result = 31 * result + username.hashCode();
+		int result = username.hashCode();
 		result = 31 * result + password.hashCode();
 		result = 31 * result + email.hashCode();
 		return result;

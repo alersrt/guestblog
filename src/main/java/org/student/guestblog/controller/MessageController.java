@@ -5,10 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.student.guestblog.model.Message;
@@ -17,10 +14,11 @@ import org.student.guestblog.validation.MessageValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 
 @Controller
-public class BlogController {
+public class MessageController {
 	@Autowired
 	private MessageService messageService;
 
@@ -43,7 +41,11 @@ public class BlogController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(@ModelAttribute("messageForm") Message messageForm, BindingResult bindingResult, Model model) {
+	public String add(@ModelAttribute("messageForm")
+						  @RequestBody
+						  @Valid Message messageForm,
+					  BindingResult bindingResult,
+					  Model model) {
 		messageValidator.validate(messageForm, bindingResult);
 
 		if (bindingResult.hasErrors()) {

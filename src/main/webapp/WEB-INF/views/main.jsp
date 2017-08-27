@@ -23,15 +23,34 @@
 </head>
 <body>
 
+
+
 <nav class="navbar navbar-dark bg-dark" style="box-shadow: 4px 4px 5px gray">
     <form:form method="GET" action="${contextPath}/add">
-        <button type="submit" class="btn btn-primary btn-lg" >Add post
+        <button type="submit" class="btn btn-primary" >Add post
         </button>
     </form:form>
+    <c:if test="${pageContext.request.userPrincipal.name != null}">
+        <form id="logoutForm" method="POST" action="${contextPath}/logout">
+            <input type="hidden" name="${_csrf.parameterName}"
+                   value="${_csrf.token}"/>
+        </form>
+
+        <h2>
+            Welcome <a
+                style="text-transform: capitalize">${fn:toLowerCase(pageContext.request.userPrincipal.name)}<a/>
+            <button type="button" class="btn btn-danger"
+                    onclick="document.forms['logoutForm'].submit()">Logout
+            </button>
+        </h2>
+    </c:if>
+    <form class="form-inline">
+        <a type="button" class="btn btn-outline-primary mx-2" href="${contextPath}/login">Sign In</a>
+        <a type="button" class="btn btn-outline-secondary mx-2" href="${contextPath}/registration">Sing Up</a>
+    </form>
 </nav>
 
 <div class="container-fluid">
-
 
     <div class="row">
         <c:forEach var="message" items="${listMessages}">

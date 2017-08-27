@@ -4,22 +4,33 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Document(collection = "messages")
 public class Message {
 	@Id
 	private String id;
 
+	@NotNull
 	@Field("timestamp")
 	private LocalDateTime timestamp;
 
+	@NotBlank
+	@Size(max = 100)
 	@Field("title")
 	private String title;
 
+	@NotBlank
+	@Size(max = 1024)
 	@Field("body")
 	private String body;
 
+	@NotNull
+	@Size(max = 16777216)
 	@Field("image")
 	private byte[] image;
 
@@ -31,7 +42,7 @@ public class Message {
 		this.timestamp = LocalDateTime.now();
 	}
 
-	public Message(String title, String body, byte[] image) {
+	public Message(@NotBlank @Size(max = 100) String title, @NotBlank @Size(max = 1024) String body, @NotNull @Size(max = 16777216) byte[] image) {
 		this.timestamp = LocalDateTime.now();
 		this.title = title;
 		this.body = body;
@@ -73,18 +84,18 @@ public class Message {
 
 		Message message = (Message) o;
 
-		if (!id.equals(message.id)) return false;
 		if (!timestamp.equals(message.timestamp)) return false;
 		if (!title.equals(message.title)) return false;
-		return body.equals(message.body);
+		if (!body.equals(message.body)) return false;
+		return Arrays.equals(image, message.image);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id.hashCode();
-		result = 31 * result + timestamp.hashCode();
+		int result = timestamp.hashCode();
 		result = 31 * result + title.hashCode();
 		result = 31 * result + body.hashCode();
+		result = 31 * result + Arrays.hashCode(image);
 		return result;
 	}
 
