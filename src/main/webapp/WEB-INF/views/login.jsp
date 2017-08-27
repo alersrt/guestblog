@@ -32,12 +32,12 @@
 
             <div class="form-group ${error != null ? 'has-error' : ''}">
                 <input name="username" type="text" class="form-control"
-                       placeholder="Username"
                        path="username"
+                       placeholder="Username"
                        autofocus="true"/>
                 <input name="password" type="password" class="form-control"
-                       placeholder="Password"
-                       path="password"/>
+                       path="password"
+                       placeholder="Password"/>
                 <span class="alert-danger">${error}</span>
                 <input type="hidden" name="${_csrf.parameterName}"
                        value="${_csrf.token}"/>
