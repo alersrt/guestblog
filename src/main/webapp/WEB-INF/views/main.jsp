@@ -35,7 +35,7 @@
     </form:form>
     <c:if test="${pageContext.request.userPrincipal.name != null}">
         <h2>
-            Welcome <span
+            Welcome <span class="text-light"
                 style="text-transform: capitalize">${fn:toLowerCase(pageContext.request.userPrincipal.name)}</span>
         </h2>
     </c:if>

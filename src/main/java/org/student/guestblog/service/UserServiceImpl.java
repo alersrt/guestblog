@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.student.guestblog.dao.RoleDAO;
 import org.student.guestblog.dao.UserDAO;
 import org.student.guestblog.model.Role;
 import org.student.guestblog.model.User;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 	private UserDAO userDAO;
 
 	@Autowired
+	private RoleDAO roleDAO;
+
+	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
@@ -27,9 +31,9 @@ public class UserServiceImpl implements UserService {
 		user.setUsername(user.getUsername().toLowerCase());
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		Set<Role> roles = new HashSet<>();
-		roles.add(new Role());
+		roles.add(roleDAO.findByRolename("ROLE_USER"));
 		user.setRoles(roles);
-		LOGGER.info("Security" + user.toString());
+		LOGGER.info("UserService: " + user.toString());
 		userDAO.save(user);
 	}
 
