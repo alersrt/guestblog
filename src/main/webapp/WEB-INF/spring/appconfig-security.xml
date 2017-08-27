@@ -8,14 +8,14 @@
 		                         http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http auto-config="true">
-        <intercept-url pattern="/del**" access="hasAnyRole('USER', 'ADMIN')"/>
+        <intercept-url pattern="/delMessage**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
 
         <form-login login-page="/login" default-target-url="/" authentication-failure-url="/login?error"
                     username-parameter="username"
                     password-parameter="password"/>
-        <logout logout-success-url="/login?logout"/>
+        <logout logout-success-url="/"/>
 
-        <anonymous username="anonymous" granted-authority="ANOYMOUS"/>
+        <anonymous username="anonymous" granted-authority="ROLE_ANONYMOUS"/>
     </http>
 
 

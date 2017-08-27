@@ -65,6 +65,11 @@
             <artifactId>spring-security-config</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>LATEST</version>
+        </dependency>
 
         <!--MongoDB driver-->
         <dependency>
@@ -161,6 +166,11 @@
         <dependency>
             <groupId>org.webjars.npm</groupId>
             <artifactId>popper.js</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>octicons</artifactId>
             <version>LATEST</version>
         </dependency>
     </dependencies>

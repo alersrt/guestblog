@@ -15,6 +15,7 @@
     <title>Login Form</title>
 
     <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
+    <link rel='stylesheet' href='/resources/octicons/build/font/octicons.css'/>
     <script src="/resources/jquery/jquery.min.js"
             type="text/javascript"></script>
     <script src="/resources/popper.js/dist/umd/popper.min.js"
@@ -24,35 +25,50 @@
 </head>
 <body>
 
-<div class="row justify-content-center">
-    <div class="col-xs-9 col-sm-6 col-md-3">
-        <form accept-charset="UTF-8" method="POST" action="${contextPath}/login"
-              class="form-signin">
-            <h5 class="form-heading">Log in</h5>
+    <div class="row justify-content-center">
+        <div class="col-xs-9 col-sm-6 col-md-3">
+            <form accept-charset="UTF-8" method="POST"
+                  action="${contextPath}/login"
+                  class="form-signin">
+                <h5 class="form-heading">Log in</h5>
 
-            <div class="form-group ${error != null ? 'has-error' : ''}">
-                <input name="username" type="text" class="form-control"
-                       path="username"
-                       placeholder="Username"
-                       autofocus="true"/>
-                <input name="password" type="password" class="form-control"
-                       path="password"
-                       placeholder="Password"/>
-                <span class="alert-danger">${error}</span>
-                <input type="hidden" name="${_csrf.parameterName}"
-                       value="${_csrf.token}"/>
+                <div class="form-group ${error != null ? 'has-error' : ''}">
+                    <div class="input-group" style="margin-bottom: 25px">
+                        <span class="input-group-addon"><i
+                                class="octicon octicon-person"></i></span>
+                        <input name="username" type="text" class="form-control"
+                               path="username"
+                               placeholder="Username"
+                               autofocus="true"/>
+                    </div>
 
-                <div class="row">
-                    <div class="col justify-content-end">
-                        <button class="btn btn-primary" type="submit">Log In</button>
-                        <a class="btn btn-danger" href="${contextPath}/">Cancel</a>
+                    <div class="input-group" style="margin-bottom: 25px">
+                        <span class="input-group-addon"><i
+                                class="octicon octicon-lock"></i></span>
+                        <input name="password" type="password"
+                               class="form-control"
+                               path="password"
+                               placeholder="Password"/>
+                    </div>
+
+                    <span class="alert-danger">${error}</span>
+
+                    <input type="hidden" name="${_csrf.parameterName}"
+                           value="${_csrf.token}"/>
+
+                    <div class="row">
+                        <div class="col controls">
+                            <button class="btn btn-primary" type="submit"><span class="octicon octicon-sign-in">Log In</span>
+                            </button>
+                            <a class="btn btn-danger" href="${contextPath}/"><span class="octicon octicon-sign-out">Cancel</span></a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </form>
+            </form>
+        </div>
     </div>
-</div>
+
 
 </body>
 </html>

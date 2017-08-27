@@ -34,13 +34,13 @@ public class MessageController {
 		return model;
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	@RequestMapping(value = "/addMessage", method = RequestMethod.GET)
 	public String registration(Model model) {
 		model.addAttribute("messageForm", new Message());
 		return "add";
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/addMessage", method = RequestMethod.POST)
 	public String add(@ModelAttribute("messageForm")
 						  @RequestBody
 						  @Valid Message messageForm,
@@ -56,7 +56,7 @@ public class MessageController {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/del", method = RequestMethod.GET)
+	@RequestMapping(value = "/delMessage", method = RequestMethod.GET)
 	public String delete(HttpServletRequest request) {
 		messageService.deleteById(request.getParameter("id"));
 		return "redirect:/";
