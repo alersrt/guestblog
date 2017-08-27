@@ -42,7 +42,7 @@ public class UserController {
 		userValidator.validate(userForm, bindingResult);
 
 		if (bindingResult.hasErrors()) {
-			LOGGER.info(bindingResult.toString());
+			LOGGER.info(bindingResult.getAllErrors().toString());
 			return "registration";
 		}
 

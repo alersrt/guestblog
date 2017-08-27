@@ -2,6 +2,7 @@ package org.student.guestblog.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -33,6 +34,7 @@ public class User {
 	@Field("email")
 	private String email;
 
+	@DBRef(db = "roles")
 	@Field("roles")
 	private Set<Role> roles;
 
@@ -112,7 +114,8 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{" +
-				"username='" + username + '\'' +
+				"id='" + id + '\'' +
+				", username='" + username + '\'' +
 				", email='" + email + '\'' +
 				", roles=" + roles +
 				'}';

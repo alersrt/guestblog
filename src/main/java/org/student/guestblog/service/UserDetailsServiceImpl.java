@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.student.guestblog.dao.UserDAO;
 import org.student.guestblog.model.User;
 
@@ -15,19 +16,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserDAO userDAO;
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDAO.findFirstByUsername(username.toLowerCase());
+		User user = userDAO.findByUsername(username.toLowerCase());
 
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-		LOGGER.info("Security info: " + user.toString());
-		user.getRoles().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r.toString())));
-		LOGGER.info(grantedAuthorities.toString());
+
+		user.getRoles().forEach(r -> grantedAuthorities.add(new SimpleGrantedAuthority(r.getRolename())));
+		LOGGER.info("UserDetails: " + user.toString());
 		return new org.springframework.security.core.userdetails.User(
 				user.getUsername(),
 				user.getPassword(),
