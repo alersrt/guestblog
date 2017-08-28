@@ -9,6 +9,8 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <sec:authorize access="isAuthenticated()" var="isAuthenticated"/>
+<c:set var="loggedUsername" value="${pageContext.request.userPrincipal.name}"/>
+<sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin"/>
 
 <!DOCTYPE html>
 <html>
@@ -35,37 +37,34 @@
 <form id="addMessForm" method="GET" action="${contextPath}/addMessage">
 </form>
 
-<form id="delMessForm" method="GET" action="${contextPath}/delMessage">
-</form>
-
 <%--Navbar--%>
 <nav class="navbar navbar-dark bg-dark" style="box-shadow: 4px 4px 5px gray">
     <button type="submit" class="btn btn-primary"
-            onclick="document.forms['addMessForm'].submit()"><span
-            class="octicon octicon-pencil">Add post</span>
+            onclick="document.forms['addMessForm'].submit()"><span><i
+            class="octicon octicon-pencil"></i>Add post</span>
     </button>
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">
         <h2><span class="text-light"
-                  style="text-transform: capitalize">Welcome ${fn:toLowerCase(pageContext.request.userPrincipal.name)}</span>
+                  style="text-transform: capitalize">Welcome ${fn:toLowerCase(loggedUsername)}</span>
         </h2>
     </c:if>
     <form class="form-inline">
         <c:choose>
             <c:when test="${isAuthenticated}">
                 <button type="button" class="btn btn-danger"
-                        onclick="document.forms['logoutForm'].submit()"><span
-                        class="octicon octicon-sign-out">Log Out</span>
+                        onclick="document.forms['logoutForm'].submit()"><span><i
+                        class="octicon octicon-sign-out"></i>Log Out</span>
                 </button>
             </c:when>
             <c:otherwise>
                 <div class="col controls">
                     <a type="button" class="btn btn-primary"
-                       href="${contextPath}/login"><span
-                            class="octicon octicon-sign-in">Sign In</span></a>
+                       href="${contextPath}/login"><span><i
+                            class="octicon octicon-sign-in"></i>Sign In</span></a>
                     <a type="button" class="btn btn-secondary"
-                       href="${contextPath}/registration"><span
-                            class="octicon octicon-lock">Sign Up</span></a>
+                       href="${contextPath}/registration"><span><i
+                            class="octicon octicon-lock"></i>Sign Up</span></a>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -100,15 +99,19 @@
                                 </em></p>
                             </div>
                         </div>
+                        <div class="row m-1 m-sm-1 m-md-1">
+                            <span><i class="octicon octicon-person"></i></span>
+                            <p class="text-capitalize"
+                               style="font-weight: bold">${message.user.username.length() > 0 ? message.user.username : 'anonymous'}</p>
+
+                        </div>
                         <p class="m-1 m-sm-1 m-md-1">${message.body}</p>
 
-                        <c:if test="${isAuthenticated}">
+                        <c:if test="${message.user.username.equals(loggedUsername) || isAdmin}">
                             <a href="${contextPath}/delMessage?id=${message.id}"
                                class="btn btn-danger m-2 align-items-end">
-                                <span class="octicon octicon-trashcan">Delete</span>
-                            </a>
+                                    <span><i class="octicon octicon-trashcan"></i>Delete</span></a>
                         </c:if>
-
                     </div>
                 </div>
             </div>

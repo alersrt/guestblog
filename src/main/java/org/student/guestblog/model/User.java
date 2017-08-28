@@ -2,6 +2,7 @@ package org.student.guestblog.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -17,6 +18,7 @@ public class User {
 	private String id;
 
 	@NotBlank
+	@Indexed(unique = true)
 	@Size(min = 8, max = 32)
 	@Field("username")
 	private String username;
@@ -37,6 +39,10 @@ public class User {
 	@DBRef(db = "roles")
 	@Field("roles")
 	private Set<Role> roles;
+
+	@DBRef(db = "messages")
+	@Field("messages")
+	private Set<Message> messages;
 
 	public String getId() {
 		return id;
@@ -89,6 +95,14 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public Set<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Set<Message> messages) {
+		this.messages = messages;
 	}
 
 	@Override

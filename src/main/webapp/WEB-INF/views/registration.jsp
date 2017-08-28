@@ -86,10 +86,10 @@
                 <div class="col controls">
                     <button class="btn btn-primary"
                             type="submit">
-                        <span class="octicon octicon-sign-in">Submit</span>
+                        <span><i class="octicon octicon-sign-in"></i>Submit</span>
                     </button>
                     <a class="btn btn-danger" href="${contextPath}/">
-                        <span class="octicon octicon-sign-out">Cancel</span>
+                        <span><i class="octicon octicon-sign-out"></i>Cancel</span>
                     </a>
                 </div>
             </div>

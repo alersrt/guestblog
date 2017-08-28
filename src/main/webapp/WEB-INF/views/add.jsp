@@ -13,8 +13,6 @@
     <title>Add post</title>
 
     <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
-    <%--<link rel='stylesheet'--%>
-    <%--href='/resources/bootstrap-fileinput/css/fileinput.min.css'/>--%>
     <link rel='stylesheet' href='/resources/octicons/build/font/octicons.css'/>
     <script src="/resources/jquery/jquery.min.js"
             type="text/javascript"></script>
@@ -22,8 +20,6 @@
             type="text/javascript"></script>
     <script src="/resources/bootstrap/js/bootstrap.min.js"
             type="text/javascript"></script>
-    <%--<script src="/resources/bootstrap-fileinput/js/fileinput.min.js"--%>
-    <%--type="text/javascript"></script>--%>
 </head>
 <body>
 
@@ -65,10 +61,11 @@
                         <spring:bind path="image">
                             <div class="form-group text-left ${status.error ? 'has-error' : ''}">
                                 <label for="imageButton">
-                                    <span class="btn btn-info octicon octicon-file-media"
-                                          id="imageButtonSpan">Choose your image</span>
+                                    <span id="imageButtonSpan" class="btn btn-info "><i
+                                            class="octicon octicon-file-media"></i>Choose your image</span>
                                 </label>
-                                <form:errors path="image" cssClass="alert-danger"/>
+                                <form:errors path="image"
+                                             cssClass="alert-danger"/>
                                 <form:input id="imageButton" path="image"
                                             cssClass="custom-file-input"
                                             type="file"/>
@@ -84,12 +81,12 @@
                     </div>
 
                     <div class="col text-right">
-                        <button type="submit" class="btn btn-primary"><span
-                                class="octicon octicon-cloud-upload">Send</span>
+                        <button type="submit" class="btn btn-primary"><span><i
+                                class="octicon octicon-cloud-upload"></i>Send</span>
                         </button>
                         <a href="${contextPath}/"
-                           class="btn btn-danger"><span
-                                class="octicon octicon-sign-out">Cancel</span></a>
+                           class="btn btn-danger"><span><i
+                                class="octicon octicon-sign-out"></i>Cancel</span></a>
                     </div>
 
                 </div>

@@ -1,6 +1,7 @@
 package org.student.guestblog.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -33,6 +34,10 @@ public class Message {
 	@Size(max = 16777216)
 	@Field("image")
 	private byte[] image;
+
+	@DBRef(db = "users")
+	@Field("user")
+	private User user;
 
 	public String getId() {
 		return id;
@@ -75,6 +80,14 @@ public class Message {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override

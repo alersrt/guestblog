@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 import org.student.guestblog.dao.MessageDAO;
 import org.student.guestblog.model.Message;
+import org.student.guestblog.model.User;
 
 import java.util.List;
 
@@ -14,10 +15,16 @@ public class MessageServiceImpl implements MessageService {
 	private MessageDAO messageDAO;
 
 	@Override
-	public void save(Message message) {
+	public void save(Message message, User user) {
 		message.setTitle(HtmlUtils.htmlEscape(message.getTitle()));
 		message.setBody(HtmlUtils.htmlEscape(message.getBody()));
+		message.setUser(user);
 		messageDAO.save(message);
+	}
+
+	@Override
+	public Message findById(String id) {
+		return messageDAO.findOne(id);
 	}
 
 	@Override

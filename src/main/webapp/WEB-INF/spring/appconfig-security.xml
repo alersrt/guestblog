@@ -7,8 +7,9 @@
                                  http://www.springframework.org/schema/security
 		                         http://www.springframework.org/schema/security/spring-security.xsd">
 
+    <global-method-security authentication-manager-ref="authenticationManager" secured-annotations="enabled" />
+
     <http auto-config="true">
-        <intercept-url pattern="/delMessage**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
 
         <form-login login-page="/login" default-target-url="/" authentication-failure-url="/login?error"
                     username-parameter="username"
