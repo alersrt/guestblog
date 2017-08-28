@@ -17,9 +17,11 @@
 <head>
     <title>Guest blog</title>
 
+
     <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
     <link rel='stylesheet' href='/resources/octicons/build/font/octicons.css'/>
     <link rel='stylesheet' href='/resources/css/local.css'/>
+
     <script src="/resources/jquery/jquery.min.js"
             type="text/javascript"></script>
     <script src="/resources/popper.js/dist/umd/popper.min.js"
@@ -99,8 +101,11 @@
                 </c:if>
             </div>
             <div class="card-footer justify-content-between">
-                <small class="text-muted text-left">${message.timestamp.toLocalDate().format(dateFormatter)}</small>
-                <small class="text-muted text-right">${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+                <div class="row justify-content-between">
+                    <small class="text-muted text-left">${message.timestamp.toLocalDate().format(dateFormatter)}</small>
+                    <small class="text-muted text-right">${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+                </div>
+
             </div>
         </div>
 

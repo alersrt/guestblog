@@ -14,14 +14,6 @@
     }
 }
 
-/*@media (min-width: 62em) {*/
-    /*.card-columns {*/
-        /*-webkit-column-count: 4;*/
-        /*-moz-column-count: 4;*/
-        /*column-count: 4;*/
-    /*}*/
-/*}*/
-
 @media (min-width: 75em) {
     .card-columns {
         -webkit-column-count: 4;
