@@ -19,6 +19,7 @@
 
     <link rel='stylesheet' href='/resources/bootstrap/css/bootstrap.min.css'/>
     <link rel='stylesheet' href='/resources/octicons/build/font/octicons.css'/>
+    <link rel='stylesheet' href='/resources/css/local.css'/>
     <script src="/resources/jquery/jquery.min.js"
             type="text/javascript"></script>
     <script src="/resources/popper.js/dist/umd/popper.min.js"
@@ -38,7 +39,7 @@
 </form>
 
 <%--Navbar--%>
-<nav class="navbar navbar-dark bg-dark" style="box-shadow: 4px 4px 5px gray">
+<nav class="navbar navbar-dark bg-dark" style="box-shadow: 2px 2px 5px gray">
     <button type="submit" class="btn btn-primary"
             onclick="document.forms['addMessForm'].submit()"><span><i
             class="octicon octicon-pencil"></i>Add post</span>
@@ -73,51 +74,37 @@
     </form>
 </nav>
 
-<div class="container-fluid">
+<div class="card-columns m-2"">
 
-    <div class="row">
-        <c:forEach var="message" items="${listMessages}">
+    <c:forEach var="message" items="${listMessages}">
+        <div class="card border rounded"
+             style="box-shadow: 2px 2px 5px gray;">
+            <div class="card-body">
+                <img class="card-img-top img-thumbnail" width="100%"
+                     src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
+                <h4 class="card-title">${message.title}</h4>
 
-            <div class="col-xs-18 col-sm-6 col-md-3">
-                <div class="thumbail m-1 m-sm-1 m-md-1 border rounded"
-                     style="background-color: lightgray; box-shadow: 4px 4px 5px gray;">
-                    <img class="img-thumbnail" width="100%"
-                         src="data:${utils:getMimeTypeFromBynary(message.image)};base64,${utils:binaryDataToBase64String(message.image)}"/>
+                <span class="card-subtitle text-capitalize"
+                      style="font-weight: bold"><i
+                        class="octicon octicon-person"></i>${message.user.username.length() > 0 ? message.user.username : 'anonymous'}</span>
 
-                    <div class="caption m-1 m-sm-1 m-md-1">
-                        <h4>${message.title}</h4>
 
-                        <div class="row justify-content-between m-1 m-sm-1 m-md-1">
-                            <div class="col text-left">
-                                <p><em>
-                                    <small>${message.timestamp.toLocalDate().format(dateFormatter)}</small>
-                                </em></p>
-                            </div>
-                            <div class="col text-right">
-                                <p><em>
-                                    <small>${message.timestamp.toLocalTime().format(timeFormatter)}</small>
-                                </em></p>
-                            </div>
-                        </div>
-                        <div class="row m-1 m-sm-1 m-md-1">
-                            <span><i class="octicon octicon-person"></i></span>
-                            <p class="text-capitalize"
-                               style="font-weight: bold">${message.user.username.length() > 0 ? message.user.username : 'anonymous'}</p>
+                <p class="card-text">${message.body}</p>
 
-                        </div>
-                        <p class="m-1 m-sm-1 m-md-1">${message.body}</p>
-
-                        <c:if test="${message.user.username.equals(loggedUsername) || isAdmin}">
-                            <a href="${contextPath}/delMessage?id=${message.id}"
-                               class="btn btn-danger m-2 align-items-end">
-                                    <span><i class="octicon octicon-trashcan"></i>Delete</span></a>
-                        </c:if>
-                    </div>
-                </div>
+                <c:if test="${message.user.username.equals(loggedUsername) || isAdmin}">
+                    <a href="${contextPath}/delMessage?id=${message.id}"
+                       class="btn btn-danger m-2 align-items-end">
+                        <span><i
+                                class="octicon octicon-trashcan"></i>Delete</span></a>
+                </c:if>
             </div>
+            <div class="card-footer justify-content-between">
+                <small class="text-muted text-left">${message.timestamp.toLocalDate().format(dateFormatter)}</small>
+                <small class="text-muted text-right">${message.timestamp.toLocalTime().format(timeFormatter)}</small>
+            </div>
+        </div>
 
-        </c:forEach>
-    </div>
+    </c:forEach>
 
 </div>
 
