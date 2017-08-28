@@ -74,7 +74,7 @@
     </form>
 </nav>
 
-<div class="card-columns m-2"">
+<div class="card-columns m-2">
 
     <c:forEach var="message" items="${listMessages}">
         <div class="card border rounded"
