@@ -2,21 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/data/mongo
                             http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
                             http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <mongo:db-factory uri="${mongo.uri}" />
+    <mongo:template db-factory-ref="mongoDbFactory" converter-ref="mappingConverter"/>
 
     <mongo:mapping-converter>
         <mongo:custom-converters base-package="org.student.guestblog.converters">
         </mongo:custom-converters>
     </mongo:mapping-converter>
 
-    <mongo:template db-factory-ref="mongoDbFactory" converter-ref="mappingConverter"/>
-
-    <mongo:repositories base-package="org.student.guestblog.dao" mongo-template-ref="mongoTemplate"/>
+    <mongo:repositories base-package="org.student.guestblog.dao"/>
 
     <!--Multipart resolver-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -35,4 +34,14 @@
     <bean id="validatingMongoEventListener" class="org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener">
         <constructor-arg ref="localValidatorFactoryBean"/>
     </bean>
+
+    <!--Database profiles-->
+    <beans profile="master">
+        <mongo:db-factory uri="${mongo.uri}" />
+    </beans>
+
+    <beans profile="dev">
+        <context:property-placeholder location="classpath:db/dev_database.properties"/>
+        <mongo:db-factory uri="${mongo.uri}" />
+    </beans>
 </beans>

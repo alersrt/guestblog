@@ -14,7 +14,5 @@
     <!--<context:annotation-config/>-->
 
     <context:component-scan base-package="org.student.guestblog.*"/>
-
     <context:property-placeholder location="classpath:db/database.properties"/>
-
 </beans>

@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -27,7 +28,6 @@ public class User {
 	@Field("password")
 	private String password;
 
-	@NotBlank
 	@Transient
 	private String confirmPassword;
 
@@ -55,6 +55,8 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.email = email;
+		this.roles = new HashSet<>();
+		this.messages = new HashSet<>();
 	}
 
 	public String getUsername() {

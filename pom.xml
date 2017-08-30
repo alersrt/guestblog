@@ -11,9 +11,21 @@
     <url>http://maven.apache.org</url>
 
     <dependencies>
+        <!--Tests-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>LATEST</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
             <version>LATEST</version>
             <scope>test</scope>
         </dependency>
@@ -70,6 +82,11 @@
             <artifactId>spring-security-taglibs</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+            <version>LATEST</version>
+        </dependency>
 
         <!--MongoDB driver-->
         <dependency>
@@ -92,15 +109,27 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+
 
         <!--Apache Commons-->
         <dependency>
@@ -173,6 +202,11 @@
             <artifactId>octicons</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
     <!--Build options-->
@@ -217,6 +251,5 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <junit.version>4.12</junit.version>
     </properties>
 </project>

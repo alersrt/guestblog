@@ -10,7 +10,6 @@ import org.student.guestblog.dao.UserDAO;
 import org.student.guestblog.model.Role;
 import org.student.guestblog.model.User;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -27,14 +26,14 @@ public class UserServiceImpl implements UserService {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
-	public void addUser(User user) {
+	public User addUser(User user) {
 		user.setUsername(user.getUsername().toLowerCase());
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		Set<Role> roles = new HashSet<>();
+		Set<Role> roles = user.getRoles();
 		roles.add(roleDAO.findByRolename("ROLE_USER"));
 		user.setRoles(roles);
 		LOGGER.info("UserService: " + user.toString());
-		userDAO.save(user);
+		return userDAO.insert(user);
 	}
 
 	@Override

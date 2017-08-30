@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -50,13 +51,13 @@ public class MessageController {
 	}
 
 	@RequestMapping(value = "/addMessage", method = RequestMethod.GET)
-	public String registration(Model model) {
+	public String addMessage(Model model) {
 		model.addAttribute("messageForm", new Message());
 		return "add";
 	}
 
 	@RequestMapping(value = "/addMessage", method = RequestMethod.POST)
-	public String add(@ModelAttribute("messageForm")
+	public String addMessage(@ModelAttribute("messageForm")
 					  @RequestBody
 					  @Valid Message messageForm,
 					  BindingResult bindingResult,
@@ -67,16 +68,17 @@ public class MessageController {
 			return "add";
 		}
 
-		messageService.save(messageForm, userService.findByUsername(securityService.findLoggedInUsername()));
+		messageService.addMessage(messageForm, userService.findByUsername(securityService.findLoggedInUsername()));
 		return "redirect:/";
 	}
 
 	@Secured({"ROLE_ADMIN", "ROLE_USER"})
+//	@PreAuthorize("hasRole('ROLE_ADMIN') or messageServiceImpl.findById(#request.getParameter(\"id\")).user.username == authentication.name")
 	@RequestMapping(value = "/delMessage", method = RequestMethod.GET)
-	public String delete(HttpServletRequest request) {
+	public String delete(@P("request") HttpServletRequest request) {
 		String messageId = request.getParameter("id");
 		if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) ||
-				messageService.findById(messageId).getUser().equals(userService.findByUsername(securityService.findLoggedInUsername()))) {
+				messageService.findById(messageId).getUser().getUsername().equals(securityService.findLoggedInUsername())) {
 			messageService.deleteById(messageId);
 		} else LOGGER.error("The message is belong to another user");
 

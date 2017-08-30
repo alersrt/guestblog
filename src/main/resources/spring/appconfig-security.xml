@@ -7,18 +7,21 @@
                                  http://www.springframework.org/schema/security
 		                         http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <global-method-security authentication-manager-ref="authenticationManager" secured-annotations="enabled" />
+
+    <global-method-security authentication-manager-ref="authenticationManager"
+                            secured-annotations="enabled"
+                            pre-post-annotations="enabled"/>
 
     <http auto-config="true">
 
-        <form-login login-page="/login" default-target-url="/" authentication-failure-url="/login?error"
+        <form-login login-page="/login" default-target-url="/"
+                    authentication-failure-url="/login?error"
                     username-parameter="username"
                     password-parameter="password"/>
         <logout logout-success-url="/"/>
 
         <anonymous username="anonymous" granted-authority="ROLE_ANONYMOUS"/>
     </http>
-
 
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="userDetailsService">
@@ -28,8 +31,10 @@
 
     <beans:bean id="userDetailsService"
                 class="org.student.guestblog.service.UserDetailsServiceImpl"/>
+
     <beans:bean id="encoder"
                 class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <beans:constructor-arg name="strength" value="11"/>
     </beans:bean>
+
 </beans:beans>

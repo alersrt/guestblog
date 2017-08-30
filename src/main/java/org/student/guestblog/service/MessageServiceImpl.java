@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 import org.student.guestblog.dao.MessageDAO;
+import org.student.guestblog.dao.UserDAO;
 import org.student.guestblog.model.Message;
 import org.student.guestblog.model.User;
 
@@ -14,12 +15,21 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	private MessageDAO messageDAO;
 
+	@Autowired
+	private UserDAO userDAO;
+
 	@Override
-	public void save(Message message, User user) {
+	public void addMessage(Message message, User user) {
 		message.setTitle(HtmlUtils.htmlEscape(message.getTitle()));
 		message.setBody(HtmlUtils.htmlEscape(message.getBody()));
 		message.setUser(user);
+
+		//Set<Message> messages = user.getMessages();
+		//messages.add(message);
+		//user.setMessages(messages);
+
 		messageDAO.save(message);
+		//userDAO.save(user);
 	}
 
 	@Override
