@@ -1,13 +1,12 @@
 package org.student.guestblog.service;
 
 import org.student.guestblog.model.Message;
-import org.student.guestblog.model.User;
 
 import java.util.List;
 
 public interface MessageService {
-	void addMessage(Message message, User user);
+	void addMessage(Message message);
 	Message findById(String id);
-	void deleteById(String id);
+	void deleteMessage(Message message);
 	List<Message> findAll();
 }

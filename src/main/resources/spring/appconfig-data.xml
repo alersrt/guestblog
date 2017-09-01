@@ -37,6 +37,7 @@
 
     <!--Database profiles-->
     <beans profile="master">
+        <context:property-placeholder location="classpath:db/database.properties"/>
         <mongo:db-factory uri="${mongo.uri}" />
     </beans>
 

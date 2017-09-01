@@ -90,6 +90,10 @@ public class Message {
 		this.user = user;
 	}
 
+	public String getOwnerName() {
+		return this.user != null ? this.user.getUsername() : "anonymous";
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

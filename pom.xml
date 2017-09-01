@@ -23,12 +23,6 @@
             <artifactId>spring-test</artifactId>
             <version>LATEST</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.fakemongo</groupId>
-            <artifactId>fongo</artifactId>
-            <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
 
         <!--Spring Core-->
         <dependency>

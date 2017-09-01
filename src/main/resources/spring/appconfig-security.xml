@@ -8,9 +8,7 @@
 		                         http://www.springframework.org/schema/security/spring-security.xsd">
 
 
-    <global-method-security authentication-manager-ref="authenticationManager"
-                            secured-annotations="enabled"
-                            pre-post-annotations="enabled"/>
+    <global-method-security authentication-manager-ref="authenticationManager" pre-post-annotations="enabled"/>
 
     <http auto-config="true">
 

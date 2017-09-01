@@ -1,12 +1,14 @@
 package org.student.guestblog.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 import org.student.guestblog.dao.MessageDAO;
 import org.student.guestblog.dao.UserDAO;
 import org.student.guestblog.model.Message;
-import org.student.guestblog.model.User;
 
 import java.util.List;
 
@@ -19,17 +21,12 @@ public class MessageServiceImpl implements MessageService {
 	private UserDAO userDAO;
 
 	@Override
-	public void addMessage(Message message, User user) {
+	public void addMessage(Message message) {
 		message.setTitle(HtmlUtils.htmlEscape(message.getTitle()));
 		message.setBody(HtmlUtils.htmlEscape(message.getBody()));
-		message.setUser(user);
-
-		//Set<Message> messages = user.getMessages();
-		//messages.add(message);
-		//user.setMessages(messages);
+		message.setUser(userDAO.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
 
 		messageDAO.save(message);
-		//userDAO.save(user);
 	}
 
 	@Override
@@ -38,8 +35,9 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void deleteById(String id) {
-		messageDAO.delete(messageDAO.findOne(id));
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (fullyAuthenticated and #message.ownerName.equals(authentication.name))")
+	public void deleteMessage(@P("message") Message message) {
+		messageDAO.delete(message);
 	}
 
 	@Override
