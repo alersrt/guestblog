@@ -91,7 +91,7 @@ public class Message {
 	}
 
 	public String getOwnerName() {
-		return this.user != null ? this.user.getUsername() : "anonymous";
+		return this.user != null ? this.user.getUsername() : "";
 	}
 
 	@Override

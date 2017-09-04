@@ -21,12 +21,12 @@ public class MessageServiceImpl implements MessageService {
 	private UserDAO userDAO;
 
 	@Override
-	public void addMessage(Message message) {
+	public Message addMessage(Message message) {
 		message.setTitle(HtmlUtils.htmlEscape(message.getTitle()));
 		message.setBody(HtmlUtils.htmlEscape(message.getBody()));
 		message.setUser(userDAO.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
 
-		messageDAO.save(message);
+		return messageDAO.save(message);
 	}
 
 	@Override

@@ -3,8 +3,6 @@ package org.student.guestblog.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,8 +15,7 @@ import org.student.guestblog.model.User;
 @ContextConfiguration(locations = {"/spring/appconfig-root.xml"})
 @WebAppConfiguration
 @ActiveProfiles("dev")
-public class UserServiceTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceTest.class);
+public class UserServiceTest extends AbstractServiceTest {
 
 	@Autowired
 	private UserService userService;
