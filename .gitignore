@@ -51,6 +51,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 ### Maven template
+.m2/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
