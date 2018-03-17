@@ -4,7 +4,6 @@
 
 # Maven
 target/
-.m2/
 
 # User specific
 tmp/
