@@ -1,9 +1,18 @@
-# IDE
-.idea/
+## Ignore all files
+/*
+
+## Include project files
+!/src/
+!.dockerignore
+!.gitignore
+!.env
+!Dockerfile
+!docker-compose.yml
+!lombok.config
+!Procfile
+!Makefile
+!README.md
+
+## Exclude IDE files
+# JetBrains
 *.iml
-
-# Maven
-target/
-
-# User specific
-tmp/
