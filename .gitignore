@@ -3,6 +3,7 @@
 
 ## Include project files
 !/src/
+!pom.xml
 !.dockerignore
 !.gitignore
 !.env
