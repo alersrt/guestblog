@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
  * Main configuration class of this servlet.
  */
 @Configuration
-@ComponentScan
-public class GuestblogConfig {
+@ComponentScan("org.student.guestblog")
+public class RootConfig {
 
 }

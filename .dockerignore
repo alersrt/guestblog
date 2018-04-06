@@ -1,19 +1,12 @@
 ## Ignore all files
-/*
+*
 
 ## Include project files
 !/src/
 !/target/
+!/.m2/
 !pom.xml
-!.dockerignore
-!.gitignore
-!.env
-!Dockerfile
-!docker-compose.yml
 !lombok.config
-!Procfile
-!Makefile
-!README.md
 
 ## Exclude IDE files
 # JetBrains
