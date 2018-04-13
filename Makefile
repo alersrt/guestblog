@@ -29,17 +29,18 @@ ifeq ($(del),yes)
 	git branch -d orig-$(CURRENT_BRANCH)
 endif
 
+
 ###########################
-### Docker section
+### Maven commands
 ###########################
 
 # Maven command.
 #
 # Usage:
 #	make mvn [task=]
-task =?
+task ?=
 
-mvn:
+maven:
 	docker run \
 		--rm \
 		--name maven-worker \
@@ -51,16 +52,44 @@ mvn:
 		maven:alpine \
 		mvn -Duser.home=/var/maven $(task)
 
-#clean command
-clean:
+# clean command
+maven.clean:
 	@make mvn task='clean'
 
 # build command
-build:
+maven.build:
 	@make mvn task='package'
 
 # docs command
-docs:
+maven.docs:
 	@make mvn task='javadoc:javadoc'
 
-.PHONY: clean docs build squash
+
+###########################
+### Docker commands
+###########################
+
+# Stop project in Docker Compose development environment
+# and remove all related containers.
+#
+# Usage:
+#	make docker.down
+
+docker.down:
+	docker-compose down --rmi=local -v
+
+# Run Docker Compose development environment.
+#
+# Usage:
+#	make docker.up [rebuild=(yes|no)]
+#	               [background=(no|yes)]
+
+docker.up: docker.down
+	docker-compose up \
+		$(if $(call eq,$(rebuild),no),,--build) \
+		$(if $(call eq,$(background),yes),-d,--abort-on-container-exit)
+
+
+.PHONY: squash \
+		maven maven.clean maven.docs maven.build \
+		docker.up docker.down
