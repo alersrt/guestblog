@@ -13,6 +13,7 @@
 !Procfile
 !Makefile
 !README.md
+!package.json
 
 ## Exclude IDE files
 # JetBrains
