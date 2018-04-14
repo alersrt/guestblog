@@ -1,6 +1,6 @@
-###########################
-### Git Section
-###########################
+###############
+# Git Section #
+###############
 
 MAINLINE_BRANCH := dev
 CURRENT_BRANCH := $(shell git branch | grep \* | cut -d ' ' -f2)
@@ -30,9 +30,11 @@ ifeq ($(del),yes)
 endif
 
 
-###########################
-### Maven commands
-###########################
+
+
+##################
+# Maven commands #
+##################
 
 # Maven command.
 #
@@ -65,9 +67,36 @@ maven.docs:
 	@make mvn task='javadoc:javadoc'
 
 
-###########################
-### Docker commands
-###########################
+
+
+####################
+# Node.js commands #
+####################
+
+# Resolve Yarn project dependencies.
+#
+# Optional 'cmd' parameter may be used for handy usage of docker-wrapped Yarn,
+# for example: make yarn.deps cmd='upgrade'
+#
+# Usage:
+#	make yarn.deps [cmd=('install --pure-lockfile'|<yarn-cmd>)]
+
+yarn-deps-cmd = $(if $(call eq,$(cmd),),install --pure-lockfile,$(cmd))
+
+yarn.deps:
+	docker run \
+		--rm \
+		-v "$(PWD)":/app -w /app \
+		-e YARN_CACHE_FOLDER=/app/_cache/yarn \
+		node \
+			yarn $(yarn-deps-cmd) --non-interactive
+
+
+
+
+###################
+# Docker commands #
+###################
 
 # Stop project in Docker Compose development environment
 # and remove all related containers.
@@ -90,6 +119,9 @@ docker.up: docker.down
 		$(if $(call eq,$(background),yes),-d,--abort-on-container-exit)
 
 
+
+
 .PHONY: squash \
 		maven maven.clean maven.docs maven.build \
+		yarn.deps \
 		docker.up docker.down
