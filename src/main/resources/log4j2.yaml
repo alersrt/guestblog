@@ -15,7 +15,7 @@ Configutation:
             minLevel: info
             maxLevel: trace
         PatternLayout:
-          pattern: -%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(-%5p) %clr(- ){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n
+          pattern: "%highlight{[%-5level]} %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
       - name: STDERR
         target: SYSTEM_ERR
         Filters:
@@ -23,11 +23,10 @@ Configutation:
             minLevel: fatal
             maxLevel: warn
         PatternLayout:
-          pattern: -%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(-%5p) %clr(- ){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n
-
+          pattern: "%highlight{[%-5level]} %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
   Loggers:
     Root:
-      level: ${logging.level.root}
+      level: info
       AppenderRef:
         - ref: STDOUT
         - ref: STDERR
