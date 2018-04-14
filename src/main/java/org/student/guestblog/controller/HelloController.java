@@ -19,6 +19,6 @@ public class HelloController {
     JsonObject answer = new JsonObject();
     answer.addProperty("greeting", "hello!");
 
-    return new ResponseEntity<JsonObject>(answer, HttpStatus.OK);
+    return new ResponseEntity<>(answer, HttpStatus.OK);
   }
 }
