@@ -48,13 +48,13 @@ public class Controller {
     throw new UnsupportedOperationException();
   }
 
-  @PostMapping("/message/add")
-  public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject post) {
+  @PostMapping("/post/add")
+  public ResponseEntity<JsonObject> postAdd(@RequestBody JsonObject post) {
     throw new UnsupportedOperationException();
   }
 
-  @PostMapping("/message/del")
-  public ResponseEntity<JsonObject> messageDel(@RequestBody JsonObject post) {
+  @PostMapping("/post/del")
+  public ResponseEntity<JsonObject> postDel(@RequestBody JsonObject post) {
     throw new UnsupportedOperationException();
   }
 }

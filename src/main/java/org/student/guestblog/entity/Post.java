@@ -7,16 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-/**
- * Represents information about post.
- */
+/** Represents information about post. */
 @Data
 @Document
 public class Post {
 
   /** Id of the post. */
-  @Id
-  private String id;
+  @Id private String id;
 
   /** Title of the post. */
   private String title;
