@@ -21,7 +21,7 @@ public class Post {
   /** Body of the post. */
   private String text;
 
-  /** Time when this post was created/edited */
+  /** Time when this post was created or edited. */
   private LocalDateTime timestamp;
 
   /** Flag determines was this post edited or no. */

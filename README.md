@@ -10,7 +10,15 @@ Controller of this application serves several endpoints. These endpoints will to
 
 Main endpoint of this API is `/api`. 
 
-### `POST /user/login` 
+### `GET /users`
+
+Returns full list of the all users.
+
+### `GET /posts`
+
+Returns full list of the all posts.
+
+### `POST /users/login` 
 
 In response for user's login. Receives `credentials` of that user by which we want to login and returns information about success of this operation
 
@@ -21,11 +29,11 @@ credentials = {
 }
 ```
 
-### `POST /user/logout`
+### `POST /users/logout`
 
 In response for user's logout.
 
-### `POST /user/add`
+### `POST /users/add`
 
 Adding of the new user and uses for registration. Gets user's data and returns information about success of this operation.
 
@@ -37,7 +45,7 @@ user = {
 }
 ```
 
-### `POST /user/del`
+### `POST /users/del`
 
 Removes existing user. Gets user id and returns success result.
 
@@ -47,7 +55,7 @@ user = {
 }
 ```
 
-### `POST /post/add`
+### `POST /posts/add`
 
 Adds new post on board. Gets such params:
 ```js
@@ -57,7 +65,7 @@ post = {
 }
 ```
 
-### `POST /post/del`
+### `POST /posts/del`
 
 Removes post from board. It has the next parameters:
 ```js
