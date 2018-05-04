@@ -107,18 +107,18 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.0.7.Final</version>
+      <version>6.0.9.Final</version>
     </dependency>
 
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>webjars-locator</artifactId>
-      <version>0.32-1</version>
+      <version>0.34</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
-      <version>4.0.0-1</version>
+      <version>4.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -128,7 +128,7 @@
     <dependency>
       <groupId>org.webjars.npm</groupId>
       <artifactId>popper.js</artifactId>
-      <version>1.13.0</version>
+      <version>1.14.3</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -144,12 +144,12 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.2</version>
+      <version>2.8.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>24.0-jre</version>
+      <version>25.0-jre</version>
     </dependency>
 
     <dependency>
@@ -161,29 +161,29 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.9.4</version>
+      <version>2.9.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.9.4</version>
+      <version>2.9.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.9.4</version>
+      <version>2.9.5</version>
     </dependency>
 
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.1.0</version>
+      <version>5.1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.15.0</version>
+      <version>2.18.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
