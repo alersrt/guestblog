@@ -1,9 +1,10 @@
 package org.student.guestblog.config;
 
-import com.google.gson.Gson;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+
+import com.google.gson.Gson;
 
 /** The root configuration of the application. */
 @Configuration
