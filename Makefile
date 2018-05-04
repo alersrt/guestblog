@@ -56,15 +56,15 @@ maven:
 
 # clean command
 maven.clean:
-	@make mvn task='clean'
+	@make maven task='clean'
 
 # build command
 maven.build:
-	@make mvn task='package'
+	@make maven task='package'
 
 # docs command
 maven.docs:
-	@make mvn task='javadoc:javadoc'
+	@make maven task='javadoc:javadoc'
 
 
 
