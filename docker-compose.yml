@@ -5,5 +5,15 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-${GUESTBLOG_CONTAINER_NAME}
     image: ${COMPOSE_IMAGE_NAME}
     build: .
+    depends_on:
+      - mongodb
+    network_mode: "service:mongodb"
+
+  mongodb:
+    image: mongo:latest
+    container_name: ${COMPOSE_PROJECT_NAME}-${MONGO_CONTAINER_NAME}
+    volumes:
+      - "$PWD/database:/data/db"
     ports:
       - "80:8080" # tomcat port
+

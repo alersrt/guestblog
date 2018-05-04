@@ -1,12 +1,17 @@
 package org.student.guestblog.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.student.guestblog.service.PostService;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api")
 public class Controller {
+
+  /** Bean of the {@link PostService}. */
+  @Autowired private PostService postService;
+
+  /** Bean of the {@link Gson}. */
+  @Autowired private Gson gson;
 
   /**
    * Serves "GET /users" endpoint. It is necessary for getting of the user's list.
@@ -33,8 +44,10 @@ public class Controller {
    * @return full list of posts.
    */
   @GetMapping("/posts")
-  public ResponseEntity<JsonObject> posts() {
-    throw new UnsupportedOperationException();
+  public ResponseEntity<JsonArray> posts() {
+    JsonArray answer = new JsonArray();
+    postService.getAllPosts().forEach(p -> answer.add(gson.toJson(p)));
+    return new ResponseEntity<>(answer, HttpStatus.OK);
   }
 
   /**

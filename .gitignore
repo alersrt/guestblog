@@ -6,6 +6,7 @@
 !pom.xml
 !.dockerignore
 !.gitignore
+!.editorconfig
 !.env
 !Dockerfile
 !docker-compose.yml
