@@ -8,6 +8,9 @@ comma := ,
 eq = $(if $(or $(1),$(2)),$(and $(findstring $(1),$(2)),\
                                 $(findstring $(2),$(1))),1)
 
+
+
+
 ###############
 # Git Section #
 ###############
