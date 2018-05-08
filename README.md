@@ -51,7 +51,7 @@ Removes existing user. Gets user id and returns success result.
 
 ```js
 user = {
-  id: "<>"
+  userId: "<>"
 }
 ```
 
@@ -61,7 +61,7 @@ Adds new post on board. Gets such params:
 ```js
 post = {
   title: "<>",
-  test: "<>"
+  text: "<>"
 }
 ```
 
@@ -70,7 +70,7 @@ post = {
 Removes post from board. It has the next parameters:
 ```js
 post = {
-  id: "<>"
+  postId: "<>"
 }
 ```
 
