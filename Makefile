@@ -1,3 +1,13 @@
+###############################
+# Common defaults/definitions #
+###############################
+
+comma := ,
+
+# Checks two given strings for equality.
+eq = $(if $(or $(1),$(2)),$(and $(findstring $(1),$(2)),\
+                                $(findstring $(2),$(1))),1)
+
 ###############
 # Git Section #
 ###############
@@ -112,6 +122,9 @@ docker.down:
 # Usage:
 #	make docker.up [rebuild=(yes|no)]
 #	               [background=(no|yes)]
+
+rebuild ?= yes
+background ?= no
 
 docker.up: docker.down
 	docker-compose up \
