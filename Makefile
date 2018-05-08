@@ -45,6 +45,30 @@ endif
 
 
 
+###########
+# Aliases #
+###########
+
+build: maven.build
+
+clean: maven.clean
+
+# Resolve all project dependencies.
+#
+# Usage:
+#	make deps
+
+deps: maven.deps yarn.deps
+
+docs: maven.docs
+
+down: docker.down
+
+up: docker.up
+
+
+
+
 ##################
 # Maven commands #
 ##################
@@ -70,6 +94,10 @@ maven:
 # clean command
 maven.clean:
 	@make maven task='clean'
+
+# deps command
+maven.deps:
+	@make maven task='dependency:go-offline'
 
 # build command
 maven.build:
@@ -138,6 +166,7 @@ docker.up: docker.down
 
 
 .PHONY: squash \
-		maven maven.clean maven.docs maven.build \
+		clean deps build docs up down \
+		maven maven.clean maven.docs maven.build maven.deps \
 		yarn.deps \
 		docker.up docker.down
