@@ -1,5 +1,6 @@
 package org.student.guestblog.rest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.entity.Post;
-import org.student.guestblog.service.PostService;
+import org.student.guestblog.repository.PostRepository;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 public class GeneralController {
 
-  /** The {@link PostService} single. */
-  private final PostService postService;
+  /** The {@link PostRepository} single. */
+  private final PostRepository postRepository;
 
   /** The {@link Gson} single object. */
   private final Gson gson;
@@ -43,21 +43,36 @@ public class GeneralController {
    */
   @GetMapping("/users")
   public ResponseEntity<JsonObject> users() {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
-   * Serves "GET /posts" endpoint. Returns lists of posts but if the list is empty then returns
-   * "204" status code and "200" in otherwise.
+   * "GET /posts" endpoint.
    *
-   * @return full list of posts.
+   * Returns lists of posts. If the list is empty then returns {@link HttpStatus#NO_CONTENT} code
+   * and {@link HttpStatus#OK} in otherwise. If something went wrong then {@link
+   * HttpStatus#INTERNAL_SERVER_ERROR} and error description will be returned.
+   *
+   * @return list of the posts and http status.
+   *
+   * @see GetMapping
    */
   @GetMapping("/posts")
-  public ResponseEntity<JsonArray> posts() {
-    JsonArray answer = new JsonArray();
-    List<Post> posts = postService.getAllPosts();
-    HttpStatus httpStatus = posts.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-    posts.forEach(p -> answer.add(gson.toJson(p)));
+  public ResponseEntity<JsonObject> posts() {
+    JsonObject answer = new JsonObject();
+    List<Post> posts;
+    HttpStatus httpStatus;
+    try {
+      posts = postRepository.findAll();
+      httpStatus = posts.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+      posts.forEach(p -> answer.add(p.getId(), gson.toJsonTree(p)));
+    } catch (Exception e) {
+      log.error(e.getLocalizedMessage());
+      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
+      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
     return new ResponseEntity<>(answer, httpStatus);
   }
 
@@ -65,65 +80,113 @@ public class GeneralController {
    * Serves "POST /users/login" endpoint and in response for login.
    *
    * @param credentials credentials of an user.
+   *
    * @return information about success of this operation.
    */
   @PostMapping("/users/login")
   public ResponseEntity<JsonObject> login(@RequestBody JsonObject credentials) {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Serves "POST /users/logout" endpoint and in response for user's logout.
    *
    * @param user information about user which want to logout.
+   *
    * @return information about success of this operation.
    */
   @PostMapping("/users/logout")
   public ResponseEntity<JsonObject> logout(@RequestBody JsonObject user) {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Serves "PUT /users/" endpoint and also used for registration.
    *
    * @param user specified information about user.
+   *
    * @return information about success this operation.
    */
   @PutMapping("/users/")
   public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Serves "DELETE /users/{id}" endpoint. Removes user by its id.
    *
    * @param id user's id.
+   *
    * @return success result of this operation.
    */
   @DeleteMapping("/users/{id}")
   public ResponseEntity<JsonObject> userDel(@PathVariable String id) {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
-   * Serves "PUT /posts/" endpoint. Adds new post on board.
+   * "PUT /posts/" endpoint.
+   *
+   * Gets data from JSON body of the received http-request and saves entity in the {@link
+   * PostRepository}. Returns {@link HttpStatus#OK} when all went well and {@link
+   * HttpStatus#INTERNAL_SERVER_ERROR} and an error's description in otherwise.
    *
    * @param post specified post which will be added to a posts list.
+   *
    * @return information about this operation success.
+   *
+   * @see PutMapping
    */
   @PutMapping("/posts/")
   public ResponseEntity<JsonObject> postAdd(@RequestBody JsonObject post) {
-    throw new UnsupportedOperationException();
+    Post addedPost = new Post();
+    addedPost.setTitle(post.get(Protocol.POST_TITLE).getAsString());
+    addedPost.setText(post.get(Protocol.POST_TEXT).getAsString());
+    addedPost.setTimestamp(LocalDateTime.now());
+
+    JsonObject answer = new JsonObject();
+    HttpStatus httpStatus;
+    try {
+      addedPost = postRepository.save(addedPost);
+      answer.addProperty(Protocol.POST_ID, addedPost.getId());
+      httpStatus = HttpStatus.OK;
+    } catch (Exception e) {
+      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
+      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new ResponseEntity<>(answer, httpStatus);
   }
 
   /**
-   * Serves "DELETE /posts/{id}" endpoint. Removes post by its id.
+   * "DELETE /posts/{id}" endpoint.
+   *
+   * Removes post by its id. Gets id param from requested url and remove post from {@link
+   * PostRepository}. Returns {@link HttpStatus#OK} when operation is passed well and {@link
+   * HttpStatus#INTERNAL_SERVER_ERROR} with an error's description in otherwise.
    *
    * @param id id of the removed post.
-   * @return success of removing operation.
+   *
+   * @return answer and http status.
+   *
+   * @see DeleteMapping
    */
   @DeleteMapping("/posts/{id}")
   public ResponseEntity<JsonObject> postDel(@PathVariable String id) {
-    throw new UnsupportedOperationException();
+    JsonObject answer = new JsonObject();
+    HttpStatus httpStatus;
+    try {
+      postRepository.deleteById(id);
+      httpStatus = HttpStatus.OK;
+    } catch (Exception e) {
+      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
+      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new ResponseEntity<>(answer, httpStatus);
   }
 }

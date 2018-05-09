@@ -15,4 +15,7 @@ public class Protocol {
   public static final String POST_ID = "postId";
   public static final String POST_TITLE = "title";
   public static final String POST_TEXT = "text";
+
+  public static final String ERROR_NAME = "errorName";
+  public static final String ERROR_DESCRIPTION = "errorDescription";
 }

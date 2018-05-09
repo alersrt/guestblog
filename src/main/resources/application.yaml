@@ -2,3 +2,4 @@ server:
   error:
     whitelabel:
       enabled: false
+  port: 8080
