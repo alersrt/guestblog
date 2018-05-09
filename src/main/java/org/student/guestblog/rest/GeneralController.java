@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /** REST-controller serves API requests. */
 @Slf4j
-
 @RestController
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 @RequestMapping("/api")
@@ -48,7 +47,8 @@ public class GeneralController {
   }
 
   /**
-   * Serves "GET /posts" endpoint. Returns lists of posts.
+   * Serves "GET /posts" endpoint. Returns lists of posts but if the list is empty then returns
+   * "204" status code and "200" in otherwise.
    *
    * @return full list of posts.
    */
