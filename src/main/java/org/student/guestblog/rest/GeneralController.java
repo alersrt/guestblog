@@ -1,32 +1,41 @@
 package org.student.guestblog.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.student.guestblog.entity.Post;
 import org.student.guestblog.service.PostService;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST-controller serves API requests. */
 @Slf4j
+
 @RestController
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 @RequestMapping("/api")
-public class Controller {
+public class GeneralController {
 
-  /** Bean of the {@link PostService}. */
-  @Autowired private PostService postService;
+  /** The {@link PostService} single. */
+  private final PostService postService;
 
-  /** Bean of the {@link Gson}. */
-  @Autowired private Gson gson;
+  /** The {@link Gson} single object. */
+  private final Gson gson;
 
   /**
    * Serves "GET /users" endpoint. It is necessary for getting of the user's list.
@@ -46,8 +55,10 @@ public class Controller {
   @GetMapping("/posts")
   public ResponseEntity<JsonArray> posts() {
     JsonArray answer = new JsonArray();
-    postService.getAllPosts().forEach(p -> answer.add(gson.toJson(p)));
-    return new ResponseEntity<>(answer, HttpStatus.OK);
+    List<Post> posts = postService.getAllPosts();
+    HttpStatus httpStatus = posts.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+    posts.forEach(p -> answer.add(gson.toJson(p)));
+    return new ResponseEntity<>(answer, httpStatus);
   }
 
   /**
@@ -73,46 +84,46 @@ public class Controller {
   }
 
   /**
-   * Serves "POST /users/add" endpoint and also used for registration.
+   * Serves "PUT /users/" endpoint and also used for registration.
    *
    * @param user specified information about user.
    * @return information about success this operation.
    */
-  @PostMapping("/users/add")
+  @PutMapping("/users/")
   public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
     throw new UnsupportedOperationException();
   }
 
   /**
-   * Serves "POST /users/del" endpoint. Removes user by its id.
+   * Serves "DELETE /users/{id}" endpoint. Removes user by its id.
    *
-   * @param user contains id of the removed user.
+   * @param id user's id.
    * @return success result of this operation.
    */
-  @PostMapping("/users/del")
-  public ResponseEntity<JsonObject> userDel(@RequestBody JsonObject user) {
+  @DeleteMapping("/users/{id}")
+  public ResponseEntity<JsonObject> userDel(@PathVariable String id) {
     throw new UnsupportedOperationException();
   }
 
   /**
-   * Serves "POST /posts/add" endpoint. Adds new post on board.
+   * Serves "PUT /posts/" endpoint. Adds new post on board.
    *
    * @param post specified post which will be added to a posts list.
    * @return information about this operation success.
    */
-  @PostMapping("/posts/add")
+  @PutMapping("/posts/")
   public ResponseEntity<JsonObject> postAdd(@RequestBody JsonObject post) {
     throw new UnsupportedOperationException();
   }
 
   /**
-   * Serves "POST /posts/del" endpoint. Removes post by its id.
+   * Serves "DELETE /posts/{id}" endpoint. Removes post by its id.
    *
-   * @param post contains id of the post which need to remove.
-   * @return succes of removing operation.
+   * @param id id of the removed post.
+   * @return success of removing operation.
    */
-  @PostMapping("/posts/del")
-  public ResponseEntity<JsonObject> postDel(@RequestBody JsonObject post) {
+  @DeleteMapping("/posts/{id}")
+  public ResponseEntity<JsonObject> postDel(@PathVariable String id) {
     throw new UnsupportedOperationException();
   }
 }

@@ -20,12 +20,18 @@ Returns full list of the all posts.
 
 ### `POST /users/login` 
 
-In response for user's login. Receives `credentials` of that user by which we want to login and returns information about success of this operation
-
-```js
-credentials = {
-  username: "<specify username>",
-  password: "<specify password>"
+In response for user's login. Receives `credentials` of that user by which we want to login
+```json
+{
+  "username": "<>",
+  "password": "<>"
+}
+```
+ and returns information about success of this operation and user id
+ ```json
+{
+  "success": "<>",
+  "id": "<>"
 }
 ```
 
@@ -33,46 +39,47 @@ credentials = {
 
 In response for user's logout.
 
-### `POST /users/add`
+### `PUT /users/`
 
-Adding of the new user and uses for registration. Gets user's data and returns information about success of this operation.
-
-```js
-user = {
-  username: "<>",
-  password: "<>",
-  email: "<>"
+Adding of the new user and uses for registration. Gets user's data
+```json
+{
+  "username": "<>",
+  "password": "<>",
+  "email": "<>"
+}
+```
+ and returns information about success of this operation
+ ```json
+{
+  "success": "<true/false>"
 }
 ```
 
-### `POST /users/del`
+### `DELETE /users/{id}`
 
-Removes existing user. Gets user id and returns success result.
+Removes existing user by its id.
 
-```js
-user = {
-  userId: "<>"
-}
-```
-
-### `POST /posts/add`
+### `PUT /posts/`
 
 Adds new post on board. Gets such params:
-```js
-post = {
-  title: "<>",
-  text: "<>"
+```json
+{
+  "title": "<>",
+  "text": "<>"
+}
+```
+and returns success of this operation and post id:
+```json
+{
+  "success": "<true/false>",
+  "id": "<>"
 }
 ```
 
-### `POST /posts/del`
+### `DELETE /posts/{id}`
 
-Removes post from board. It has the next parameters:
-```js
-post = {
-  postId: "<>"
-}
-```
+Removes post from board by its id.
 
 
 
