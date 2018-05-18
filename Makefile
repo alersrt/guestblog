@@ -107,7 +107,9 @@ maven.build:
 maven.docs:
 	@make maven task='javadoc:javadoc'
 
-
+# test command
+maven.test:
+	@make maven task='test jacoco:report'
 
 
 ####################
