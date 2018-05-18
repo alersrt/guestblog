@@ -169,6 +169,6 @@ docker.up: docker.down
 
 .PHONY: squash \
 		clean deps build docs up down \
-		maven maven.clean maven.docs maven.build maven.deps \
+		maven maven.clean maven.docs maven.build maven.deps maven.test \
 		yarn.deps \
 		docker.up docker.down
