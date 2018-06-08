@@ -19,6 +19,7 @@ import org.student.guestblog.repository.PostRepository;
 import org.student.guestblog.repository.UserRepository;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -65,12 +66,14 @@ public class GeneralController {
   @GetMapping("/posts")
   public ResponseEntity<JsonObject> posts() {
     JsonObject answer = new JsonObject();
+    JsonArray jsonArray = new JsonArray();
     List<Post> posts;
     HttpStatus httpStatus;
     try {
       posts = postRepository.findAll();
       httpStatus = posts.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-      posts.forEach(p -> answer.add(p.getId(), gson.toJsonTree(p)));
+      posts.forEach(p -> jsonArray.add(gson.toJsonTree(p)));
+      answer.add(Protocol.POSTS, jsonArray);
     } catch (Exception e) {
       log.error(e.getLocalizedMessage());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());

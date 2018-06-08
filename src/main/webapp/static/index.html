@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple application</title>
-
-  <script src="https://unpkg.com/axios/dist/axios.min.js" defer></script>
-  <script src="js/webapp.js" defer></script>
 </head>
 <body>
+  <div id="root"></div>
 
-<p id="hello"></p>
-
+  <script src="webjars/axios/dist/axios.min.js" defer></script>
+  <script src="webjars/react/umd/react.production.min.js" defer></script>
+  <script src="webjars/react-dom/umd/react-dom.production.min.js" defer></script>
+  <script src="webjars/babel-standalone/babel.min.js" defer></script>
+  <script type="text/babel" src="js/webapp.js" defer></script>
 </body>
 </html>

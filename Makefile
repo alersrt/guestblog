@@ -116,6 +116,20 @@ maven.test:
 # Node.js commands #
 ####################
 
+# Yarn command.
+#
+# Usage:
+#	make yarn [yarn-cmd=]
+yarn-cmd ?=
+
+yarn:
+	docker run \
+		--rm \
+		-v "$(PWD)":/app -w /app \
+		-e YARN_CACHE_FOLDER=/app/_cache/yarn \
+		node \
+			yarn $(yarn-cmd) --non-interactive
+
 # Resolve Yarn project dependencies.
 #
 # Optional 'cmd' parameter may be used for handy usage of docker-wrapped Yarn,
@@ -127,12 +141,7 @@ maven.test:
 yarn-deps-cmd = $(if $(call eq,$(cmd),),install --pure-lockfile,$(cmd))
 
 yarn.deps:
-	docker run \
-		--rm \
-		-v "$(PWD)":/app -w /app \
-		-e YARN_CACHE_FOLDER=/app/_cache/yarn \
-		node \
-			yarn $(yarn-deps-cmd) --non-interactive
+	@make yarn yarn-cmd='$(yarn-deps-cmd)'
 
 
 
@@ -170,5 +179,5 @@ docker.up: docker.down
 .PHONY: squash \
 		clean deps build docs up down \
 		maven maven.clean maven.docs maven.build maven.deps maven.test \
-		yarn.deps \
+		yarn yarn.deps \
 		docker.up docker.down
