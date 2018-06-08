@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.entity.Post;
+import org.student.guestblog.entity.User;
 import org.student.guestblog.repository.PostRepository;
+import org.student.guestblog.repository.UserRepository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -32,6 +34,9 @@ public class GeneralController {
 
   /** The {@link PostRepository} single. */
   private final PostRepository postRepository;
+
+  /** The {@link UserRepository} single. */
+  private final UserRepository userRepository;
 
   /** The {@link Gson} single object. */
   private final Gson gson;
@@ -111,8 +116,23 @@ public class GeneralController {
    */
   @PutMapping("/users/")
   public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
+    User newUser = new User();
+    newUser.setUsername(user.get(Protocol.USER_USERNAME).getAsString());
+    newUser.setPassword(user.get(Protocol.USER_PASSWORD).getAsString());
+    newUser.setEmail(user.get(Protocol.USER_EMAIL).getAsString());
+
     JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+    HttpStatus httpStatus;
+    try {
+      newUser = userRepository.save(newUser);
+      answer.addProperty(Protocol.USER_ID, newUser.getId());
+      httpStatus = HttpStatus.OK;
+    } catch (Exception e) {
+      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
+      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new ResponseEntity<>(answer, httpStatus);
   }
 
   /**
