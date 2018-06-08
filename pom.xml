@@ -179,24 +179,19 @@
       <version>0.18.0</version>
     </dependency>
     <dependency>
-      <groupId>org.webjars</groupId>
+      <groupId>org.webjars.npm</groupId>
       <artifactId>bootstrap</artifactId>
-      <version>4.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>popper.js</artifactId>
-      <version>1.14.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>jquery</artifactId>
-      <version>3.3.1-1</version>
+      <version>4.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.webjars.npm</groupId>
-      <artifactId>reactstrap</artifactId>
-      <version>6.0.1</version>
+      <artifactId>popper.js</artifactId>
+      <version>1.14.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>jquery</artifactId>
+      <version>3.3.1</version>
     </dependency>
 
     <dependency>
