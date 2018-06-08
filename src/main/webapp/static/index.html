@@ -3,14 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple application</title>
-</head>
-<body>
-  <div id="root"></div>
+
+  <link rel='stylesheet' href='webjars/bootstrap/css/bootstrap.min.css'/>
 
   <script src="webjars/axios/dist/axios.min.js" defer></script>
   <script src="webjars/react/umd/react.production.min.js" defer></script>
   <script src="webjars/react-dom/umd/react-dom.production.min.js" defer></script>
+  <script src="webjars/popper.js/umd/popper.min.js" defer></script>
+  <script src="webjars/jquery/jquery.min.js" defer></script>
+  <script src="webjars/bootstrap/js/bootstrap.bundle.min.js" defer></script>
   <script src="webjars/babel-standalone/babel.min.js" defer></script>
   <script type="text/babel" src="js/webapp.js" defer></script>
+</head>
+<body>
+  <nav id="navigation-bar" class="navbar navbar-dark bg-dark">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#add-post">Add post</button>
+  </nav>
+
+  <div class="modal fade" id="add-post" tabindex="-1" role="dialog" aria-labelledby="add-post-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="add-post-label">New post</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="post-title" class="col-form-label">Title:</label>
+              <input type="text" class="form-control" id="post-title">
+            </div>
+            <div class="form-group">
+              <label for="post-text" class="col-form-label">Text:</label>
+              <textarea class="form-control" id="post-text"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="addPost()">Add post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="root"></div>
 </body>
 </html>
