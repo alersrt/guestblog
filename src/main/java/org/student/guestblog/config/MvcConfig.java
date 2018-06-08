@@ -3,6 +3,7 @@ package org.student.guestblog.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.WebJarsResourceResolver;
 
@@ -15,6 +16,7 @@ public class MvcConfig {
    * locations and resolver.
    *
    * @return {@link WebMvcConfigurer} bean.
+   *
    * @see WebMvcConfigurer
    */
   @Bean
@@ -23,10 +25,15 @@ public class MvcConfig {
       @Override
       public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-            .addResourceHandler("/**")
-            .addResourceLocations("/webjars/", "/static/")
-            .resourceChain(true)
-            .addResolver(webJarsResourceResolver());
+          .addResourceHandler("/**")
+          .addResourceLocations("/webjars/", "/static/")
+          .resourceChain(true)
+          .addResolver(webJarsResourceResolver());
+      }
+
+      @Override
+      public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:/index.html");
       }
     };
   }
