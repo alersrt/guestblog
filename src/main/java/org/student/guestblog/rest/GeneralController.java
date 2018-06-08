@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -138,14 +137,23 @@ public class GeneralController {
   /**
    * Serves "DELETE /users/{id}" endpoint. Removes user by its id.
    *
-   * @param id user's id.
+   * @param user request body which contains user's id.
    *
    * @return success result of this operation.
    */
-  @DeleteMapping("/users/{id}")
-  public ResponseEntity<JsonObject> userDel(@PathVariable String id) {
+  @DeleteMapping("/users/")
+  public ResponseEntity<JsonObject> userDel(@RequestBody JsonObject user) {
     JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+    HttpStatus httpStatus;
+    try {
+      postRepository.deleteById(user.get(Protocol.USER_ID).getAsString());
+      httpStatus = HttpStatus.OK;
+    } catch (Exception e) {
+      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
+      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
+      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new ResponseEntity<>(answer, httpStatus);
   }
 
   /**
