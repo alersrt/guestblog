@@ -165,22 +165,22 @@ public class GeneralController {
   /**
    * "DELETE /posts/{id}" endpoint.
    *
-   * Removes post by its id. Gets id param from requested url and remove post from {@link
+   * Removes post by its id. Gets id param from request body and remove post from {@link
    * PostRepository}. Returns {@link HttpStatus#OK} when operation is passed well and {@link
    * HttpStatus#INTERNAL_SERVER_ERROR} with an error's description in otherwise.
    *
-   * @param id id of the removed post.
+   * @param post request body which contains post id for removing.
    *
    * @return answer and http status.
    *
    * @see DeleteMapping
    */
-  @DeleteMapping("/posts/{id}")
-  public ResponseEntity<JsonObject> postDel(@PathVariable String id) {
+  @DeleteMapping("/posts/")
+  public ResponseEntity<JsonObject> postDel(@RequestBody JsonObject post) {
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      postRepository.deleteById(id);
+      postRepository.deleteById(post.get(Protocol.POST_ID).getAsString());
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
