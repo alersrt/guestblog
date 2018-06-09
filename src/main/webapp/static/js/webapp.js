@@ -30,14 +30,23 @@ function onLoad() {
   });
 }
 
+function newPost() {
+  ReactDOM.render(
+    <div id="new-post">
+      <p/><label htmlFor="post-title">Title:</label><input id="post-title"/>
+      <p/><label htmlFor="post-text">Text:</label><textarea id="post-text"></textarea>
+      <p/><button onClick={onLoad}>Cancel</button><button onClick={addPost}>Submit</button>
+    </div>,
+    document.getElementById('root')
+  );
+}
+
 function addPost() {
   instanceAxios.put('/posts/', {
     title: document.getElementById('post-title').value,
     text: document.getElementById('post-text').value,
   }).
   then(function() {
-    document.getElementById('post-title').value = "";
-    document.getElementById('post-text').value = "";
     onLoad();
   }).catch(function(error) {
     console.log(error);
