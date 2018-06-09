@@ -1,3 +1,15 @@
+class Post extends React.Component {
+  render() {
+    return (
+      <div id={this.props.id}>
+        <p>{this.props.title}</p>
+        <p>{this.props.text}</p>
+        <button onClick={() => delPost(this.props.id)}>Delete</button>
+      </div>
+    );
+  }
+}
+
 const instanceAxios = axios.create({
   baseURL: '/api/',
   timeout: 10000,
@@ -9,36 +21,23 @@ function onLoad() {
   instanceAxios.get('/posts/').then(function(response) {
     let posts = response.data['posts'];
 
-    posts.forEach(function(p) {
-      ReactDOM.render(
-        <div class="card-columns">
-          <div id={p.id} className="card border rounded">
-            <div className="card-body">
-              <div className="card-header">{p.title}</div>
-              <div className="card-text">{p.text}</div>
-              <div className="card-footer">
-                <button className="btn btn-secondary" onClick={() => delPost(p.id)}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>,
-        document.getElementById('root'),
-      );
-    });
+    ReactDOM.render(
+      posts.map(p => <Post id={p.id} title={p.title} text={p.text}/>),
+      document.getElementById('root'),
+    );
   }).catch(function(error) {
     console.log(error);
   });
 }
 
-function addPost() {
+function addPost(post, callback) {
   instanceAxios.put('/posts/', {
-    title: document.getElementById('post-title').value,
-    text: document.getElementById('post-text').value,
+    title: post.title,
+    text: post.text,
   }).
-  then(function () {
-    $('#add-post').modal('hide');
+  then(function() {
+    callback();
     onLoad();
-    console.log(document.getElementById('post-title').textContent)
   }).catch(function(error) {
     console.log(error);
   });
@@ -49,8 +48,8 @@ function delPost(id) {
     data: {
       id: id,
     },
-  }).then(function () {
-    onLoad()
+  }).then(function() {
+    onLoad();
   }).catch(function(error) {
     console.log(error);
   });
