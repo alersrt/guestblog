@@ -30,13 +30,14 @@ function onLoad() {
   });
 }
 
-function addPost(post, callback) {
+function addPost() {
   instanceAxios.put('/posts/', {
-    title: post.title,
-    text: post.text,
+    title: document.getElementById('post-title').value,
+    text: document.getElementById('post-text').value,
   }).
   then(function() {
-    callback();
+    document.getElementById('post-title').value = "";
+    document.getElementById('post-text').value = "";
     onLoad();
   }).catch(function(error) {
     console.log(error);

@@ -12,13 +12,7 @@
 </head>
 <body>
 
-<button onclick="addPost({ title: document.getElementById('post-title').value,
-      text: document.getElementById('post-text').value}, function () {
-        document.getElementById('post-title').value = '';
-        document.getElementById('post-text').value = '';
-      })">
-  Add post
-</button>
+<button onclick="addPost()">Add post</button>
 
 <div id="new-post">
   <p/><label for="post-title">Title:</label><input id="post-title">
