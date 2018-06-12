@@ -118,16 +118,16 @@ public class GeneralController {
    */
   @PutMapping("/users/")
   public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
-    User newUser = new User();
-    newUser.setUsername(user.get(Protocol.USER_USERNAME).getAsString());
-    newUser.setPassword(user.get(Protocol.USER_PASSWORD).getAsString());
-    newUser.setEmail(user.get(Protocol.USER_EMAIL).getAsString());
+    User newUser = User.builder()
+      .username(user.get(Protocol.USER_USERNAME).getAsString())
+      .password(user.get(Protocol.USER_PASSWORD).getAsString())
+      .email(user.get(Protocol.USER_EMAIL).getAsString())
+      .build();
 
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      newUser = userRepository.save(newUser);
-      answer.addProperty(Protocol.USER_ID, newUser.getId());
+      answer.addProperty(Protocol.USER_ID, userRepository.save(newUser).getId());
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
@@ -174,10 +174,11 @@ public class GeneralController {
    */
   @PutMapping("/messages/")
   public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
-    Message addedMessage = new Message();
-    addedMessage.setTitle(message.get(Protocol.MESSAGE_TITLE).getAsString());
-    addedMessage.setText(message.get(Protocol.MESSAGE_TEXT).getAsString());
-    addedMessage.setTimestamp(LocalDateTime.now());
+    Message addedMessage = Message.builder()
+      .title(message.get(Protocol.MESSAGE_TITLE).getAsString())
+      .text(message.get(Protocol.MESSAGE_TEXT).getAsString())
+      .timestamp(LocalDateTime.now())
+      .build();
 
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;

@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.Builder;
 import lombok.Data;
 
 /** Represents information about post. */
 @Data
+@Builder
 @Document
 public class Message {
 
