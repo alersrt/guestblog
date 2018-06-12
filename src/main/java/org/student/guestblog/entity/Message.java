@@ -10,7 +10,7 @@ import lombok.Data;
 /** Represents information about post. */
 @Data
 @Document
-public class Post {
+public class Message {
 
   /** Id of the post. */
   @Id private String id;

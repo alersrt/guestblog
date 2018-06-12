@@ -12,10 +12,10 @@ public class Protocol {
   public static final String USER_PASSWORD = "password";
   public static final String USER_EMAIL = "email";
 
-  public static final String POSTS = "posts";
-  public static final String POST_ID = "id";
-  public static final String POST_TITLE = "title";
-  public static final String POST_TEXT = "text";
+  public static final String MESSAGES = "messages";
+  public static final String MESSAGE_ID = "id";
+  public static final String MESSAGE_TITLE = "title";
+  public static final String MESSAGE_TEXT = "text";
 
   public static final String ERROR_NAME = "errorName";
   public static final String ERROR_DESCRIPTION = "errorDescription";

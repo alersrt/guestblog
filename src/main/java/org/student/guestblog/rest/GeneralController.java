@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.student.guestblog.entity.Post;
+import org.student.guestblog.entity.Message;
 import org.student.guestblog.entity.User;
-import org.student.guestblog.repository.PostRepository;
+import org.student.guestblog.repository.MessageRepository;
 import org.student.guestblog.repository.UserRepository;
 
 import com.google.gson.Gson;
@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 public class GeneralController {
 
-  /** The {@link PostRepository} single. */
-  private final PostRepository postRepository;
+  /** The {@link MessageRepository} single. */
+  private final MessageRepository messageRepository;
 
   /** The {@link UserRepository} single. */
   private final UserRepository userRepository;
@@ -53,27 +53,27 @@ public class GeneralController {
   }
 
   /**
-   * "GET /posts" endpoint.
+   * "GET /messages" endpoint.
    *
-   * Returns lists of posts. If the list is empty then returns {@link HttpStatus#NO_CONTENT} code
+   * Returns lists of messages. If the list is empty then returns {@link HttpStatus#NO_CONTENT} code
    * and {@link HttpStatus#OK} in otherwise. If something went wrong then {@link
    * HttpStatus#INTERNAL_SERVER_ERROR} and error description will be returned.
    *
-   * @return list of the posts and http status.
+   * @return list of the messages and http status.
    *
    * @see GetMapping
    */
-  @GetMapping("/posts")
-  public ResponseEntity<JsonObject> posts() {
+  @GetMapping("/messages")
+  public ResponseEntity<JsonObject> messages() {
     JsonObject answer = new JsonObject();
     JsonArray jsonArray = new JsonArray();
-    List<Post> posts;
+    List<Message> messages;
     HttpStatus httpStatus;
     try {
-      posts = postRepository.findAll();
-      httpStatus = posts.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-      posts.forEach(p -> jsonArray.add(gson.toJsonTree(p)));
-      answer.add(Protocol.POSTS, jsonArray);
+      messages = messageRepository.findAll();
+      httpStatus = messages.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+      messages.forEach(p -> jsonArray.add(gson.toJsonTree(p)));
+      answer.add(Protocol.MESSAGES, jsonArray);
     } catch (Exception e) {
       log.error(e.getLocalizedMessage());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
@@ -149,7 +149,7 @@ public class GeneralController {
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      postRepository.deleteById(user.get(Protocol.USER_ID).getAsString());
+      messageRepository.deleteById(user.get(Protocol.USER_ID).getAsString());
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
@@ -160,30 +160,30 @@ public class GeneralController {
   }
 
   /**
-   * "PUT /posts/" endpoint.
+   * "PUT /messages/" endpoint.
    *
    * Gets data from JSON body of the received http-request and saves entity in the {@link
-   * PostRepository}. Returns {@link HttpStatus#OK} when all went well and {@link
+   * MessageRepository}. Returns {@link HttpStatus#OK} when all went well and {@link
    * HttpStatus#INTERNAL_SERVER_ERROR} and an error's description in otherwise.
    *
-   * @param post specified post which will be added to a posts list.
+   * @param message specified message which will be added to a messages list.
    *
    * @return information about this operation success.
    *
    * @see PutMapping
    */
-  @PutMapping("/posts/")
-  public ResponseEntity<JsonObject> postAdd(@RequestBody JsonObject post) {
-    Post addedPost = new Post();
-    addedPost.setTitle(post.get(Protocol.POST_TITLE).getAsString());
-    addedPost.setText(post.get(Protocol.POST_TEXT).getAsString());
-    addedPost.setTimestamp(LocalDateTime.now());
+  @PutMapping("/messages/")
+  public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
+    Message addedMessage = new Message();
+    addedMessage.setTitle(message.get(Protocol.MESSAGE_TITLE).getAsString());
+    addedMessage.setText(message.get(Protocol.MESSAGE_TEXT).getAsString());
+    addedMessage.setTimestamp(LocalDateTime.now());
 
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      addedPost = postRepository.save(addedPost);
-      answer.addProperty(Protocol.POST_ID, addedPost.getId());
+      addedMessage = messageRepository.save(addedMessage);
+      answer.addProperty(Protocol.MESSAGE_ID, addedMessage.getId());
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
@@ -194,24 +194,24 @@ public class GeneralController {
   }
 
   /**
-   * "DELETE /posts/{id}" endpoint.
+   * "DELETE /messages/{id}" endpoint.
    *
-   * Removes post by its id. Gets id param from request body and remove post from {@link
-   * PostRepository}. Returns {@link HttpStatus#OK} when operation is passed well and {@link
+   * Removes message by its id. Gets id param from request body and remove message from {@link
+   * MessageRepository}. Returns {@link HttpStatus#OK} when operation is passed well and {@link
    * HttpStatus#INTERNAL_SERVER_ERROR} with an error's description in otherwise.
    *
-   * @param post request body which contains post id for removing.
+   * @param message request body which contains message id for removing.
    *
    * @return answer and http status.
    *
    * @see DeleteMapping
    */
-  @DeleteMapping("/posts/")
-  public ResponseEntity<JsonObject> postDel(@RequestBody JsonObject post) {
+  @DeleteMapping("/messages/")
+  public ResponseEntity<JsonObject> messageDel(@RequestBody JsonObject message) {
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      postRepository.deleteById(post.get(Protocol.POST_ID).getAsString());
+      messageRepository.deleteById(message.get(Protocol.MESSAGE_ID).getAsString());
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
