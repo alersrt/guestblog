@@ -2,4 +2,13 @@ server:
   error:
     whitelabel:
       enabled: false
-  port: 8080
+  port: 80
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 5MB
+      max-request-size: 50MB
+
+
