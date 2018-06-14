@@ -1,9 +1,19 @@
 package org.student.guestblog.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.tika.Tika;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,13 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.entity.Message;
-import org.student.guestblog.entity.User;
 import org.student.guestblog.repository.MessageRepository;
 import org.student.guestblog.repository.UserRepository;
 
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +52,12 @@ public class GeneralController {
   /** The {@link Gson} single object. */
   private final Gson gson;
 
+  /** The {@link GridFsOperations} single object. */
+  private final GridFsOperations gridFsOperations;
+
+  /** Apache Tika object. */
+  private final Tika tika = new Tika();
+
   /**
    * Serves "GET /users" endpoint. It is necessary for getting of the user's list.
    *
@@ -50,37 +67,6 @@ public class GeneralController {
   public ResponseEntity<JsonObject> users() {
     JsonObject answer = new JsonObject();
     return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
-  }
-
-  /**
-   * "GET /messages" endpoint.
-   *
-   * Returns lists of messages. If the list is empty then returns {@link HttpStatus#NO_CONTENT} code
-   * and {@link HttpStatus#OK} in otherwise. If something went wrong then {@link
-   * HttpStatus#INTERNAL_SERVER_ERROR} and error description will be returned.
-   *
-   * @return list of the messages and http status.
-   *
-   * @see GetMapping
-   */
-  @GetMapping("/messages")
-  public ResponseEntity<JsonObject> messages() {
-    JsonObject answer = new JsonObject();
-    JsonArray jsonArray = new JsonArray();
-    List<Message> messages;
-    HttpStatus httpStatus;
-    try {
-      messages = messageRepository.findAll();
-      httpStatus = messages.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-      messages.forEach(p -> jsonArray.add(gson.toJsonTree(p)));
-      answer.add(Protocol.MESSAGES, jsonArray);
-    } catch (Exception e) {
-      log.error(e.getLocalizedMessage());
-      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
-      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
-      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-    return new ResponseEntity<>(answer, httpStatus);
   }
 
   /**
@@ -118,23 +104,8 @@ public class GeneralController {
    */
   @PutMapping("/users/")
   public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
-    User newUser = User.builder()
-      .username(user.get(Protocol.USER_USERNAME).getAsString())
-      .password(user.get(Protocol.USER_PASSWORD).getAsString())
-      .email(user.get(Protocol.USER_EMAIL).getAsString())
-      .build();
-
     JsonObject answer = new JsonObject();
-    HttpStatus httpStatus;
-    try {
-      answer.addProperty(Protocol.USER_ID, userRepository.save(newUser).getId());
-      httpStatus = HttpStatus.OK;
-    } catch (Exception e) {
-      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
-      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
-      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-    return new ResponseEntity<>(answer, httpStatus);
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -147,11 +118,48 @@ public class GeneralController {
   @DeleteMapping("/users/")
   public ResponseEntity<JsonObject> userDel(@RequestBody JsonObject user) {
     JsonObject answer = new JsonObject();
+    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * "GET /messages" endpoint.
+   *
+   * Returns lists of messages. If the list is empty then returns {@link HttpStatus#NO_CONTENT} code
+   * and {@link HttpStatus#OK} in otherwise. If something went wrong then {@link
+   * HttpStatus#INTERNAL_SERVER_ERROR} and error description will be returned.
+   *
+   * @return list of the messages and http status.
+   *
+   * @see GetMapping
+   */
+  @GetMapping("/messages")
+  public ResponseEntity<JsonObject> messages() {
+    JsonObject answer = new JsonObject();
+    JsonArray jsonArray = new JsonArray();
+    List<Message> messages;
     HttpStatus httpStatus;
     try {
-      messageRepository.deleteById(user.get(Protocol.USER_ID).getAsString());
-      httpStatus = HttpStatus.OK;
+      messages = messageRepository.findAll();
+      httpStatus = messages.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+      messages.forEach(m -> {
+        JsonObject oneMessage = gson.toJsonTree(m).getAsJsonObject();
+        if (m.getFile() != null) {
+          GridFSFile file = gridFsOperations.findOne(Query.query(Criteria.where("_id").is(m.getFile().toString())));
+          GridFsResource resource = gridFsOperations.getResource(file.getFilename());
+          String mime = resource.getContentType();
+          byte[] bytes = new byte[0];
+          try {
+            bytes = ByteStreams.toByteArray(resource.getInputStream());
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          oneMessage.addProperty(Protocol.MESSAGE_FILE, "data:"+mime+";base64,"+Base64.getEncoder().encodeToString(bytes));
+        }
+        jsonArray.add(oneMessage);
+      });
+      answer.add(Protocol.MESSAGES, jsonArray);
     } catch (Exception e) {
+      log.error(e.getLocalizedMessage());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -174,10 +182,21 @@ public class GeneralController {
    */
   @PutMapping("/messages/")
   public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
+    String filename = message.get(Protocol.MESSAGE_FILE_NAME).getAsString();
+    String base64File = message.get(Protocol.MESSAGE_FILE).getAsString();
+    String mime = tika.detect(base64File);
+
+    ObjectId file = gridFsOperations.store(
+      new ByteArrayInputStream(Base64.getDecoder().decode(base64File.split(",")[1])),
+      filename,
+      mime
+    );
+
     Message addedMessage = Message.builder()
       .title(message.get(Protocol.MESSAGE_TITLE).getAsString())
       .text(message.get(Protocol.MESSAGE_TEXT).getAsString())
       .timestamp(LocalDateTime.now())
+      .file(file)
       .build();
 
     JsonObject answer = new JsonObject();
@@ -212,8 +231,14 @@ public class GeneralController {
     JsonObject answer = new JsonObject();
     HttpStatus httpStatus;
     try {
-      messageRepository.deleteById(message.get(Protocol.MESSAGE_ID).getAsString());
-      httpStatus = HttpStatus.OK;
+      Optional<Message> removedMessage = messageRepository.findById(message.get(Protocol.MESSAGE_ID).getAsString());
+      if (removedMessage.isPresent()) {
+        gridFsOperations.delete(Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+        messageRepository.delete(removedMessage.get());
+        httpStatus = HttpStatus.OK;
+      } else {
+        httpStatus = HttpStatus.NOT_FOUND;
+      }
     } catch (Exception e) {
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());

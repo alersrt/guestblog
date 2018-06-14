@@ -4,7 +4,8 @@ class Message extends React.Component {
       <div id={this.props.id}>
         <p>{this.props.title}</p>
         <p>{this.props.text}</p>
-        <button onClick={() => delMessage(this.props.id)}>Delete</button>
+        <img src={this.props.file}/>
+        <p/><button onClick={() => delMessage(this.props.id)}>Delete</button>
       </div>
     );
   }
@@ -22,7 +23,7 @@ function onLoad() {
     let messages = response.data['messages'];
 
     ReactDOM.render(
-      messages.map(p => <Message id={p.id} title={p.title} text={p.text}/>),
+      messages.map(p => <Message id={p.id} title={p.title} text={p.text} file={p.file}/>),
       document.getElementById('root'),
     );
   }).catch(function(error) {
@@ -35,22 +36,30 @@ function newMessage() {
     <div id="new-message">
       <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
       <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"></textarea>
-      <p/><button onClick={onLoad}>Cancel</button><button onClick={addMessage}>Submit</button>
+      <p/><input type="file" id="message-image" />
+      <p/><button onClick={onLoad}>Cancel</button><button id="add-message" onClick={addMessage}>Submit</button>
     </div>,
     document.getElementById('root')
   );
 }
 
 function addMessage() {
-  instanceAxios.put('/messages/', {
-    title: document.getElementById('message-title').value,
-    text: document.getElementById('message-text').value,
-  }).
-  then(function() {
-    onLoad();
-  }).catch(function(error) {
-    console.log(error);
-  });
+  let file = document.querySelector('input[type=file]').files[0];
+  let reader = new FileReader();
+  reader.onloadend = function() {
+    instanceAxios.put('/messages/', {
+      title: document.getElementById('message-title').value,
+      text: document.getElementById('message-text').value,
+      filename: document.getElementById('message-image').value,
+      file: reader.result.toString()
+    }).
+    then(function() {
+      onLoad();
+    }).catch(function(error) {
+      console.log(error);
+    });
+  };
+  reader.readAsDataURL(file);
 }
 
 function delMessage(id) {

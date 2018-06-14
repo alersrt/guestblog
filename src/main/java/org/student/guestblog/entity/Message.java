@@ -2,6 +2,7 @@ package org.student.guestblog.entity;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,6 +23,9 @@ public class Message {
 
   /** Body of the post. */
   private String text;
+
+  /** Unique name of the file. */
+  private ObjectId file;
 
   /** Time when this post was created or edited. */
   private LocalDateTime timestamp;
