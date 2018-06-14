@@ -1,3 +1,9 @@
+const instanceAxios = axios.create({
+  baseURL: '/api/',
+  timeout: 10000,
+});
+
+
 class Message extends React.Component {
   render() {
     return (
@@ -11,11 +17,6 @@ class Message extends React.Component {
   }
 }
 
-const instanceAxios = axios.create({
-  baseURL: '/api/',
-  timeout: 10000,
-});
-
 onLoad();
 
 function onLoad() {
@@ -23,7 +24,13 @@ function onLoad() {
     let messages = response.data['messages'];
 
     ReactDOM.render(
-      messages.map(p => <Message id={p.id} title={p.title} text={p.text} file={p.file}/>),
+      <div>
+        <button onClick={newMessage}>Add post</button>
+        <hr/>
+        <div>
+          {messages.map(p => <Message id={p.id} title={p.title} text={p.text} file={p.file}/>)}
+        </div>
+      </div>,
       document.getElementById('root'),
     );
   }).catch(function(error) {
