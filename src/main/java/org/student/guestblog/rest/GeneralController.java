@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,7 +179,7 @@ public class GeneralController {
    */
   @PutMapping("/messages/")
   public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
-    String filename = message.get(Protocol.MESSAGE_FILE_NAME).getAsString();
+    String filename = UUID.randomUUID().toString();
     String base64File = message.get(Protocol.MESSAGE_FILE).getAsString();
     String mime = base64File.substring(base64File.indexOf(":")+1,base64File.indexOf(";"));
     log.info(mime);

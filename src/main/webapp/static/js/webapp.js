@@ -50,7 +50,6 @@ function addMessage() {
     instanceAxios.put('/messages/', {
       title: document.getElementById('message-title').value,
       text: document.getElementById('message-text').value,
-      filename: document.getElementById('message-image').value,
       file: reader.result.toString()
     }).
     then(function() {
