@@ -7,7 +7,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tika.Tika;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -54,9 +53,6 @@ public class GeneralController {
 
   /** The {@link GridFsOperations} single object. */
   private final GridFsOperations gridFsOperations;
-
-  /** Apache Tika object. */
-  private final Tika tika = new Tika();
 
   /**
    * Serves "GET /users" endpoint. It is necessary for getting of the user's list.
@@ -184,8 +180,8 @@ public class GeneralController {
   public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
     String filename = message.get(Protocol.MESSAGE_FILE_NAME).getAsString();
     String base64File = message.get(Protocol.MESSAGE_FILE).getAsString();
-    String mime = tika.detect(base64File);
-
+    String mime = base64File.substring(base64File.indexOf(":")+1,base64File.indexOf(";"));
+    log.info(mime);
     ObjectId file = gridFsOperations.store(
       new ByteArrayInputStream(Base64.getDecoder().decode(base64File.split(",")[1])),
       filename,
