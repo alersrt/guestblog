@@ -47,8 +47,8 @@ function newMessage() {
       <p/><label htmlFor="message-text">Text:</label>
       <textarea id="message-text"></textarea>
       <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
-      <p/>
-      <button onClick={onLoad}>Cancel</button>
+      <p/><img id="preview" height="200px" onClick={clearFile}/>
+      <p/><button onClick={onLoad}>Cancel</button>
       <button id="add-message" onClick={addMessage}>Submit</button>
     </div>,
     document.getElementById('root'),
@@ -56,12 +56,21 @@ function newMessage() {
 }
 
 function loadFile() {
+  document.getElementById('add-message').disabled = true;
   let files = document.querySelector('input[type=file]').files;
   let reader = new FileReader();
   reader.onloadend = function() {
     document.getElementById('message-file').dataset.dataFile = reader.result.toString();
+    document.getElementById('preview').src = reader.result.toString();
+    document.getElementById('add-message').disabled = false;
   };
   reader.readAsDataURL(files[0]);
+}
+
+function clearFile() {
+  document.getElementById('message-file').value = '';
+  document.getElementById('message-file').dataset.dataFile = '';
+  document.getElementById('preview').src = '';
 }
 
 function addMessage() {
