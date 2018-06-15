@@ -2,6 +2,7 @@ server:
   error:
     whitelabel:
       enabled: false
+  port: ${PORT:8080}
 spring:
   servlet:
     multipart:
