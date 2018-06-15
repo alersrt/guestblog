@@ -17,6 +17,8 @@ public class Protocol {
   public static final String MESSAGE_TITLE = "title";
   public static final String MESSAGE_TEXT = "text";
   public static final String MESSAGE_FILE = "file";
+  public static final String MESSAGE_TIMESTAMP = "timestamp";
+  public static final String MESSAGE_IS_EDITED = "isEdited";
 
   public static final String ERROR_NAME = "errorName";
   public static final String ERROR_DESCRIPTION = "errorDescription";
