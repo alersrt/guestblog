@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 import org.student.guestblog.entity.Message;
 import org.student.guestblog.repository.MessageRepository;
 import org.student.guestblog.rest.Protocol;
@@ -56,10 +57,10 @@ public class MessageService {
 
     result.setTimestamp(LocalDateTime.now());
     if (!jsonMessage.get(Protocol.MESSAGE_TITLE).isJsonNull()) {
-      result.setTitle(jsonMessage.get(Protocol.MESSAGE_TITLE).getAsString());
+      result.setTitle(HtmlUtils.htmlEscape(jsonMessage.get(Protocol.MESSAGE_TITLE).getAsString()));
     }
     if (!jsonMessage.get(Protocol.MESSAGE_TEXT).isJsonNull()) {
-      result.setText(jsonMessage.get(Protocol.MESSAGE_TEXT).getAsString());
+      result.setText(HtmlUtils.htmlEscape(jsonMessage.get(Protocol.MESSAGE_TEXT).getAsString()));
     }
     if (!jsonMessage.get(Protocol.MESSAGE_FILE).isJsonNull()) {
       String filename = UUID.randomUUID().toString();
