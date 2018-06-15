@@ -1,6 +1,7 @@
 package org.student.guestblog.rest;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -111,11 +112,12 @@ public class GeneralController {
     JsonArray jsonArray = new JsonArray();
     HttpStatus httpStatus;
     try {
-      messageService.getAllMessages().forEach(jsonArray::add);
+      List<JsonObject> messages = messageService.getAllMessages();
+      httpStatus = messages.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+      messages.forEach(jsonArray::add);
       answer.add(Protocol.MESSAGES, jsonArray);
-      httpStatus = HttpStatus.OK;
     } catch (Exception e) {
-      log.error(Arrays.toString(e.getStackTrace()));
+      log.error(e.toString());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -145,7 +147,7 @@ public class GeneralController {
       answer.addProperty(Protocol.MESSAGE_ID, messageId);
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
-      log.error(Arrays.toString(e.getStackTrace()));
+      log.error(e.toString());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -173,8 +175,14 @@ public class GeneralController {
     try {
       messageService.deleteMessage(message);
       httpStatus = HttpStatus.OK;
+    } catch (NoSuchFieldException e) {
+      log.warn(e.toString());
+      httpStatus = HttpStatus.BAD_REQUEST;
+    } catch (NoSuchElementException e) {
+      log.warn(e.toString());
+      httpStatus = HttpStatus.NOT_FOUND;
     } catch (Exception e) {
-      log.error(Arrays.toString(e.getStackTrace()));
+      log.error(e.toString());
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -85,18 +86,23 @@ public class MessageService {
    *
    * @param jsonMessage json message which contains id of the deleted message.
    */
-  public void deleteMessage(JsonObject jsonMessage) {
-    boolean result = false;
-
+  public void deleteMessage(JsonObject jsonMessage)
+    throws NoSuchElementException, NoSuchFieldException {
     if (jsonMessage.get(Protocol.MESSAGE_ID) != null) {
       Optional<Message> removedMessage = messageRepository
         .findById(jsonMessage.get(Protocol.MESSAGE_ID).getAsString());
 
-      if (removedMessage.get().getFile() != null) {
-        gridFsOperations
-          .delete(Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+      if (removedMessage.isPresent()) {
+        if (removedMessage.get().getFile() != null) {
+          gridFsOperations.delete(
+            Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+        }
+        messageRepository.delete(removedMessage.get());
+      } else {
+        throw new NoSuchElementException("delete message: such element does not found");
       }
-      messageRepository.delete(removedMessage.get());
+    } else {
+      throw new NoSuchFieldException("delete message: field \"id\" does not defined");
     }
   }
 
@@ -115,14 +121,13 @@ public class MessageService {
         .add(Protocol.MESSAGE_TIMESTAMP, gson.toJsonTree(message.getTimestamp()).getAsJsonObject());
       jsonMessage.addProperty(Protocol.MESSAGE_IS_EDITED, message.isEdited());
 
-      if (!message.getTitle().isEmpty()) {
+      if (message.getTitle() != null && !message.getTitle().isEmpty()) {
         jsonMessage.addProperty(Protocol.MESSAGE_TITLE, message.getTitle());
       }
-      if (!message.getText().isEmpty()) {
+      if (message.getText() != null && !message.getText().isEmpty()) {
         jsonMessage.addProperty(Protocol.MESSAGE_TEXT, message.getText());
       }
       if (message.getFile() != null) {
-
         GridFSFile file = gridFsOperations
           .findOne(Query.query(Criteria.where("_id").is(message.getFile().toString())));
         GridFsResource resource = gridFsOperations.getResource(file.getFilename());
@@ -136,7 +141,6 @@ public class MessageService {
         jsonMessage.addProperty(Protocol.MESSAGE_FILE,
           "data:" + mime + ";base64," + Base64.getEncoder().encodeToString(bytes));
       }
-
       result.add(jsonMessage);
     });
 
