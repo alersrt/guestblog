@@ -4,7 +4,7 @@
   <groupId>org.student</groupId>
   <artifactId>guestblog</artifactId>
   <version>1.0.0</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>Simple guest blog</name>
 
@@ -21,15 +21,6 @@
         <configuration>
           <target>${java.version}</target>
           <source>${java.version}</source>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-          <warName>${project.artifactId}</warName>
         </configuration>
       </plugin>
 
@@ -80,7 +71,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.0.1.RELEASE</version>
         <configuration>
-          <layout>WAR</layout>
+          <finalName>${project.artifactId}</finalName>
         </configuration>
         <executions>
           <execution>
@@ -89,30 +80,6 @@
                 repackage
               </goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.github.jsimone</groupId>
-                  <artifactId>webapp-runner</artifactId>
-                  <version>8.5.31.0</version>
-                  <destFileName>webapp-runner.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
           </execution>
         </executions>
       </plugin>
