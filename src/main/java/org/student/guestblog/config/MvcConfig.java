@@ -26,7 +26,7 @@ public class MvcConfig {
       public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
           .addResourceHandler("/**")
-          .addResourceLocations("/webjars/", "/static/")
+          .addResourceLocations("/webjars/", "classpath:/static/")
           .resourceChain(true)
           .addResolver(webJarsResourceResolver());
       }
