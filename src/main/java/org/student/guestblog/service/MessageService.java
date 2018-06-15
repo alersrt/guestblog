@@ -56,13 +56,16 @@ public class MessageService {
     Message result = new Message();
 
     result.setTimestamp(LocalDateTime.now());
-    if (!jsonMessage.get(Protocol.MESSAGE_TITLE).isJsonNull()) {
+    if (jsonMessage.get(Protocol.MESSAGE_TITLE) != null
+      && !jsonMessage.get(Protocol.MESSAGE_TITLE).isJsonNull()) {
       result.setTitle(HtmlUtils.htmlEscape(jsonMessage.get(Protocol.MESSAGE_TITLE).getAsString()));
     }
-    if (!jsonMessage.get(Protocol.MESSAGE_TEXT).isJsonNull()) {
+    if (jsonMessage.get(Protocol.MESSAGE_TEXT) != null
+      && !jsonMessage.get(Protocol.MESSAGE_TEXT).isJsonNull()) {
       result.setText(HtmlUtils.htmlEscape(jsonMessage.get(Protocol.MESSAGE_TEXT).getAsString()));
     }
-    if (!jsonMessage.get(Protocol.MESSAGE_FILE).isJsonNull()) {
+    if (jsonMessage.get(Protocol.MESSAGE_FILE) != null
+      && !jsonMessage.get(Protocol.MESSAGE_FILE).isJsonNull()) {
       String filename = UUID.randomUUID().toString();
       String base64File = jsonMessage.get(Protocol.MESSAGE_FILE).getAsString();
       String mime = base64File.substring(base64File.indexOf(":") + 1, base64File.indexOf(";"));
@@ -85,12 +88,14 @@ public class MessageService {
   public void deleteMessage(JsonObject jsonMessage) {
     boolean result = false;
 
-    if (!jsonMessage.get(Protocol.MESSAGE_ID).isJsonNull()) {
+    if (jsonMessage.get(Protocol.MESSAGE_ID) != null) {
       Optional<Message> removedMessage = messageRepository
         .findById(jsonMessage.get(Protocol.MESSAGE_ID).getAsString());
 
-      gridFsOperations
-        .delete(Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+      if (removedMessage.get().getFile() != null) {
+        gridFsOperations
+          .delete(Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+      }
       messageRepository.delete(removedMessage.get());
     }
   }

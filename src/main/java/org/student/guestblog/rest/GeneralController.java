@@ -1,5 +1,7 @@
 package org.student.guestblog.rest;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,7 +115,7 @@ public class GeneralController {
       answer.add(Protocol.MESSAGES, jsonArray);
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
-      log.error(e.getLocalizedMessage());
+      log.error(Arrays.toString(e.getStackTrace()));
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -143,6 +145,7 @@ public class GeneralController {
       answer.addProperty(Protocol.MESSAGE_ID, messageId);
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
+      log.error(Arrays.toString(e.getStackTrace()));
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -171,6 +174,7 @@ public class GeneralController {
       messageService.deleteMessage(message);
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
+      log.error(Arrays.toString(e.getStackTrace()));
       answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
       answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
