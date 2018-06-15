@@ -23,7 +23,6 @@ import org.student.guestblog.repository.MessageRepository;
 import org.student.guestblog.rest.Protocol;
 
 import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
 
@@ -36,9 +35,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class MessageService {
-
-  /** Instance of the {@link Gson}. */
-  private final Gson gson;
 
   /** Instance of the {@link MessageRepository} object. */
   private final MessageRepository messageRepository;
@@ -117,8 +113,7 @@ public class MessageService {
       JsonObject jsonMessage = new JsonObject();
 
       jsonMessage.addProperty(Protocol.MESSAGE_ID, message.getId());
-      jsonMessage
-        .add(Protocol.MESSAGE_TIMESTAMP, gson.toJsonTree(message.getTimestamp()).getAsJsonObject());
+      jsonMessage.addProperty(Protocol.MESSAGE_TIMESTAMP, message.getTimestamp().toString());
       jsonMessage.addProperty(Protocol.MESSAGE_IS_EDITED, message.isEdited());
 
       if (message.getTitle() != null && !message.getTitle().isEmpty()) {

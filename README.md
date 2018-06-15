@@ -18,38 +18,14 @@ Returns array of all messages in the next format (for example):
 {"messages": [
   {
     "id" : "5b20476bd8904e3cfea7c51c",
-    "timestamp" : {
-      "date" : {
-        "year" : 2018,
-        "month" : 6,
-        "day" : 13
-      },
-      "time" : {
-        "hour" : 5,
-        "minute" : 21,
-        "second" : 31,
-        "nano" : 798000000
-      }
-    },
+    "timestamp": "2018-06-12T07:25:54.438",
     "isEdited" : false,
     "title" : "The new message",
     "text" : "A text of the new message"
   }, 
   {
     "id" : "5b2047b0d8904e3cfea7c51d",
-    "timestamp" : {
-      "date" : {
-        "year" : 2018,
-        "month" : 6,
-        "day" : 13
-      },
-      "time" : {
-        "hour" : 6,
-        "minute" : 12,
-        "second" : 54,
-        "nano" : 867000000
-      }
-    },
+    "timestamp": "2018-06-13T05:21:31.798",
     "isEdited" : false,
     "title" : "The second message",
     "text" : "A text of the second message"    
