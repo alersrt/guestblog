@@ -80,13 +80,14 @@ up: docker.up
 task ?=
 
 maven:
+	mkdir -p $(PWD)/.m2
 	docker run \
 		--rm \
 		--name maven-worker \
 		-u 1000 \
 		-e MAVEN_CONFIG=/var/maven/.m2 \
-		-v $(PWD):/usr/src/mymaven \
 		-v $(PWD)/.m2:/var/maven/.m2 \
+		-v $(PWD):/usr/src/mymaven \
 		-w /usr/src/mymaven \
 		maven:alpine \
 		mvn -Duser.home=/var/maven $(task)
