@@ -8,8 +8,9 @@ class Message extends React.Component {
     return (
       <div id={this.props.id}>
         <p>{this.props.title}</p>
+        <p>{this.props.timestamp}</p>
         <p>{this.props.text}</p>
-        <img src={this.props.file}/>
+        <img src={this.props.file} width="200px"/>
         <p/>
         <button onClick={() => delMessage(this.props.id)}>Delete</button>
       </div>
@@ -21,15 +22,15 @@ onLoad();
 
 function onLoad() {
   instanceAxios.get('/messages/').then(function(response) {
-    let messages = response.data['messages'];
-
+    let messages = response.data;
     ReactDOM.render(
       <div>
         <button onClick={newMessage}>Add post</button>
         <hr/>
         <div>
-          {messages.map(p => <Message id={p.id} title={p.title} text={p.text}
-                                      file={p.file}/>)}
+          {messages.map(
+            p => <Message id={p.id} timestamp={p.timestamp} title={p.title}
+                          text={p.text} file={p.file}/>)}
         </div>
       </div>,
       document.getElementById('root'),
@@ -46,9 +47,11 @@ function newMessage() {
       <input id="message-title"/>
       <p/><label htmlFor="message-text">Text:</label>
       <textarea id="message-text"></textarea>
-      <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
+      <p/><input type="file" id="message-file" data-file=""
+                 onChange={loadFile}/>
       <p/><img id="preview" height="200px" onClick={clearFile}/>
-      <p/><button onClick={onLoad}>Cancel</button>
+      <p/>
+      <button onClick={onLoad}>Cancel</button>
       <button id="add-message" onClick={addMessage}>Submit</button>
     </div>,
     document.getElementById('root'),
@@ -60,7 +63,8 @@ function loadFile() {
   let files = document.querySelector('input[type=file]').files;
   let reader = new FileReader();
   reader.onloadend = function() {
-    document.getElementById('message-file').dataset.dataFile = reader.result.toString();
+    document.getElementById(
+      'message-file').dataset.dataFile = reader.result.toString();
     document.getElementById('preview').src = reader.result.toString();
     document.getElementById('add-message').disabled = false;
   };

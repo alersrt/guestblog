@@ -2,24 +2,43 @@ package org.student.guestblog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
-
-import com.google.gson.Gson;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.resource.WebJarsResourceResolver;
 
 /** The root configuration of the application. */
 @Configuration
 public class RootConfig {
 
   /**
-   * Configures Gson library.
+   * Register and configures {@link WebFluxConfigurer}. There is configured resource handler,
+   * locations and resolver.
    *
-   * @param gson param of gson.
-   * @return {@link GsonHttpMessageConverter} bean.
+   * @return {@link WebFluxConfigurer} bean.
+   *
+   * @see WebFluxConfigurer
    */
   @Bean
-  public GsonHttpMessageConverter gsonHttpMessageConverter(Gson gson) {
-    GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
-    gsonHttpMessageConverter.setGson(gson);
-    return gsonHttpMessageConverter;
+  public WebFluxConfigurer webFluxConfigurer() {
+    return new WebFluxConfigurer() {
+      @Override
+      public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+          .addResourceHandler("/**")
+          .addResourceLocations("/webjars/", "classpath:/static/")
+          .resourceChain(true)
+          .addResolver(webJarsResourceResolver());
+      }
+    };
+  }
+
+  /**
+   * Registers {@link WebJarsResourceResolver} bean.
+   *
+   * @return registered bean.
+   */
+  @Bean
+  public WebJarsResourceResolver webJarsResourceResolver() {
+    return new WebJarsResourceResolver();
   }
 }

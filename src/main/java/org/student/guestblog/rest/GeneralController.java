@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.student.guestblog.DTO.MessageDto;
+import org.student.guestblog.entity.User;
 import org.student.guestblog.repository.MessageRepository;
 import org.student.guestblog.service.MessageService;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +37,8 @@ public class GeneralController {
    * @return full list of users.
    */
   @GetMapping("/users")
-  public ResponseEntity<JsonObject> users() {
-    JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity users() {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -51,9 +49,8 @@ public class GeneralController {
    * @return information about success of this operation.
    */
   @PostMapping("/users/login")
-  public ResponseEntity<JsonObject> login(@RequestBody JsonObject credentials) {
-    JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity login(@RequestBody Object credentials) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -64,9 +61,8 @@ public class GeneralController {
    * @return information about success of this operation.
    */
   @PostMapping("/users/logout")
-  public ResponseEntity<JsonObject> logout(@RequestBody JsonObject user) {
-    JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity logout(@RequestBody User user) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -77,9 +73,8 @@ public class GeneralController {
    * @return information about success this operation.
    */
   @PutMapping("/users/")
-  public ResponseEntity<JsonObject> userAdd(@RequestBody JsonObject user) {
-    JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity userAdd(@RequestBody User user) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -90,9 +85,8 @@ public class GeneralController {
    * @return success result of this operation.
    */
   @DeleteMapping("/users/")
-  public ResponseEntity<JsonObject> userDel(@RequestBody JsonObject user) {
-    JsonObject answer = new JsonObject();
-    return new ResponseEntity<>(answer, HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity userDel(@RequestBody User user) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
@@ -107,22 +101,17 @@ public class GeneralController {
    * @see GetMapping
    */
   @GetMapping("/messages")
-  public ResponseEntity<JsonObject> messages() {
-    JsonObject answer = new JsonObject();
-    JsonArray jsonArray = new JsonArray();
+  public ResponseEntity<List<MessageDto>> messages() {
+    List<MessageDto> messages = null;
     HttpStatus httpStatus;
     try {
-      List<JsonObject> messages = messageService.getAllMessages();
+      messages = messageService.getAllMessages();
       httpStatus = messages.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-      messages.forEach(jsonArray::add);
-      answer.add(Protocol.MESSAGES, jsonArray);
     } catch (Exception e) {
       log.error(e.toString());
-      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
-      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    return new ResponseEntity<>(answer, httpStatus);
+    return new ResponseEntity<>(messages, httpStatus);
   }
 
   /**
@@ -130,29 +119,26 @@ public class GeneralController {
    *
    * Gets data from JSON body of the received http-request and saves entity in the {@link
    * MessageRepository}. Returns {@link HttpStatus#OK} when all went well and {@link
-   * HttpStatus#INTERNAL_SERVER_ERROR} and an error's description in otherwise.
+   * HttpStatus#INTERNAL_SERVER_ERROR} in otherwise.
    *
-   * @param message specified message which will be added to a messages list.
+   * @param messageDto specified message which will be added to a messages list.
    *
    * @return information about this operation success.
    *
    * @see PutMapping
    */
   @PutMapping("/messages/")
-  public ResponseEntity<JsonObject> messageAdd(@RequestBody JsonObject message) {
-    JsonObject answer = new JsonObject();
+  public ResponseEntity<String> messageAdd(@RequestBody MessageDto messageDto) {
+    String messageId = null;
     HttpStatus httpStatus;
     try {
-      String messageId = messageService.addMessage(message);
-      answer.addProperty(Protocol.MESSAGE_ID, messageId);
+      messageId = messageService.addMessage(messageDto).getId();
       httpStatus = HttpStatus.OK;
     } catch (Exception e) {
       log.error(e.toString());
-      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
-      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    return new ResponseEntity<>(answer, httpStatus);
+    return new ResponseEntity<>(messageId, httpStatus);
   }
 
   /**
@@ -160,20 +146,19 @@ public class GeneralController {
    *
    * Removes message by its id. Gets id param from request body and remove message from {@link
    * MessageRepository}. Returns {@link HttpStatus#OK} when operation is passed well and {@link
-   * HttpStatus#INTERNAL_SERVER_ERROR} with an error's description in otherwise.
+   * HttpStatus#INTERNAL_SERVER_ERROR} in otherwise.
    *
-   * @param message request body which contains message id for removing.
+   * @param messageDto request body which contains message id for removing.
    *
    * @return answer and http status.
    *
    * @see DeleteMapping
    */
   @DeleteMapping("/messages/")
-  public ResponseEntity<JsonObject> messageDel(@RequestBody JsonObject message) {
-    JsonObject answer = new JsonObject();
+  public ResponseEntity messageDel(@RequestBody MessageDto messageDto) {
     HttpStatus httpStatus;
     try {
-      messageService.deleteMessage(message);
+      messageService.deleteMessage(messageDto);
       httpStatus = HttpStatus.OK;
     } catch (NoSuchFieldException e) {
       log.warn(e.toString());
@@ -183,10 +168,8 @@ public class GeneralController {
       httpStatus = HttpStatus.NOT_FOUND;
     } catch (Exception e) {
       log.error(e.toString());
-      answer.addProperty(Protocol.ERROR_NAME, e.getClass().getName());
-      answer.addProperty(Protocol.ERROR_DESCRIPTION, e.getLocalizedMessage());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    return new ResponseEntity<>(answer, httpStatus);
+    return new ResponseEntity<>(httpStatus);
   }
 }
