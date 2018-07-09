@@ -15,7 +15,6 @@
 !Makefile
 !README.md
 !CONTRIBUTING.md
-!package.json
 
 ## Exclude IDE files
 # JetBrains

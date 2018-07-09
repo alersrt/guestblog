@@ -58,7 +58,7 @@ clean: maven.clean
 # Usage:
 #	make deps
 
-deps: maven.deps yarn.deps
+deps: maven.deps
 
 docs: maven.docs
 
