@@ -2,26 +2,38 @@ package org.student.guestblog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 /** Spring Security configuration. */
 @Configuration
-@EnableWebFluxSecurity
 public class SecurityConfig {
 
   /**
-   * Register and configures {@link SecurityWebFilterChain}. There is configured access for http
-   * requests.
+   * Register and configures {@link WebSecurityConfigurerAdapter}. There is configured access for
+   * http requests.
    *
-   * @return {@link SecurityWebFilterChain} bean.
+   * @return {@link WebSecurityConfigurerAdapter} bean.
    *
-   * @see SecurityWebFilterChain
+   * @see WebSecurityConfigurerAdapter
    */
   @Bean
-  public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-    http.csrf().disable().authorizeExchange().anyExchange().permitAll().and().httpBasic();
-    return http.build();
+  public WebSecurityConfigurerAdapter webSecurityConfigurerAdapter() {
+    return new WebSecurityConfigurerAdapter() {
+      @Override
+      protected void configure(HttpSecurity http) throws Exception {
+        http.csrf()
+          .disable()
+          .sessionManagement()
+          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+          .and()
+          .authorizeRequests()
+          .anyRequest()
+          .permitAll()
+          .and()
+          .httpBasic();
+      }
+    };
   }
 }
