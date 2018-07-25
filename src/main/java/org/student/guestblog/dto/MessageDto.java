@@ -1,11 +1,9 @@
-package org.student.guestblog.DTO;
+package org.student.guestblog.dto;
 
 import java.time.LocalDateTime;
-
-import org.student.guestblog.entity.Message;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.student.guestblog.entity.Message;
 
 /** Data transfer object for {@link Message} */
 @Data

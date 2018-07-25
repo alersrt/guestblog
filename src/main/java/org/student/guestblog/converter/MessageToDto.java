@@ -1,8 +1,10 @@
 package org.student.guestblog.converter;
 
+import com.google.common.io.ByteStreams;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import java.io.IOException;
 import java.util.Base64;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -10,13 +12,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Component;
-import org.student.guestblog.DTO.MessageDto;
+import org.student.guestblog.dto.MessageDto;
 import org.student.guestblog.entity.Message;
-
-import com.google.common.io.ByteStreams;
-import com.mongodb.client.gridfs.model.GridFSFile;
-
-import lombok.RequiredArgsConstructor;
 
 /** Convert {@link Message} to {@link MessageDto}. */
 @Component

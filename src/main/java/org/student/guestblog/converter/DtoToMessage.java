@@ -3,16 +3,14 @@ package org.student.guestblog.converter;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.UUID;
-
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Component;
-import org.student.guestblog.DTO.MessageDto;
+import org.student.guestblog.dto.MessageDto;
 import org.student.guestblog.entity.Message;
-
-import lombok.RequiredArgsConstructor;
 
 /** Converts {@link MessageDto} to {@link Message}. */
 @Component

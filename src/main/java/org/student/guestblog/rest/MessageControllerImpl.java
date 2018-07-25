@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.student.guestblog.DTO.MessageDto;
+import org.student.guestblog.dto.MessageDto;
 import org.student.guestblog.profiling.Profiling;
 import org.student.guestblog.service.MessageService;
 

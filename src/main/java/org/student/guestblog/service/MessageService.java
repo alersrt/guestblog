@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Service;
-import org.student.guestblog.DTO.MessageDto;
+import org.student.guestblog.dto.MessageDto;
 import org.student.guestblog.entity.Message;
 import org.student.guestblog.repository.MessageRepository;
 
