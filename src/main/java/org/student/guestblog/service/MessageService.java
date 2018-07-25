@@ -2,10 +2,8 @@ package org.student.guestblog.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,11 +14,8 @@ import org.student.guestblog.DTO.MessageDto;
 import org.student.guestblog.entity.Message;
 import org.student.guestblog.repository.MessageRepository;
 
-import lombok.RequiredArgsConstructor;
-
 /**
- * Service manages of messages. Here is implemented such features as adding, deleting, editing,
- * getting of messages.
+ * Service manages of messages. Here is implemented such features as adding, deleting, editing, getting of messages.
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
@@ -53,24 +48,14 @@ public class MessageService {
    *
    * @param messageDto received dto of message.
    */
-  public void deleteMessage(MessageDto messageDto)
-    throws NoSuchElementException, NoSuchFieldException {
-
-    if (messageDto != null) {
-      Optional<Message> removedMessage = messageRepository.findById(messageDto.getId());
-
-      if (removedMessage.isPresent()) {
-        if (removedMessage.get().getFile() != null) {
-          gridFsOperations.delete(
-            Query.query(Criteria.where("_id").is(removedMessage.get().getFile().toString())));
+  public void deleteMessage(MessageDto messageDto) {
+    messageRepository.findById(messageDto.getId())
+      .ifPresent(m -> {
+        if (m.getFile() != null) {
+          gridFsOperations.delete(Query.query(Criteria.where("_id").is(m.getFile().toString())));
         }
-        messageRepository.delete(removedMessage.get());
-      } else {
-        throw new NoSuchElementException("delete message: such element does not found");
-      }
-    } else {
-      throw new NoSuchFieldException("delete message: field \"id\" does not defined");
-    }
+        messageRepository.delete(m);
+      });
   }
 
   /**
@@ -79,7 +64,9 @@ public class MessageService {
    * @return {@link List} of the {@link MessageDto}.
    */
   public List<MessageDto> getAllMessages() {
-    return messageRepository.findAll().stream()
+    return messageRepository
+      .findAll()
+      .stream()
       .map(m -> conversionService.convert(m, MessageDto.class))
       .collect(Collectors.toList());
   }

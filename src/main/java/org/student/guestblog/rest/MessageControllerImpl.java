@@ -1,8 +1,8 @@
 package org.student.guestblog.rest;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 import org.student.guestblog.DTO.MessageDto;
 import org.student.guestblog.profiling.Profiling;
 import org.student.guestblog.service.MessageService;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Profiling
 @Slf4j
@@ -57,12 +54,6 @@ public class MessageControllerImpl implements MessageController {
     try {
       messageService.deleteMessage(messageDto);
       httpStatus = HttpStatus.OK;
-    } catch (NoSuchFieldException e) {
-      log.warn(e.toString());
-      httpStatus = HttpStatus.BAD_REQUEST;
-    } catch (NoSuchElementException e) {
-      log.warn(e.toString());
-      httpStatus = HttpStatus.NOT_FOUND;
     } catch (Exception e) {
       log.error(e.toString());
       httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
