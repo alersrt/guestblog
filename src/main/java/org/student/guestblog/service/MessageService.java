@@ -1,7 +1,6 @@
 package org.student.guestblog.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,7 +31,7 @@ public class MessageService {
    * Add message to repository and returns id of the added message.
    *
    * @param message source of the new message.
-   * @return String id of the new stored message.
+   * @return identifier of the new stored message.
    */
   public Mono<String> addMessage(Mono<Message> message) {
     return message.log("message add")
@@ -57,7 +56,7 @@ public class MessageService {
   /**
    * Returns list of all messages in JSON format.
    *
-   * @return {@link List} of the {@link Message}.
+   * @return list of the messages.
    */
   public Flux<Message> getAllMessages() {
     return messageRepository.findAll();
