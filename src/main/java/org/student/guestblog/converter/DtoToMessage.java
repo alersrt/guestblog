@@ -25,7 +25,7 @@ public class DtoToMessage implements Converter<MessageDto, Message> {
   public Message convert(MessageDto messageDto) {
     Message message = new Message();
 
-    message.setId(message.getId());
+    message.setId(messageDto.getId());
     message.setTimestamp(messageDto.getTimestamp());
     message.setTitle(messageDto.getTitle());
     message.setText(messageDto.getText());

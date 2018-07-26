@@ -28,9 +28,7 @@ function onLoad() {
         <button onClick={newMessage}>Add post</button>
         <hr/>
         <div>
-          {messages.map(
-            p => <Message id={p.id} timestamp={p.timestamp} title={p.title}
-                          text={p.text} file={p.file}/>)}
+          {messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={p.file}/>)}
         </div>
       </div>,
       document.getElementById('root'),
@@ -43,12 +41,9 @@ function onLoad() {
 function newMessage() {
   ReactDOM.render(
     <div id="new-message">
-      <p/><label htmlFor="message-title">Title:</label>
-      <input id="message-title"/>
-      <p/><label htmlFor="message-text">Text:</label>
-      <textarea id="message-text"></textarea>
-      <p/><input type="file" id="message-file" data-file=""
-                 onChange={loadFile}/>
+      <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
+      <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"></textarea>
+      <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
       <p/><img id="preview" height="200px" onClick={clearFile}/>
       <p/>
       <button onClick={onLoad}>Cancel</button>
@@ -63,8 +58,7 @@ function loadFile() {
   let files = document.querySelector('input[type=file]').files;
   let reader = new FileReader();
   reader.onloadend = function() {
-    document.getElementById(
-      'message-file').dataset.dataFile = reader.result.toString();
+    document.getElementById('message-file').dataset.dataFile = reader.result.toString();
     document.getElementById('preview').src = reader.result.toString();
     document.getElementById('add-message').disabled = false;
   };

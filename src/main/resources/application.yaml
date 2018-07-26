@@ -10,6 +10,8 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 5MB
       max-request-size: 50MB
+  jackson:
+    default-property-inclusion: non_null
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost/test}

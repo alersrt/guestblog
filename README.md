@@ -70,7 +70,7 @@ In success case `200` status code will have returned and `500` in otherwise.
 
 
 
-[1]: https://guestblog.herokuapp.com/index.html
+[1]: https://guestblog.herokuapp.com
 [2]: https://reactjs.org/
 [3]: https://docs.mongodb.com/manual/core/gridfs/
 [4]: https://en.wikipedia.org/wiki/Base64
