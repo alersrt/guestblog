@@ -1,12 +1,11 @@
 package org.student.guestblog;
 
+import lombok.extern.java.Log;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import lombok.extern.slf4j.Slf4j;
-
 /** The main class of the application. */
-@Slf4j
+@Log
 @SpringBootApplication
 public class Application {
 

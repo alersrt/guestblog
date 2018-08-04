@@ -15,4 +15,6 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost/test}
-
+logging:
+  level:
+    root: warn
