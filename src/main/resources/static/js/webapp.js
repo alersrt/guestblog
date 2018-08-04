@@ -25,7 +25,9 @@ function onLoad() {
     let messages = response.data;
     ReactDOM.render(
       <div>
-        <button onClick={newMessage}>Add post</button>
+        <div id="util-root">
+          <button onClick={newMessage}>Add message</button>
+        </div>
         <hr/>
         <div>
           {messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={p.file}/>)}
@@ -46,10 +48,17 @@ function newMessage() {
       <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
       <p/><img id="preview" height="200px" onClick={clearFile}/>
       <p/>
-      <button onClick={onLoad}>Cancel</button>
+      <button onClick={onCancelAddMessage}>Cancel</button>
       <button id="add-message" onClick={addMessage}>Submit</button>
     </div>,
-    document.getElementById('root'),
+    document.getElementById('util-root'),
+  );
+}
+
+function onCancelAddMessage() {
+  ReactDOM.render(
+    <button onClick={newMessage}>Add message</button>,
+    document.getElementById('util-root'),
   );
 }
 
@@ -77,6 +86,7 @@ function addMessage() {
     text: document.getElementById('message-text').value,
     file: document.getElementById('message-file').dataset.dataFile,
   }).then(function() {
+    onCancelAddMessage();
     onLoad();
   }).catch(function(error) {
     console.log(error);

@@ -17,4 +17,4 @@ spring:
       uri: ${MONGODB_URI:mongodb://localhost/test}
 logging:
   level:
-    root: warn
+    root: info
