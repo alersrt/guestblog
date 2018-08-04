@@ -35,8 +35,11 @@ Returns array of all messages in the next format (for example):
 ```
 If blog does not contain any message then `204` status code will have returned.
 
+### `GET /messages/{id}`
 
-### `PUT /messages/`
+Returns message by its id. In success case `200` status code will have returned and `204` (message not found) or `500` (hard exception) in otherwise.
+
+### `POST /messages/`
 
 Adds messages in this blog. Format of the `PUT` request has the next view:
 ```json
@@ -56,16 +59,9 @@ As answer service gives id of the added message:
 ```
 
 
-### `DELETE /messages/`
+### `DELETE /messages/{id}`
 
-Removes message by it's id:
-```json
-{
-  "id": "5b2047b0d8904e3cfea7c51d"
-}
-```
-
-In success case `200` status code will have returned and `500` in otherwise.
+Removes message by its id. In success case `200` status code will have returned and `500` in otherwise.
 
 
 
