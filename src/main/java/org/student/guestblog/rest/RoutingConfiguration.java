@@ -3,7 +3,7 @@ package org.student.guestblog.rest;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -23,7 +23,7 @@ public class RoutingConfiguration {
   @Bean
   RouterFunction<ServerResponse> messageRouterFunction() {
     return route(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessages)
-      .andRoute(PUT("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::addMessage)
-      .andRoute(DELETE("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::deleteMessage);
+      .andRoute(POST("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::addMessage)
+      .andRoute(DELETE("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::deleteMessage);
   }
 }

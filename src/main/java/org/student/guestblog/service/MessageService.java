@@ -43,11 +43,11 @@ public class MessageService {
   /**
    * Removes {@link Message} from database by it's id.
    *
-   * @param message received dto of message.
+   * @param messageId received id of message.
    */
-  public Mono<Void> deleteMessage(Mono<Message> message) {
-    return message.log("message delete")
-      .flatMap(m -> messageRepository.findById(m.getId())).log("message delete: find by id")
+  public Mono<Void> deleteMessage(Mono<String> messageId) {
+    return messageId.log("message delete")
+      .flatMap(messageRepository::findById).log("message delete: find by id")
       .doOnNext(m -> gridFsOperations.delete(Query.query(Criteria.where("_id").is(m.getFile().toString()))))
       .log("message delete: remove from GridFs")
       .flatMap(m -> messageRepository.deleteById(m.getId())).log("message delete: remove from repository");

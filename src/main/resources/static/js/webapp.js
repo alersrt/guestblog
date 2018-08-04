@@ -72,7 +72,7 @@ function clearFile() {
 }
 
 function addMessage() {
-  instanceAxios.put('/messages/', {
+  instanceAxios.post('/messages/', {
     title: document.getElementById('message-title').value,
     text: document.getElementById('message-text').value,
     file: document.getElementById('message-file').dataset.dataFile,
@@ -84,11 +84,7 @@ function addMessage() {
 }
 
 function delMessage(id) {
-  instanceAxios.delete('/messages/', {
-    data: {
-      id: id,
-    },
-  }).then(function() {
+  instanceAxios.delete('/messages/'+id).then(function() {
     onLoad();
   }).catch(function(error) {
     console.log(error);
