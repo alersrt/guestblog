@@ -21,7 +21,7 @@ public class FileHandler {
   private final GridFsOperations gridFsOperations;
 
   public Mono<ServerResponse> getFile(ServerRequest request) {
-    GridFsResource resource = gridFsOperations.getResource(request.pathVariable("fileName"));
+    GridFsResource resource = gridFsOperations.getResource(request.pathVariable("filename"));
     return ok().contentType(parseMediaType(resource.getContentType())).body(Mono.just(resource), Resource.class);
   }
 }

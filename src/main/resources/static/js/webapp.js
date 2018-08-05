@@ -57,11 +57,9 @@ function onLoad() {
         <hr/>
         <div>
           {messages.map(p => {
-              let file = p.file !== undefined ? p.file.filename !== undefined ? '/api/files/' + p.file.filename
-                : undefined : undefined;
-              return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
-            },
-          )}
+            let file = p.file !== undefined ? '/api/files/' + p.file : undefined;
+            return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
+          })}
         </div>
       </div>,
       document.getElementById('root'),
@@ -107,10 +105,7 @@ function addMessage() {
   instanceAxios.post('/messages/', {
     title: document.getElementById('message-title').value,
     text: document.getElementById('message-text').value,
-    file: {
-      filename: document.getElementById('message-file').value,
-      data: document.getElementById('message-file').dataset.dataFile,
-    },
+    file: document.getElementById('message-file').dataset.dataFile,
   }).then(function() {
     onCancelAddMessage();
     onLoad();

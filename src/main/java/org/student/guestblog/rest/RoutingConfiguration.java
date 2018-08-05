@@ -31,6 +31,6 @@ public class RoutingConfiguration {
 
   @Bean
   RouterFunction<ServerResponse> fileRouterFunction() {
-    return route(GET("/api/files/{fileName}"), fileHandler::getFile);
+    return route(GET("/api/files/{filename}"), fileHandler::getFile);
   }
 }

@@ -1,7 +1,11 @@
 package org.student.guestblog.service;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -9,6 +13,7 @@ import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Service;
 import org.student.guestblog.entity.Message;
 import org.student.guestblog.repository.MessageRepository;
+import org.student.guestblog.util.MimeTypesAndExtensions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,8 +39,20 @@ public class MessageService {
    * @return identifier of the new stored message.
    */
   public Mono<String> addMessage(Mono<Message> message) {
-    return message.log("message add")
-      .doOnNext(m -> m.setTimestamp(LocalDateTime.now())).log("message add: set timestamp")
+    return message
+      .doOnNext(m -> {
+        m.setTimestamp(LocalDateTime.now());
+        if (m.getFile() != null && !m.getFile().isEmpty()) {
+          String mime = m.getFile().substring(m.getFile().indexOf(":") + 1, m.getFile().indexOf(";"));
+          String filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
+          ObjectId file = gridFsOperations.store(
+            new ByteArrayInputStream(Base64.getDecoder().decode(m.getFile().split(",")[1])),
+            filename,
+            mime
+          );
+          m.setFile(filename);
+        }
+      }).log("message add: set timestamp and save file to GridFS")
       .flatMap(messageRepository::save).log("message add: save to database")
       .map(Message::getId).log("message add: map to id");
   }
@@ -48,7 +65,7 @@ public class MessageService {
   public Mono<Void> deleteMessage(Mono<String> messageId) {
     return messageId.log("message delete")
       .flatMap(messageRepository::findById).log("message delete: find by id")
-      .doOnNext(m -> gridFsOperations.delete(Query.query(Criteria.where("_id").is(m.getFile().toString()))))
+      .doOnNext(m -> gridFsOperations.delete(Query.query(Criteria.where("filename").is(m.getFile()))))
       .log("message delete: remove from GridFs")
       .flatMap(m -> messageRepository.deleteById(m.getId())).log("message delete: remove from repository");
   }
