@@ -10,7 +10,9 @@ class Message extends React.Component {
         <p>{this.props.title}</p>
         <p>{this.props.timestamp}</p>
         <p>{this.props.text}</p>
-        <img src={this.props.file} width="200px"/>
+        <a href={this.props.file}>
+          <img src={this.props.file} width="200px"/>
+        </a>
         <p/>
         <button onClick={() => delMessage(this.props.id)}>Delete</button>
       </div>
@@ -30,13 +32,11 @@ function onLoad() {
         </div>
         <hr/>
         <div>
-          {messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text}
-                                      file={
-                                        p.file !== undefined ?
-                                          p.file.filename !== undefined ? '/api/files/' + p.file.filename
-                                            : undefined
-                                          : undefined
-                                      }/>)
+          {
+            messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text}
+                                       file={p.file !== undefined ?
+                                         p.file.filename !== undefined ? '/api/files/' + p.file.filename
+                                           : undefined : undefined}/>)
           }
         </div>
       </div>,
