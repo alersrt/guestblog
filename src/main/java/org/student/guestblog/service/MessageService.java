@@ -44,7 +44,10 @@ public class MessageService {
         m.setTimestamp(LocalDateTime.now());
         if (m.getFile() != null && !m.getFile().isEmpty()) {
           String mime = m.getFile().substring(m.getFile().indexOf(":") + 1, m.getFile().indexOf(";"));
-          String filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
+          String filename = null;
+          while (gridFsOperations.findOne(Query.query(Criteria.where("filename").is(filename))) != null) {
+            filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
+          }
           ObjectId file = gridFsOperations.store(
             new ByteArrayInputStream(Base64.getDecoder().decode(m.getFile().split(",")[1])),
             filename,
