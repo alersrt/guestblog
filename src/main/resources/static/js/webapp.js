@@ -30,7 +30,14 @@ function onLoad() {
         </div>
         <hr/>
         <div>
-          {messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={p.file}/>)}
+          {messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text}
+                                      file={
+                                        p.file !== undefined ?
+                                          p.file.filename !== undefined ? '/api/files/' + p.file.filename
+                                            : undefined
+                                          : undefined
+                                      }/>)
+          }
         </div>
       </div>,
       document.getElementById('root'),
@@ -84,7 +91,10 @@ function addMessage() {
   instanceAxios.post('/messages/', {
     title: document.getElementById('message-title').value,
     text: document.getElementById('message-text').value,
-    file: document.getElementById('message-file').dataset.dataFile,
+    file: {
+      filename: document.getElementById('message-file').value,
+      data: document.getElementById('message-file').dataset.dataFile,
+    },
   }).then(function() {
     onCancelAddMessage();
     onLoad();
@@ -94,7 +104,7 @@ function addMessage() {
 }
 
 function delMessage(id) {
-  instanceAxios.delete('/messages/'+id).then(function() {
+  instanceAxios.delete('/messages/' + id).then(function() {
     onLoad();
   }).catch(function(error) {
     console.log(error);

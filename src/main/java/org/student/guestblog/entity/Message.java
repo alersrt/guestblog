@@ -1,13 +1,11 @@
 package org.student.guestblog.entity;
 
 import java.time.LocalDateTime;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /** Represents information about post. */
 @Data
@@ -24,7 +22,7 @@ public class Message {
   /** Body of the post. */
   private String text;
 
-  /** Unique name of the file. */
+  /** Attachment. */
   private ObjectId file;
 
   /** Time when this post was created or edited. */

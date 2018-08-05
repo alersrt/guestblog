@@ -35,6 +35,12 @@ Returns array of all messages in the next format (for example):
 ```
 If blog does not contain any message then `204` status code will have returned.
 
+
+### `GET /messages/{id}`
+
+Returns message by its id. In success case `200` status code will have returned and `204` (message not found) or `500` (hard exception) in otherwise.
+
+
 ### `POST /messages/`
 
 Adds messages in this blog. Format of the `PUT` request has the next view:
@@ -59,6 +65,10 @@ As answer service gives id of the added message:
 
 Removes message by its id. In success case `200` status code will have returned and `500` in otherwise.
 
+
+### `GET /files/{fileName}`
+
+Get file by its name.
 
 
 

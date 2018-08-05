@@ -31,12 +31,19 @@ public class DtoToMessage implements Converter<MessageDto, Message> {
     message.setText(messageDto.getText());
     message.setEdited(messageDto.isEdited());
 
-    if (messageDto.getFile() != null && !messageDto.getFile().isEmpty()) {
-      String filename = UUID.randomUUID().toString();
-      String mime = messageDto.getFile()
-        .substring(messageDto.getFile().indexOf(":") + 1, messageDto.getFile().indexOf(";"));
+    if (messageDto.getFile() != null && !messageDto.getFile().getData().isEmpty()) {
+      String fileBase64 = messageDto.getFile().getData();
+      String mime = fileBase64.substring(fileBase64.indexOf(":") + 1, fileBase64.indexOf(";"));
+
+      String originalFilename = messageDto.getFile().getFilename();
+      int dotIndex = originalFilename.lastIndexOf(".");
+      String extension = "";
+      if (dotIndex > -1) {
+        extension = "." + originalFilename.substring(dotIndex + 1);
+      }
+      String filename = UUID.randomUUID().toString() + extension;
       ObjectId file = gridFsOperations.store(
-        new ByteArrayInputStream(Base64.getDecoder().decode(messageDto.getFile().split(",")[1])),
+        new ByteArrayInputStream(Base64.getDecoder().decode(messageDto.getFile().getData().split(",")[1])),
         filename,
         mime
       );

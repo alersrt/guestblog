@@ -19,11 +19,18 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class RoutingConfiguration {
 
   private final MessageHandler messageHandler;
+  private final FileHandler fileHandler;
 
   @Bean
   RouterFunction<ServerResponse> messageRouterFunction() {
     return route(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessages)
+      .andRoute(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessage)
       .andRoute(POST("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::addMessage)
       .andRoute(DELETE("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::deleteMessage);
+  }
+
+  @Bean
+  RouterFunction<ServerResponse> fileRouterFunction() {
+    return route(GET("/api/files/{fileName}"), fileHandler::getFile);
   }
 }

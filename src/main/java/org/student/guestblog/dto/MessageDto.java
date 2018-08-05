@@ -19,8 +19,8 @@ public class MessageDto {
   /** Body of the post. */
   private String text;
 
-  /** Base64 represents of file. */
-  private String file;
+  /** Attachment */
+  private File file;
 
   /** Time when this post was created or edited. */
   private LocalDateTime timestamp;

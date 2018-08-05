@@ -41,4 +41,10 @@ public class MessageHandler {
     Mono<Void> result = messageService.deleteMessage(messageId);
     return ok().contentType(APPLICATION_JSON).body(result, Void.class);
   }
+
+  public Mono<ServerResponse> getMessage(ServerRequest request) {
+    Mono<String> messageId = Mono.just(request.pathVariable("id"));
+    Mono<MessageDto> result = messageService.getMessage(messageId).map(m -> converter.convert(m, MessageDto.class));
+    return ok().contentType(APPLICATION_JSON).body(result, MessageDto.class);
+  }
 }

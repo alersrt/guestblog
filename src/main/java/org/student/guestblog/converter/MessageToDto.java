@@ -1,17 +1,14 @@
 package org.student.guestblog.converter;
 
-import com.google.common.io.ByteStreams;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import java.io.IOException;
-import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.stereotype.Component;
+import org.student.guestblog.dto.File;
 import org.student.guestblog.dto.MessageDto;
 import org.student.guestblog.entity.Message;
 
@@ -33,19 +30,9 @@ public class MessageToDto implements Converter<Message, MessageDto> {
     messageDto.setTitle(message.getTitle());
     messageDto.setText(message.getText());
     messageDto.setEdited(message.isEdited());
-
     if (message.getFile() != null) {
-      GridFSFile file = gridFsOperations
-        .findOne(Query.query(Criteria.where("_id").is(message.getFile().toString())));
-      GridFsResource resource = gridFsOperations.getResource(file.getFilename());
-      String mime = resource.getContentType();
-      byte[] bytes = new byte[0];
-      try {
-        bytes = ByteStreams.toByteArray(resource.getInputStream());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      messageDto.setFile("data:" + mime + ";base64," + Base64.getEncoder().encodeToString(bytes));
+      GridFSFile file = gridFsOperations.findOne(Query.query(Criteria.where("_id").is(message.getFile().toString())));
+      messageDto.setFile(new File(file.getFilename(), message.getFile().toString()));
     }
 
     return messageDto;

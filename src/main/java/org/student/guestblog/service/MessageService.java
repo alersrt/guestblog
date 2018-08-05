@@ -54,6 +54,16 @@ public class MessageService {
   }
 
   /**
+   * Return message by its id.
+   *
+   * @param messageId identifier of a message.
+   * @return message.
+   */
+  public Mono<Message> getMessage(Mono<String> messageId) {
+    return messageRepository.findById(messageId);
+  }
+
+  /**
    * Returns list of all messages in JSON format.
    *
    * @return list of the messages.
