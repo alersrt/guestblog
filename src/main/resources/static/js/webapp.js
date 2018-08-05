@@ -7,8 +7,8 @@ class Message extends React.Component {
   render() {
     return (
       <div id={this.props.id}>
-        <p>{this.props.title}</p>
-        <p>{this.props.timestamp}</p>
+        <p><b>{this.props.title}</b></p>
+        <p><i>{this.props.timestamp}</i></p>
         <p>{this.props.text}</p>
         <a href={this.props.file}>
           <img src={this.props.file} width="200px"/>
@@ -16,6 +16,30 @@ class Message extends React.Component {
         <p/>
         <button onClick={() => delMessage(this.props.id)}>Delete</button>
       </div>
+    );
+  }
+}
+
+class NewMessage extends React.Component {
+  render() {
+    return (
+      <div id="new-message">
+        <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
+        <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"></textarea>
+        <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
+        <p/><img id="preview" height="200px" onClick={clearFile}/>
+        <p/>
+        <button onClick={onCancelAddMessage}>Cancel</button>
+        <button id="add-message" onClick={addMessage}>Submit</button>
+      </div>
+    );
+  }
+}
+
+class AddMessage extends React.Component {
+  render() {
+    return (
+      <button onClick={newMessage}>Add message</button>
     );
   }
 }
@@ -28,16 +52,16 @@ function onLoad() {
     ReactDOM.render(
       <div>
         <div id="util-root">
-          <button onClick={newMessage}>Add message</button>
+          <AddMessage/>
         </div>
         <hr/>
         <div>
-          {
-            messages.map(p => <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text}
-                                       file={p.file !== undefined ?
-                                         p.file.filename !== undefined ? '/api/files/' + p.file.filename
-                                           : undefined : undefined}/>)
-          }
+          {messages.map(p => {
+              let file = p.file !== undefined ? p.file.filename !== undefined ? '/api/files/' + p.file.filename
+                : undefined : undefined;
+              return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
+            },
+          )}
         </div>
       </div>,
       document.getElementById('root'),
@@ -49,22 +73,14 @@ function onLoad() {
 
 function newMessage() {
   ReactDOM.render(
-    <div id="new-message">
-      <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
-      <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"></textarea>
-      <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
-      <p/><img id="preview" height="200px" onClick={clearFile}/>
-      <p/>
-      <button onClick={onCancelAddMessage}>Cancel</button>
-      <button id="add-message" onClick={addMessage}>Submit</button>
-    </div>,
+    <NewMessage/>,
     document.getElementById('util-root'),
   );
 }
 
 function onCancelAddMessage() {
   ReactDOM.render(
-    <button onClick={newMessage}>Add message</button>,
+    <AddMessage/>,
     document.getElementById('util-root'),
   );
 }
