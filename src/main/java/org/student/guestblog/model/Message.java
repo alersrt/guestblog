@@ -1,4 +1,4 @@
-package org.student.guestblog.entity;
+package org.student.guestblog.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;

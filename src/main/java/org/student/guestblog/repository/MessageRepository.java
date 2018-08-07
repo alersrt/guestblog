@@ -2,7 +2,7 @@ package org.student.guestblog.repository;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
-import org.student.guestblog.entity.Message;
+import org.student.guestblog.model.Message;
 
 /** Represents MongoDB repository for the {@link Message} entity. */
 @Repository

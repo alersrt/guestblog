@@ -1,10 +1,9 @@
-package org.student.guestblog.entity;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+package org.student.guestblog.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /** Represents information about user which is stored in the database. */
 @Data

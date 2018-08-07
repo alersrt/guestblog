@@ -9,7 +9,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import org.student.guestblog.entity.Message;
+import org.student.guestblog.model.Message;
 import org.student.guestblog.service.MessageService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
