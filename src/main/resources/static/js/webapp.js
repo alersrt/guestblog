@@ -20,7 +20,7 @@ class Message extends React.Component {
   }
 }
 
-class NewMessage extends React.Component {
+class FormNewMessage extends React.Component {
   render() {
     return (
       <div id="new-message">
@@ -36,7 +36,7 @@ class NewMessage extends React.Component {
   }
 }
 
-class AddMessage extends React.Component {
+class FormAddMessage extends React.Component {
   render() {
     return (
       <button onClick={newMessage}>Add message</button>
@@ -52,7 +52,7 @@ function onLoad() {
     ReactDOM.render(
       <div>
         <div id="util-root">
-          <AddMessage/>
+          <FormAddMessage/>
         </div>
         <hr/>
         <div>
@@ -71,14 +71,14 @@ function onLoad() {
 
 function newMessage() {
   ReactDOM.render(
-    <NewMessage/>,
+    <FormNewMessage/>,
     document.getElementById('util-root'),
   );
 }
 
 function onCancelAddMessage() {
   ReactDOM.render(
-    <AddMessage/>,
+    <FormAddMessage/>,
     document.getElementById('util-root'),
   );
 }
