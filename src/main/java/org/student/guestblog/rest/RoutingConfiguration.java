@@ -20,6 +20,7 @@ public class RoutingConfiguration {
 
   private final MessageHandler messageHandler;
   private final FileHandler fileHandler;
+  private final UserHandler userHandler;
 
   @Bean
   RouterFunction<ServerResponse> messageRouterFunction() {
@@ -32,5 +33,10 @@ public class RoutingConfiguration {
   @Bean
   RouterFunction<ServerResponse> fileRouterFunction() {
     return route(GET("/api/files/{filename}"), fileHandler::getFile);
+  }
+
+  @Bean
+  RouterFunction<ServerResponse> userRouterFunction() {
+    return route(GET("/api/users"), userHandler::login);
   }
 }

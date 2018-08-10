@@ -6,6 +6,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -35,6 +36,7 @@ public class MessageHandler {
     return ok().contentType(APPLICATION_JSON).body(messageId, String.class);
   }
 
+  @PreAuthorize("hasAuthority('delete')")
   public Mono<ServerResponse> deleteMessage(ServerRequest request) {
     Mono<String> messageId = Mono.just(request.pathVariable("id"));
     Mono<Void> result = messageService.deleteMessage(messageId);
