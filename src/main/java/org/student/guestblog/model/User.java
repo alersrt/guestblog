@@ -2,7 +2,9 @@ package org.student.guestblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -14,6 +16,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /** Represents information about user which is stored in the database. */
@@ -53,7 +56,12 @@ public class User implements UserDetails {
 
   /** Authorities of this user. */
   @JsonIgnore
-  private List<GrantedAuthority> authorities;
+  private List<Role> roles;
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return roles.stream().map(Enum::name).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+  }
 
   @Override
   public boolean isAccountNonExpired() {

@@ -18,3 +18,9 @@ spring:
 logging:
   level:
     root: info
+security:
+  admin:
+    secret: ${ADMIN_SECRET:admin}
+  jwt:
+    secret: ${JWT_SECRET:verySecretJwtSecret}
+    expiration: 28800

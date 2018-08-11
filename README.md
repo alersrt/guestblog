@@ -2,6 +2,7 @@
 Guest blog with using such technology stack as Spring WebFlux, Spring Data, MongoDB and Spring Boot for autoconfiguration. You can to see the application [here][1]. This service has the next features:
 - REST-API
 - reactive code
+- JWT authorization (according to [article][5])
 - simple web-client with using of [ReactJS][2]
 - stores images in the [GridFS][3]
 
@@ -70,6 +71,45 @@ Removes message by its id. In success case `200` status code will have returned 
 
 Get file by its name.
 
+### `POST /users/register`
+
+Register a new user:
+```json
+{
+  "username": "<username>",
+  "password": "<password>",
+  "email": "<optional>"
+}
+```
+
+returned id of the user:
+```json
+{
+  "id": "<user's id>"
+}
+```
+
+### `POST /users/login`
+
+Returns token by username and password.
+
+Request:
+```json
+{
+  "username": "<username>",
+  "password": "<password>"
+}
+```
+
+Answer:
+```json
+{
+  "token": "<JSON web token>"
+}
+```
+
+
+
 
 
 
@@ -77,3 +117,4 @@ Get file by its name.
 [2]: https://reactjs.org/
 [3]: https://docs.mongodb.com/manual/core/gridfs/
 [4]: https://en.wikipedia.org/wiki/Base64
+[5]: https://medium.com/@ard333/authentication-and-authorization-using-jwt-on-spring-webflux-29b81f813e78

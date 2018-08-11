@@ -37,6 +37,9 @@ public class RoutingConfiguration {
 
   @Bean
   RouterFunction<ServerResponse> userRouterFunction() {
-    return route(GET("/api/users"), userHandler::login);
+    return route(POST("/api/users/register").and(accept(APPLICATION_JSON)), userHandler::register)
+      .andRoute(POST("/api/users/login").and(accept(APPLICATION_JSON)), userHandler::login);
+
+
   }
 }
