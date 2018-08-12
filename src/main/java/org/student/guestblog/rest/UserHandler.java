@@ -1,5 +1,7 @@
 package org.student.guestblog.rest;
 
+import static org.springframework.http.HttpStatus.ACCEPTED;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
@@ -28,14 +30,17 @@ public class UserHandler {
       .flatMap(authRequest -> userService.login(authRequest.getUsername(), authRequest.getPassword()))
       .map(AuthResponse::new)
       .switchIfEmpty(Mono.empty())
-      .flatMap(authResponse -> ok().contentType(APPLICATION_JSON).body(Mono.just(authResponse), AuthResponse.class))
+      .flatMap(authResponse -> status(ACCEPTED).contentType(APPLICATION_JSON)
+        .body(Mono.just(authResponse), AuthResponse.class))
       .switchIfEmpty(status(HttpStatus.UNAUTHORIZED).build());
   }
 
   public Mono<ServerResponse> register(ServerRequest request) {
     return request.bodyToMono(User.class)
       .flatMap(userService::save)
-      .flatMap(user -> ok().contentType(APPLICATION_JSON).body(Mono.just(Map.of("id", user.getId())), Map.class));
+      .flatMap(user -> status(CREATED).contentType(APPLICATION_JSON)
+        .body(Mono.just(Map.of("id", user.getId())), Map.class))
+      .switchIfEmpty(status(HttpStatus.CONFLICT).build());
   }
 
   public Mono<ServerResponse> getCurrentUser(ServerRequest request) {

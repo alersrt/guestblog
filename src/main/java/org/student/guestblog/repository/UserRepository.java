@@ -16,4 +16,12 @@ public interface UserRepository extends ReactiveMongoRepository<User, String> {
    * @return user.
    */
   Mono<User> findByUsername(String username);
+
+  /**
+   * Checks if user with specified username exists.
+   *
+   * @param username user's username.
+   * @return checking result.
+   */
+  Mono<Boolean> existsByUsername(String username);
 }

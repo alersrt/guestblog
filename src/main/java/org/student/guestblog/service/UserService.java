@@ -69,10 +69,13 @@ public class UserService implements ReactiveUserDetailsService {
    * @return saved entity.
    */
   public Mono<User> save(User user) {
+    user.setUsername(user.getUsername().toLowerCase());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRoles(List.of(Role.USER));
-
-    return userRepository.save(user).log("register: save");
+    return userRepository.existsByUsername(user.getUsername())
+      .flatMap(isExist -> isExist || "admin".equals(user.getUsername()) || "anonymous".equals(user.getUsername())
+        ? Mono.empty()
+        : userRepository.save(user));
   }
 
   /**
