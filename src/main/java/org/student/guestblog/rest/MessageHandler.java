@@ -3,6 +3,7 @@ package org.student.guestblog.rest;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -30,20 +31,19 @@ public class MessageHandler {
   }
 
   public Mono<ServerResponse> addMessage(ServerRequest request) {
-    Mono<Message> message = request.bodyToMono(Message.class);
-    Mono<String> messageId = messageService.addMessage(message);
-    return ok().contentType(APPLICATION_JSON).body(messageId, String.class);
+    return request.bodyToMono(Message.class)
+      .flatMap(messageService::addMessage)
+      .map(s -> Map.of("id", s))
+      .flatMap(s -> ok().contentType(APPLICATION_JSON).body(Mono.just(s), Map.class));
   }
 
   public Mono<ServerResponse> deleteMessage(ServerRequest request) {
-    Mono<String> messageId = Mono.just(request.pathVariable("id"));
-    Mono<Void> result = messageService.deleteMessage(messageId);
-    return ok().contentType(APPLICATION_JSON).body(result, Void.class);
+    return messageService.deleteMessage(request.pathVariable("id"))
+      .flatMap(v -> ok().build());
   }
 
   public Mono<ServerResponse> getMessage(ServerRequest request) {
-    Mono<String> messageId = Mono.just(request.pathVariable("id"));
-    Mono<Message> message = messageService.getMessage(messageId);
-    return ok().contentType(APPLICATION_JSON).body(message, Message.class);
+    return messageService.getMessage(request.pathVariable("id"))
+      .flatMap(m -> ok().contentType(APPLICATION_JSON).body(Mono.just(m), Message.class));
   }
 }

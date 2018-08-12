@@ -33,28 +33,29 @@ public class MessageService {
   private final MessageRepository messageRepository;
 
   /**
+   * Instance of the {@link UserService} object.
+   */
+  private final UserService userService;
+
+  /**
    * Add message to repository and returns id of the added message.
    *
    * @param message source of the new message.
    * @return identifier of the new stored message.
    */
-  public Mono<String> addMessage(Mono<Message> message) {
-    return message
-      .doOnNext(m -> {
-        m.setTimestamp(LocalDateTime.now());
-        if (m.getFile() != null && !m.getFile().isEmpty()) {
-          String mime = m.getFile().substring(m.getFile().indexOf(":") + 1, m.getFile().indexOf(";"));
-          String filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
-          ObjectId file = gridFsOperations.store(
-            new ByteArrayInputStream(Base64.getDecoder().decode(m.getFile().split(",")[1])),
-            filename,
-            mime
-          );
-          m.setFile(filename);
-        }
-      }).log("message add: set timestamp and save file to GridFS")
-      .flatMap(messageRepository::save).log("message add: save to database")
-      .map(Message::getId).log("message add: map to id");
+  public Mono<String> addMessage(Message message) {
+    message.setTimestamp(LocalDateTime.now());
+    if (message.getFile() != null && !message.getFile().isEmpty()) {
+      String mime = message.getFile().substring(message.getFile().indexOf(":") + 1, message.getFile().indexOf(";"));
+      String filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
+      ObjectId file = gridFsOperations.store(
+        new ByteArrayInputStream(Base64.getDecoder().decode(message.getFile().split(",")[1])),
+        filename,
+        mime
+      );
+      message.setFile(filename);
+    }
+    return messageRepository.save(message).map(Message::getId);
   }
 
   /**
@@ -62,10 +63,10 @@ public class MessageService {
    *
    * @param messageId received id of message.
    */
-  public Mono<Void> deleteMessage(Mono<String> messageId) {
-    return messageId.log("message delete")
-      .flatMap(messageRepository::findById).log("message delete: find by id")
-      .doOnNext(m -> gridFsOperations.delete(Query.query(Criteria.where("filename").is(m.getFile()))))
+  public Mono<Void> deleteMessage(String messageId) {
+    return messageRepository.findById(messageId)
+      .log("message delete: find by id")
+      .doOnNext( m -> gridFsOperations.delete(Query.query(Criteria.where("filename").is(m.getFile()))))
       .log("message delete: remove from GridFs")
       .flatMap(m -> messageRepository.deleteById(m.getId())).log("message delete: remove from repository");
   }
@@ -76,7 +77,7 @@ public class MessageService {
    * @param messageId identifier of a message.
    * @return message.
    */
-  public Mono<Message> getMessage(Mono<String> messageId) {
+  public Mono<Message> getMessage(String messageId) {
     return messageRepository.findById(messageId);
   }
 

@@ -46,7 +46,7 @@ public class SecurityConfig {
       .pathMatchers(HttpMethod.GET).permitAll()
       .pathMatchers("/api/users/register").permitAll()
       .pathMatchers("/api/users/login").permitAll()
-      .anyExchange().authenticated()
+      .anyExchange().permitAll()
       .and()
       .build();
   }
