@@ -55,7 +55,10 @@ public class MessageService {
       );
       message.setFile(filename);
     }
-    return messageRepository.save(message).map(Message::getId);
+    return messageRepository.save(message)
+      .log("add message: save message")
+      .map(Message::getId)
+      .log("add message: get added message id");
   }
 
   /**
@@ -66,7 +69,7 @@ public class MessageService {
   public Mono<Void> deleteMessage(String messageId) {
     return messageRepository.findById(messageId)
       .log("message delete: find by id")
-      .doOnNext( m -> gridFsOperations.delete(Query.query(Criteria.where("filename").is(m.getFile()))))
+      .doOnNext(m -> gridFsOperations.delete(Query.query(Criteria.where("filename").is(m.getFile()))))
       .log("message delete: remove from GridFs")
       .flatMap(m -> messageRepository.deleteById(m.getId())).log("message delete: remove from repository");
   }

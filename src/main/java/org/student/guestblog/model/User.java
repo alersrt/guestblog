@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 /** Represents information about user which is stored in the database. */
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Document
 public class User implements UserDetails {
 
@@ -39,7 +37,6 @@ public class User implements UserDetails {
   private String username;
 
   /** Hash code of the user password. */
-  @JsonProperty("password")
   @NotBlank
   @NonNull
   private String password;
@@ -55,29 +52,44 @@ public class User implements UserDetails {
   private List<Message> messages;
 
   /** Authorities of this user. */
-  @JsonIgnore
   private List<Role> roles;
 
+  @JsonIgnore
+  @Override
+  public String getPassword() {
+    return password;
+  }
+
+  @JsonProperty("password")
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  @JsonIgnore
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return roles.stream().map(Enum::name).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }
 
+  @JsonIgnore
   @Override
   public boolean isAccountNonExpired() {
     return true;
   }
 
+  @JsonIgnore
   @Override
   public boolean isAccountNonLocked() {
     return true;
   }
 
+  @JsonIgnore
   @Override
   public boolean isCredentialsNonExpired() {
     return true;
   }
 
+  @JsonIgnore
   @Override
   public boolean isEnabled() {
     return true;

@@ -4,7 +4,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static org.springframework.web.reactive.function.server.ServerResponse.status;
 
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +35,12 @@ public class UserHandler {
   public Mono<ServerResponse> register(ServerRequest request) {
     return request.bodyToMono(User.class)
       .flatMap(userService::save)
-      .flatMap(user -> {
-        Map<String, String> answer = new HashMap<>();
-        answer.put("id", user.getId());
-        return ok().contentType(APPLICATION_JSON).body(Mono.just(answer), Map.class);
-      });
+      .flatMap(user -> ok().contentType(APPLICATION_JSON).body(Mono.just(Map.of("id", user.getId())), Map.class));
+  }
+
+  public Mono<ServerResponse> getCurrentUser(ServerRequest request) {
+    return userService.getCurrentUser()
+      .flatMap(user -> ok().contentType(APPLICATION_JSON).body(Mono.just(user), User.class))
+      .switchIfEmpty(status(HttpStatus.NOT_FOUND).build());
   }
 }

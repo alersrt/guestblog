@@ -6,7 +6,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,9 +17,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 @Component
 public class MessageHandler {
-
-  /** Instance of the {@link ConversionService} object. */
-  private final ConversionService converter;
 
   /** Instance of the {@link MessageService}. */
   private final MessageService messageService;

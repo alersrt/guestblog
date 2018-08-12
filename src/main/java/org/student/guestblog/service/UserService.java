@@ -1,8 +1,14 @@
 package org.student.guestblog.service;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +23,7 @@ import reactor.core.publisher.Mono;
  */
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService implements ReactiveUserDetailsService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -26,21 +32,34 @@ public class UserService {
   @Value("${security.admin.secret}")
   private String adminSecret;
 
+  @Override
+  public Mono<UserDetails> findByUsername(String username) {
+    return this.getByUsername(username).map(Function.identity());
+  }
+
   /**
    * Return user by its username.
    *
    * @param username user's username.
    * @return user.
    */
-  public Mono<User> findByUsername(String username) {
+  public Mono<User> getByUsername(String username) {
     User admin = new User();
     admin.setUsername("admin");
     admin.setPassword(passwordEncoder.encode(adminSecret));
     admin.setRoles(List.of(Role.ADMIN));
 
-    return "admin".equals(username)
-      ? Mono.just(admin)
-      : userRepository.findByUsername(username);
+    User anonymous = new User();
+    anonymous.setUsername("anonymous");
+    anonymous.setRoles(List.of(Role.ANONYMOUS));
+
+    if ("admin".equals(username)) {
+      return Mono.just(admin);
+    } else if ("anonymous".equals(username)) {
+      return Mono.just(anonymous);
+    } else {
+      return userRepository.findByUsername(username);
+    }
   }
 
   /**
@@ -64,11 +83,25 @@ public class UserService {
    * @return JSON web token.
    */
   public Mono<String> login(String username, String password) {
-    return findByUsername(username)
+    return this.getByUsername(username)
       .log("login: find by username")
       .flatMap(user -> passwordEncoder.matches(password, user.getPassword())
         ? Mono.just(tokenProvider.generateToken(user))
         : Mono.empty())
       .log("login: return token");
+  }
+
+  /**
+   * Returns current user.
+   *
+   * @return current user.
+   */
+  public Mono<User> getCurrentUser() {
+    return ReactiveSecurityContextHolder.getContext()
+      .map(SecurityContext::getAuthentication)
+      .map(Principal::getName)
+      .log("get current user: get user's name")
+      .flatMap(this::getByUsername)
+      .log("get current user: find by username");
   }
 }

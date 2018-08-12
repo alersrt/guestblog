@@ -3,15 +3,18 @@ package org.student.guestblog.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.student.guestblog.security.AuthenticationManager;
 import org.student.guestblog.security.SecurityContextRepository;
+import org.student.guestblog.service.UserService;
 
 /** Spring Security configuration. */
 @Configuration
@@ -24,6 +27,9 @@ public class SecurityConfig {
 
   @Autowired
   private SecurityContextRepository securityContextRepository;
+
+  @Autowired
+  private UserService userService;
 
   /**
    * Register and configures {@link SecurityWebFilterChain}. There is configured access for http requests.
@@ -46,9 +52,21 @@ public class SecurityConfig {
       .pathMatchers(HttpMethod.GET).permitAll()
       .pathMatchers("/api/users/register").permitAll()
       .pathMatchers("/api/users/login").permitAll()
+      .pathMatchers("/api/users/current").permitAll()
       .anyExchange().permitAll()
       .and()
       .build();
+  }
+
+  /**
+   * Returns default user details service.
+   *
+   * @return {@link ReactiveUserDetailsService} bean.
+   */
+  @Bean
+  @Primary
+  public ReactiveUserDetailsService userDetailsService() {
+    return userService;
   }
 
   /**
