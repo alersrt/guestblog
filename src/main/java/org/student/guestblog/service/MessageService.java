@@ -1,11 +1,9 @@
 package org.student.guestblog.service;
 
 import java.io.ByteArrayInputStream;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -44,11 +42,10 @@ public class MessageService {
    * @return identifier of the new stored message.
    */
   public Mono<String> addMessage(Message message) {
-    message.setTimestamp(LocalDateTime.now());
     if (message.getFile() != null && !message.getFile().isEmpty()) {
       String mime = message.getFile().substring(message.getFile().indexOf(":") + 1, message.getFile().indexOf(";"));
       String filename = UUID.randomUUID().toString() + "." + MimeTypesAndExtensions.getDefaultExt(mime);
-      ObjectId file = gridFsOperations.store(
+      gridFsOperations.store(
         new ByteArrayInputStream(Base64.getDecoder().decode(message.getFile().split(",")[1])),
         filename,
         mime
