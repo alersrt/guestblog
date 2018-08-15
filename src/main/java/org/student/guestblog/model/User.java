@@ -2,6 +2,7 @@ package org.student.guestblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +10,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -37,6 +40,8 @@ public class User implements UserDetails {
   private String username;
 
   /** Hash code of the user password. */
+  @Getter(onMethod = @__(@JsonIgnore))
+  @Setter(onMethod = @__(@JsonProperty("password")))
   @NotBlank
   @NonNull
   private String password;
@@ -48,22 +53,11 @@ public class User implements UserDetails {
 
   /** List of the user's messages. */
   @JsonIgnore
-  @DBRef(db = "message")
-  private List<Message> messages;
+  @DBRef(db = "message", lazy = true)
+  private List<Message> messages = new ArrayList<>();
 
   /** Authorities of this user. */
-  private List<Role> roles;
-
-  @JsonIgnore
-  @Override
-  public String getPassword() {
-    return password;
-  }
-
-  @JsonProperty("password")
-  public void setPassword(String password) {
-    this.password = password;
-  }
+  private List<Role> roles = new ArrayList<>();
 
   @JsonIgnore
   @Override

@@ -43,11 +43,11 @@ public class Message {
   private Date timestamp;
 
   /** Flag determines was this post edited or no. */
-  @JsonProperty("isEdited")
-  private boolean isEdited;
+  @JsonProperty("edited")
+  private boolean edited;
 
   /** Author of this post. */
   @JsonProperty("user")
-  @DBRef(db = "user")
+  @DBRef(db = "user", lazy = true)
   private User user;
 }
