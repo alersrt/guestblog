@@ -12,6 +12,7 @@
 !docker-compose.yml
 !lombok.config
 !Procfile
+!system.properties
 !Makefile
 !README.md
 !CONTRIBUTING.md
