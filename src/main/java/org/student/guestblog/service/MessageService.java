@@ -52,10 +52,7 @@ public class MessageService {
       );
       message.setFile(filename);
     }
-    return userService.getCurrentUser()
-      .doOnNext(message::setUser)
-      .map(user -> message)
-      .flatMap(messageRepository::save)
+    return messageRepository.save(message)
       .log("add message: save message")
       .map(Message::getId)
       .log("add message: get added message id");
