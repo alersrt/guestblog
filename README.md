@@ -10,7 +10,7 @@ The main goal of this application is studying technology stack which was specifi
 
 
 
-## REST API
+## 1. REST API
 
 
 ### `GET /messages/`
@@ -89,7 +89,7 @@ returned id of the user:
 }
 ```
 
-### `POST /users/login`
+### `POST /users/signin`
 
 Returns token by username and password.
 

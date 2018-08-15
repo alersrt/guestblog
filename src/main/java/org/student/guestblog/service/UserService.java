@@ -103,6 +103,7 @@ public class UserService implements ReactiveUserDetailsService {
     return ReactiveSecurityContextHolder.getContext()
       .map(SecurityContext::getAuthentication)
       .map(Principal::getName)
+      .switchIfEmpty(Mono.just("anonymous"))
       .log("get current user: get user's name")
       .flatMap(this::getByUsername)
       .log("get current user: find by username");
