@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -47,7 +48,7 @@ public class Message {
   private boolean edited;
 
   /** Author of this post. */
-  @JsonProperty("user")
+  @Getter(onMethod = @__(@JsonProperty("user")))
   @DBRef(db = "user", lazy = true)
   private User user;
 }
