@@ -25,7 +25,7 @@ public class RoutingConfiguration {
   @Bean
   RouterFunction<ServerResponse> messageRouterFunction() {
     return route(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessages)
-      .andRoute(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessage)
+      .andRoute(GET("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::getMessage)
       .andRoute(POST("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::addMessage)
       .andRoute(DELETE("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::deleteMessage);
   }

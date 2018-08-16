@@ -1,6 +1,7 @@
 package org.student.guestblog.rest;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 import java.util.Map;
@@ -40,6 +41,7 @@ public class MessageHandler {
 
   public Mono<ServerResponse> getMessage(ServerRequest request) {
     return messageService.getMessage(request.pathVariable("id"))
-      .flatMap(m -> ok().contentType(APPLICATION_JSON).body(Mono.just(m), Message.class));
+      .flatMap(m -> ok().contentType(APPLICATION_JSON).body(Mono.just(m), Message.class))
+      .switchIfEmpty(noContent().build());
   }
 }

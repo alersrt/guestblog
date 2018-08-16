@@ -194,5 +194,5 @@ function addMessage() {
 }
 
 function delMessage(id) {
-  instanceAxios.delete('/messages/' + id).then(showMessages()).catch(error => console.log(error));
+  instanceAxios.delete('/messages/' + id).then(() => showMessages()).catch(error => console.log(error));
 }
