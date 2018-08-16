@@ -9,7 +9,7 @@ instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorag
 class Message extends React.Component {
   render() {
     return (
-      <div id={this.props.id} style={{display: 'inline-block', width: '30%'}}>
+      <div id={this.props.id} className="inline">
         <p><b>{this.props.title}</b></p>
         <p><i>{this.props.timestamp}</i></p>
         <p>{this.props.text}</p>
@@ -57,9 +57,9 @@ onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(er
 async function onLoad() {
   return ReactDOM.render(
     <div>
-      <div style={{display: 'flex', 'align-items': 'top'}}>
-        <div id="greeting" valign="top" style={{display: 'inline-block', width: '50%'}}/>
-        <div id="login" align="right" style={{display: 'inline-block', width: '50%'}}>
+      <div className="bar">
+        <div id="greeting" className="inline"/>
+        <div id="login" className="inline" align="right">
           <div>{login()}</div>
         </div>
       </div>

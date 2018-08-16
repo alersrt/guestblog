@@ -1,6 +1,18 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 .messages {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-content: flex-start;
+}
+
+.inline {
+  display: inline-block;
+  width: 20rem;
 }
