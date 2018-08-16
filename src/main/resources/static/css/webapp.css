@@ -5,14 +5,45 @@
   justify-content: space-between;
 }
 
+.bar-element {
+  display: inline-block;
+  width: 50%;
+}
+
 .messages {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  justify-content: space-evenly;
+  justify-content: flex-start;
 }
 
-.inline {
-  display: inline-block;
+.message {
+  display: flex;
+  flex-direction: column;
   width: 20rem;
+  padding: 1rem;
+  margin: 1rem;
+  border: black solid 1px;
+  border-radius: 5px;
+}
+
+.message[id^='message-id-'] > p[name="message-title"] {
+  font-weight: bold;
+}
+
+.message[id^='message-id-'] > p[name="message-timestamp"] {
+  font-style: italic;
+  font-size: .8rem;
+}
+
+.message[id^='message-id-'] > p[name="message-text"] {
+  font-style: normal;
+}
+
+.message[id^='message-id-'] > button {
+  margin-top: auto;
+}
+
+hr {
+  border: black solid 1px;
 }

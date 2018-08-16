@@ -9,12 +9,12 @@ instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorag
 class Message extends React.Component {
   render() {
     return (
-      <div id={this.props.id} className="inline">
-        <p><b>{this.props.title}</b></p>
-        <p><i>{this.props.timestamp}</i></p>
-        <p>{this.props.text}</p>
+      <div id={'message-id-' + this.props.id} className="message">
+        <p name="message-title">{this.props.title}</p>
+        <p name="message-timestamp">{this.props.timestamp}</p>
+        <p name="message-text">{this.props.text}</p>
         <a href={this.props.file}>
-          <img src={this.props.file} width="200px"/>
+          <img name="message-file" src={this.props.file} width="200px"/>
         </a>
         <p/>
         <button onClick={() => delMessage(this.props.id)}>Delete</button>
@@ -56,20 +56,20 @@ onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(er
 
 async function onLoad() {
   return ReactDOM.render(
-    <div>
+    [
       <div className="bar">
-        <div id="greeting" className="inline"/>
-        <div id="login" className="inline" align="right">
+        <div id="greeting" className="bar-element"/>
+        <div id="login" className="bar-element" align="right">
           <div>{login()}</div>
         </div>
-      </div>
-      <hr/>
+      </div>,
+      <hr/>,
       <div id="util-root">
         <button onClick={() => showNewMessageForm()}>Add message</button>
-      </div>
-      <hr/>
-      <div id="messages"/>
-    </div>,
+      </div>,
+      <hr/>,
+      <div id="messages" className="messages"/>,
+    ],
     document.getElementById('root'),
   );
 }
@@ -124,14 +124,10 @@ async function showMessages() {
   let messages = await getMessages();
 
   return ReactDOM.render(
-    <div className="messages">
-      {
-        messages.map(p => {
-          let file = p.file !== undefined ? '/api/files/' + p.file : undefined;
-          return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
-        })
-      }
-    </div>,
+    messages.map(p => {
+      let file = p.file !== undefined ? '/api/files/' + p.file : undefined;
+      return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
+    }),
     document.getElementById('messages'),
   );
 }
