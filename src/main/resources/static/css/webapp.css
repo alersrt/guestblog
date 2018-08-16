@@ -27,17 +27,22 @@
   border-radius: 5px;
 }
 
-.message[id^='message-id-'] > p[name="message-title"] {
+.message[id^='message-id-'] > p[id="message-title"] {
   font-weight: bold;
 }
 
-.message[id^='message-id-'] > p[name="message-timestamp"] {
+.message[id^='message-id-'] > p[id="message-timestamp"] {
   font-style: italic;
   font-size: .8rem;
 }
 
-.message[id^='message-id-'] > p[name="message-text"] {
+.message[id^='message-id-'] > p[id="message-text"] {
   font-style: normal;
+}
+
+.message[id^='message-id-'] > img {
+  width: 100%;
+  height: auto;
 }
 
 .message[id^='message-id-'] > button {

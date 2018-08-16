@@ -6,17 +6,22 @@ const instanceAxios = axios.create({
 });
 instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
+onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(error));
+
 class Message extends React.Component {
   render() {
+    let date = new Date(this.props.timestamp);
+    let id = this.props.id;
+    let title = this.props.title;
+    let text = this.props.text;
+    let file = this.props.file;
+
     return (
-      <div id={'message-id-' + this.props.id} className="message">
-        <p name="message-title">{this.props.title}</p>
-        <p name="message-timestamp">{this.props.timestamp}</p>
-        <p name="message-text">{this.props.text}</p>
-        <a href={this.props.file}>
-          <img name="message-file" src={this.props.file} width="200px"/>
-        </a>
-        <p/>
+      <div id={'message-id-' + id} className="message">
+        <p id="message-title">{title}</p>
+        <p id="message-timestamp">{date.toUTCString()}</p>
+        <p id="message-text">{text}</p>
+        <img src={file}/>
         <button onClick={() => delMessage(this.props.id)}>Delete</button>
       </div>
     );
@@ -51,8 +56,6 @@ class LoginForm extends React.Component {
     );
   }
 }
-
-onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(error));
 
 async function onLoad() {
   return ReactDOM.render(
