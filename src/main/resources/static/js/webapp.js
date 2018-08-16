@@ -9,7 +9,7 @@ instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorag
 class Message extends React.Component {
   render() {
     return (
-      <div id={this.props.id}>
+      <div id={this.props.id} style={{display: 'inline-block', width: '30%'}}>
         <p><b>{this.props.title}</b></p>
         <p><i>{this.props.timestamp}</i></p>
         <p>{this.props.text}</p>
@@ -57,9 +57,11 @@ onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(er
 async function onLoad() {
   return ReactDOM.render(
     <div>
-      <div id="greeting"/>
-      <div id="login">
-        <div>{login()}</div>
+      <div style={{display: 'flex', 'align-items': 'top'}}>
+        <div id="greeting" valign="top" style={{display: 'inline-block', width: '50%'}}/>
+        <div id="login" align="right" style={{display: 'inline-block', width: '50%'}}>
+          <div>{login()}</div>
+        </div>
       </div>
       <hr/>
       <div id="util-root">
@@ -122,7 +124,7 @@ async function showMessages() {
   let messages = await getMessages();
 
   return ReactDOM.render(
-    <div>
+    <div className="messages">
       {
         messages.map(p => {
           let file = p.file !== undefined ? '/api/files/' + p.file : undefined;
