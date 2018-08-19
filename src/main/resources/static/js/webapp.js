@@ -6,9 +6,19 @@ const instanceAxios = axios.create({
 });
 instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-onLoad().then(showGreeting()).then(showMessages()).catch(error => console.log(error));
+function getMessages() {
+  return instanceAxios.get('/messages/').
+  then(response => this.setState({messages: response.data})).
+  catch(error => console.log(error));
+}
 
 class Message extends React.Component {
+  delMessage(id) {
+    instanceAxios.delete('/messages/' + id).then(() => {
+      getMessages();
+    }).catch(error => console.log(error));
+  }
+
   render() {
     let date = new Date(this.props.timestamp);
     let id = this.props.id;
@@ -22,178 +32,172 @@ class Message extends React.Component {
         <p id="message-timestamp">{date.toUTCString()}</p>
         <p id="message-text">{text}</p>
         <img src={file}/>
-        <button onClick={() => delMessage(this.props.id)}>Delete</button>
+        <p/>
+        <button onClick={() => this.delMessage(this.props.id)}>Delete</button>
       </div>
     );
   }
 }
 
-class NewMessageForm extends React.Component {
+class Messages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [],
+    };
+
+    getMessages = getMessages.bind(this);
+    getMessages();
+  }
+
   render() {
-    return (
-      <div id="new-message">
-        <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
-        <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"></textarea>
-        <p/><input type="file" id="message-file" data-file="" onChange={loadFile}/>
-        <p/><img id="preview" height="200px" onClick={clearFile}/>
-        <p/>
-        <button onClick={hideNewMessageForm}>Cancel</button>
-        <button id="add-message" onClick={addMessage}>Submit</button>
-      </div>
-    );
+    let messages = this.state.messages;
+
+    return <div className="messages">
+      {messages.map(m => {
+        let file = m.file !== undefined ? '/api/files/' + m.file : undefined;
+        return <Message id={m.id} timestamp={m.timestamp} title={m.title} text={m.text} file={file}/>;
+      })}
+    </div>;
+  }
+}
+
+class NewMessage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      addState: false,
+    };
+  }
+
+  loadFile() {
+    document.getElementById('add-message').disabled = true;
+    let files = document.querySelector('input[type=file]').files;
+    let reader = new FileReader();
+    reader.onloadend = function() {
+      document.getElementById('message-file').dataset.dataFile = reader.result.toString();
+      document.getElementById('preview').src = reader.result.toString();
+      document.getElementById('add-message').disabled = false;
+    };
+    reader.readAsDataURL(files[0]);
+  }
+
+  clearFile() {
+    document.getElementById('message-file').value = '';
+    document.getElementById('message-file').dataset.dataFile = '';
+    document.getElementById('preview').src = '';
+  }
+
+  addMessage() {
+    instanceAxios.post('/messages/', {
+      title: document.getElementById('message-title').value,
+      text: document.getElementById('message-text').value,
+      file: document.getElementById('message-file').dataset.dataFile,
+    }).then(() => {
+      this.setState({addState: false});
+      getMessages();
+    }).catch(function(error) {
+      console.log(error);
+    });
+  }
+
+  render() {
+    let newMessageForm = <div id="new-message">
+      <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
+      <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"/>
+      <p/><input type="file" id="message-file" data-file="" onChange={() => this.loadFile()}/>
+      <p/><img id="preview" height="200px" onClick={() => this.clearFile()}/>
+      <p/>
+      <button onClick={() => this.setState({addState: false})}>Cancel</button>
+      <button id="add-message" onClick={() => this.addMessage()}>Submit</button>
+    </div>;
+    let newMessageButton = <button onClick={() => this.setState({addState: true})}>New Message</button>;
+
+    return (this.state.addState ? newMessageForm : newMessageButton);
+  }
+}
+
+class Greeting extends React.Component {
+  render() {
+    let username = this.props.username;
+    return <p>Hello, <b>{username}!</b></p>;
   }
 }
 
 class LoginForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loginState: false,
+      signed: localStorage.hasOwnProperty('token'),
+      username: '',
+    };
+
+    this.getUser();
+  }
+
+  getUser() {
+    instanceAxios.get('/users/current').
+    then(response => this.setState({username: response.data.username})).
+    catch(error => console.log(error));
+  }
+
+  signIn() {
+    instanceAxios.post('/users/signin', {
+      username: document.getElementById('username-input').value,
+      password: document.getElementById('password-input').value,
+    }).then(response => {
+        let token = response.data.token;
+        localStorage.setItem('token', token);
+        instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        this.getUser();
+        this.setState({signed: true, loginState: false});
+      },
+    ).catch(error => console.log(error));
+  }
+
+  signOut() {
+    localStorage.removeItem('token');
+    delete instanceAxios.defaults.headers.common['Authorization'];
+    this.getUser();
+    this.setState({signed: false});
+  }
+
   render() {
+    let greeting = <Greeting id="greeting" className="bar-element" username={this.state.username}/>;
+    let loginForm = <div className="bar-element" align="right">
+      <p><label htmlFor="username-input">Username:</label><input id="username-input"/></p>
+      <p><label htmlFor="password-input">Password:</label><input id="password-input"/></p>
+      <button onClick={() => this.setState({loginState: false})}>Cancel</button>
+      <button onClick={() => this.signIn()}>Sign In</button>
+    </div>;
+    let loginButton = this.state.signed
+      ? <div className="bar-element" align="right">
+        <button onClick={() => this.signOut()}>Sign Out</button>
+      </div>
+      : <div>
+        <button onClick={() => this.setState({loginState: true})}>Sign In</button>
+      </div>;
+
     return (
-      <div>
-        <p><label htmlFor="username-input">Username:</label><input id="username-input"/></p>
-        <p><label htmlFor="password-input">Password:</label><input id="password-input"/></p>
-        <button onClick={() => hideLogin()}>Cancel</button>
-        <button onClick={() => signIn()}>Submit</button>
+      <div className="bar">
+        {[greeting, this.state.loginState ? loginForm : loginButton]}
       </div>
     );
   }
 }
 
-async function onLoad() {
-  return ReactDOM.render(
-    [
-      <div className="bar">
-        <div id="greeting" className="bar-element"/>
-        <div id="login" className="bar-element" align="right">
-          <div>{login()}</div>
-        </div>
-      </div>,
+class Application extends React.Component {
+  render() {
+    return ([
+      <LoginForm/>,
       <hr/>,
-      <div id="util-root">
-        <button onClick={() => showNewMessageForm()}>Add message</button>
-      </div>,
+      <NewMessage/>,
       <hr/>,
-      <div id="messages" className="messages"/>,
-    ],
-    document.getElementById('root'),
-  );
+      <Messages/>,
+    ]);
+  }
 }
 
-async function getUser() {
-  return instanceAxios.get('/users/current').then(response => response.data).catch(error => console.log(error));
-}
+ReactDOM.render(<Application/>, document.getElementById('root'));
 
-function login() {
-  return localStorage.hasOwnProperty('token')
-    ? <button onClick={() => signOut()}>SignOut</button>
-    : <button onClick={() => showLogin()}>SignIn</button>;
-}
-
-async function signIn() {
-  instanceAxios.post('/users/signin', {
-    username: document.getElementById('username-input').value,
-    password: document.getElementById('password-input').value,
-  }).then(response => {
-      let token = response.data.token;
-      localStorage.setItem('token', token);
-      instanceAxios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      hideLogin();
-      showGreeting().catch(error => console.log(error));
-    },
-  ).catch(error => console.log(error));
-}
-
-async function signOut() {
-  localStorage.removeItem('token');
-  delete instanceAxios.defaults.headers.common['Authorization'];
-  hideLogin();
-  showGreeting().catch(error => console.log(error));
-}
-
-async function getMessages() {
-  return instanceAxios.get('/messages/').then(response => response.data).catch(error => console.log(error));
-}
-
-async function showGreeting() {
-  let user = await getUser();
-
-  return ReactDOM.render(
-    <div>
-      <p>Hello, <b>{user.username}!</b></p>
-    </div>,
-    document.getElementById('greeting'),
-  );
-}
-
-async function showMessages() {
-  let messages = await getMessages();
-
-  return ReactDOM.render(
-    messages.map(p => {
-      let file = p.file !== undefined ? '/api/files/' + p.file : undefined;
-      return <Message id={p.id} timestamp={p.timestamp} title={p.title} text={p.text} file={file}/>;
-    }),
-    document.getElementById('messages'),
-  );
-}
-
-function showLogin() {
-  ReactDOM.render(
-    <LoginForm/>,
-    document.getElementById('login'),
-  );
-}
-
-function hideLogin() {
-  ReactDOM.render(
-    <div>{login()}</div>,
-    document.getElementById('login'),
-  );
-}
-
-function showNewMessageForm() {
-  ReactDOM.render(
-    <NewMessageForm/>,
-    document.getElementById('util-root'),
-  );
-}
-
-function hideNewMessageForm() {
-  ReactDOM.render(
-    <button onClick={() => showNewMessageForm()}>Add message</button>,
-    document.getElementById('util-root'),
-  );
-}
-
-function loadFile() {
-  document.getElementById('add-message').disabled = true;
-  let files = document.querySelector('input[type=file]').files;
-  let reader = new FileReader();
-  reader.onloadend = function() {
-    document.getElementById('message-file').dataset.dataFile = reader.result.toString();
-    document.getElementById('preview').src = reader.result.toString();
-    document.getElementById('add-message').disabled = false;
-  };
-  reader.readAsDataURL(files[0]);
-}
-
-function clearFile() {
-  document.getElementById('message-file').value = '';
-  document.getElementById('message-file').dataset.dataFile = '';
-  document.getElementById('preview').src = '';
-}
-
-function addMessage() {
-  instanceAxios.post('/messages/', {
-    title: document.getElementById('message-title').value,
-    text: document.getElementById('message-text').value,
-    file: document.getElementById('message-file').dataset.dataFile,
-  }).then(function() {
-    hideNewMessageForm();
-    showMessages().catch(error => console.log(error));
-  }).catch(function(error) {
-    console.log(error);
-  });
-}
-
-function delMessage(id) {
-  instanceAxios.delete('/messages/' + id).then(() => showMessages()).catch(error => console.log(error));
-}
