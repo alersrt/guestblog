@@ -46,6 +46,6 @@ public class UserHandler {
   public Mono<ServerResponse> getCurrentUser(ServerRequest request) {
     return userService.getCurrentUser()
       .flatMap(user -> ok().contentType(APPLICATION_JSON).body(Mono.just(user), User.class))
-      .switchIfEmpty(status(HttpStatus.NOT_FOUND).build());
+      .switchIfEmpty(status(HttpStatus.NO_CONTENT).build());
   }
 }

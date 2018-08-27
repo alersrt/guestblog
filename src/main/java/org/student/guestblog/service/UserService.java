@@ -49,14 +49,8 @@ public class UserService implements ReactiveUserDetailsService {
     admin.setPassword(passwordEncoder.encode(adminSecret));
     admin.setRoles(List.of(Role.ADMIN));
 
-    User anonymous = new User();
-    anonymous.setUsername("anonymous");
-    anonymous.setRoles(List.of(Role.ANONYMOUS));
-
     if ("admin".equals(username)) {
       return Mono.just(admin);
-    } else if ("anonymous".equals(username)) {
-      return Mono.just(anonymous);
     } else {
       return userRepository.findByUsername(username);
     }
@@ -73,9 +67,7 @@ public class UserService implements ReactiveUserDetailsService {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRoles(List.of(Role.USER));
     return userRepository.existsByUsername(user.getUsername())
-      .flatMap(isExist -> isExist || "admin".equals(user.getUsername()) || "anonymous".equals(user.getUsername())
-        ? Mono.empty()
-        : userRepository.save(user));
+      .flatMap(isExist -> isExist || "admin".equals(user.getUsername()) ? Mono.empty() : userRepository.save(user));
   }
 
   /**
@@ -103,7 +95,6 @@ public class UserService implements ReactiveUserDetailsService {
     return ReactiveSecurityContextHolder.getContext()
       .map(SecurityContext::getAuthentication)
       .map(Principal::getName)
-      .switchIfEmpty(Mono.just("anonymous"))
       .log("get current user: get user's name")
       .flatMap(this::getByUsername)
       .log("get current user: find by username");

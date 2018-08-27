@@ -117,20 +117,13 @@ class NewMessage extends React.Component {
   }
 }
 
-class Greeting extends React.Component {
-  render() {
-    let username = this.props.username;
-    return <p>Hello, <b>{username}!</b></p>;
-  }
-}
-
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loginState: false,
       signed: localStorage.hasOwnProperty('token'),
-      username: '',
+      username: undefined,
     };
 
     this.getUser();
@@ -138,7 +131,13 @@ class LoginForm extends React.Component {
 
   getUser() {
     instanceAxios.get('/users/current').
-    then(response => this.setState({username: response.data.username})).
+    then(response => {
+      if (response.status === 200) {
+        this.setState({username: response.data.username});
+      } else {
+        this.setState({username: undefined});
+      }
+    }).
     catch(error => console.log(error));
   }
 
@@ -164,7 +163,9 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    let greeting = <Greeting id="greeting" className="bar-element" username={this.state.username}/>;
+    let greeting = this.state.username !== undefined
+      ? <div className="bar-element">Hello, {this.state.username}!</div>
+      : <div className="bar-element">You are not logged...</div>;
     let loginForm = <div className="bar-element" align="right">
       <p><label htmlFor="username-input">Username:</label><input id="username-input"/></p>
       <p><label htmlFor="password-input">Password:</label><input id="password-input"/></p>
@@ -175,7 +176,7 @@ class LoginForm extends React.Component {
       ? <div className="bar-element" align="right">
         <button onClick={() => this.signOut()}>Sign Out</button>
       </div>
-      : <div>
+      : <div className="bar-element" align="right">
         <button onClick={() => this.setState({loginState: true})}>Sign In</button>
       </div>;
 
