@@ -17,13 +17,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Configuration
 public class RoutingConfiguration {
 
-  private final FileHandler fileHandler;
   private final UserHandler userHandler;
-
-  @Bean
-  RouterFunction<ServerResponse> fileRouterFunction() {
-    return route(GET("/api/files/{filename}"), fileHandler::getFile);
-  }
 
   @Bean
   RouterFunction<ServerResponse> userRouterFunction() {

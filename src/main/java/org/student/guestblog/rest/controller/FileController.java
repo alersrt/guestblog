@@ -1,6 +1,5 @@
 package org.student.guestblog.rest.controller;
 
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,5 +12,5 @@ import reactor.core.publisher.Mono;
 public interface FileController {
 
   @GetMapping("/{filename}")
-  ResponseEntity<Mono<GridFsResource>> getFile(@PathVariable String filename);
+  Mono<ResponseEntity> getFile(@PathVariable String filename);
 }
