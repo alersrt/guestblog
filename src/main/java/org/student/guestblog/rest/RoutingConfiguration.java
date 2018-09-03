@@ -1,7 +1,6 @@
 package org.student.guestblog.rest;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
@@ -18,17 +17,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Configuration
 public class RoutingConfiguration {
 
-  private final MessageHandler messageHandler;
   private final FileHandler fileHandler;
   private final UserHandler userHandler;
-
-  @Bean
-  RouterFunction<ServerResponse> messageRouterFunction() {
-    return route(GET("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::getMessages)
-      .andRoute(GET("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::getMessage)
-      .andRoute(POST("/api/messages").and(accept(APPLICATION_JSON)), messageHandler::addMessage)
-      .andRoute(DELETE("/api/messages/{id}").and(accept(APPLICATION_JSON)), messageHandler::deleteMessage);
-  }
 
   @Bean
   RouterFunction<ServerResponse> fileRouterFunction() {
