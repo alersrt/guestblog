@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.model.User;
 import org.student.guestblog.rest.auth.AuthRequest;
 import org.student.guestblog.rest.auth.AuthResponse;
-import org.student.guestblog.rest.register.RegisterResponse;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -17,11 +16,11 @@ import reactor.core.publisher.Mono;
 public interface UserController {
 
   @GetMapping("/current")
-  ResponseEntity<Mono<User>> currentUser();
+  Mono<ResponseEntity<User>> currentUser();
 
   @PostMapping("/register")
-  ResponseEntity<Mono<RegisterResponse>> register(@RequestBody User user);
+  Mono<ResponseEntity> register(@RequestBody User user);
 
   @PostMapping("/sign/in")
-  ResponseEntity<Mono<AuthResponse>> signIn(@RequestBody AuthRequest authRequest);
+  Mono<ResponseEntity<AuthResponse>> signIn(@RequestBody AuthRequest authRequest);
 }

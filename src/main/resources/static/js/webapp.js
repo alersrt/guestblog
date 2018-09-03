@@ -142,7 +142,7 @@ class LoginForm extends React.Component {
   }
 
   signIn() {
-    instanceAxios.post('/users/signin', {
+    instanceAxios.post('/users/sign/in', {
       username: document.getElementById('username-input').value,
       password: document.getElementById('password-input').value,
     }).then(response => {
