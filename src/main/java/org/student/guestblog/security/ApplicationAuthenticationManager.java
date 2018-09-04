@@ -1,10 +1,10 @@
 package org.student.guestblog.security;
 
-import io.jsonwebtoken.Claims;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,24 +18,23 @@ public class ApplicationAuthenticationManager implements AuthenticationManager {
 
   @Override
   public Authentication authenticate(Authentication authentication) {
-    String authToken = authentication.getCredentials().toString();
+    String stringToken = authentication.getCredentials().toString();
 
-    String username;
-    try {
-      username = jwtTokenProvider.getUsernameFromToken(authToken);
-    } catch (Exception e) {
-      username = null;
+    if (!jwtTokenProvider.validateToken(stringToken)) {
+      throw new BadCredentialsException("Invalid JWT");
     }
-    if (username != null && jwtTokenProvider.validateToken(authToken)) {
-      Claims claims = jwtTokenProvider.getAllClaimsFromToken(authToken);
+
+    try {
+      var username = jwtTokenProvider.getUsernameFromToken(stringToken);
+      var claims = jwtTokenProvider.getAllClaimsFromToken(stringToken);
       List<String> roles = claims.get("roles", List.class);
-      UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+      var authenticationToken = new UsernamePasswordAuthenticationToken(
         username,
         null,
         roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
       );
-      return auth;
-    } else {
+      return authenticationToken;
+    } catch (Exception e) {
       return null;
     }
   }

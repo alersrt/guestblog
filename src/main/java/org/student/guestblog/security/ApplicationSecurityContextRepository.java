@@ -23,9 +23,9 @@ public class ApplicationSecurityContextRepository implements SecurityContextRepo
     var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
-      var authToken = authHeader.substring(7);
-      var auth = new UsernamePasswordAuthenticationToken(authToken, authToken);
-      var authentication = this.applicationAuthenticationManager.authenticate(auth);
+      var stringToken = authHeader.substring(7);
+      var authenticationToken = new UsernamePasswordAuthenticationToken(stringToken, stringToken);
+      var authentication = this.applicationAuthenticationManager.authenticate(authenticationToken);
       return new SecurityContextImpl(authentication);
     } else {
       return new SecurityContextImpl();
