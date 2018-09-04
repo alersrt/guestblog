@@ -39,6 +39,6 @@ public class ApplicationSecurityContextRepository implements SecurityContextRepo
 
   @Override
   public boolean containsContext(HttpServletRequest request) {
-    return false;
+    return true;
   }
 }
