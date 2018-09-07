@@ -41,13 +41,14 @@ public class UserService implements UserDetailsService {
    * @return user.
    */
   public Optional<User> getByUsername(String username) {
-    User admin = new User();
-    admin.setUsername("admin");
-    admin.setPassword(passwordEncoder.encode(adminSecret));
-    admin.setRoles(List.of(Role.ADMIN));
-
     if ("admin".equals(username)) {
-      return Optional.of(admin);
+      return Optional.of(
+        User.builder()
+          .username("admin")
+          .password(passwordEncoder.encode(adminSecret))
+          .roles(List.of(Role.ADMIN))
+          .build()
+      );
     } else {
       return userRepository.findByUsername(username);
     }
@@ -56,13 +57,16 @@ public class UserService implements UserDetailsService {
   /**
    * Saves the new user into repository and returns saved entity.
    *
-   * @param user new user.
+   * @param savedUser new user.
    * @return saved entity.
    */
-  public Optional<User> save(User user) {
-    user.setUsername(user.getUsername().toLowerCase());
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setRoles(List.of(Role.USER));
+  public Optional<User> save(User savedUser) {
+    User user = User.builder()
+      .username(savedUser.getUsername().toLowerCase())
+      .email(savedUser.getEmail())
+      .password(passwordEncoder.encode(savedUser.getPassword()))
+      .roles(List.of(Role.USER))
+      .build();
 
     var isExist = userRepository.existsByUsername(user.getUsername()) || "admin".equals(user.getUsername());
     return isExist ? Optional.empty() : Optional.of(userRepository.save(user));

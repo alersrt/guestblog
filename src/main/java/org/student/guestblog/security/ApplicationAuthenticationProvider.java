@@ -1,5 +1,6 @@
 package org.student.guestblog.security;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
 
   @Override
   public Authentication authenticate(Authentication authentication) {
-    String stringToken = authentication.getCredentials().toString();
+    var stringToken = authentication.getCredentials().toString();
 
     String username;
     try {
@@ -41,6 +42,7 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return authentication.getName().equals(UsernamePasswordAuthenticationToken.class.getName());
+    return Arrays.stream(authentication.getInterfaces())
+      .anyMatch(i -> i.getName().equals(Authentication.class.getName()));
   }
 }

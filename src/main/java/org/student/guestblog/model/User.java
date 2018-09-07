@@ -9,10 +9,13 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -24,6 +27,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 /** Represents information about user which is stored in the database. */
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Document
 public class User implements UserDetails {
 
@@ -57,7 +63,7 @@ public class User implements UserDetails {
   private List<Message> messages = new ArrayList<>();
 
   /** Authorities of this user. */
-  private List<Role> roles = new ArrayList<>();
+  private List<Role> roles;
 
   @JsonIgnore
   @Override
