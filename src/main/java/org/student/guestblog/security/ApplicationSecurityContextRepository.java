@@ -15,17 +15,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ApplicationSecurityContextRepository implements SecurityContextRepository {
 
-  private final ApplicationAuthenticationManager applicationAuthenticationManager;
+  private final ApplicationAuthenticationProvider applicationAuthenticationProvider;
 
   @Override
   public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
     var request = requestResponseHolder.getRequest();
-    var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    var authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-      var stringToken = authHeader.substring(7);
+    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+      var stringToken = authorizationHeader.substring(7);
       var authenticationToken = new UsernamePasswordAuthenticationToken(stringToken, stringToken);
-      var authentication = this.applicationAuthenticationManager.authenticate(authenticationToken);
+      var authentication = this.applicationAuthenticationProvider.authenticate(authenticationToken);
       return new SecurityContextImpl(authentication);
     } else {
       return new SecurityContextImpl();
