@@ -78,6 +78,7 @@ up: docker.up
 # Usage:
 #	make mvn [task=]
 task ?=
+maven.image = 3-jdk-10
 
 maven:
 	mkdir -p $(PWD)/.m2
@@ -89,7 +90,7 @@ maven:
 		-v $(PWD)/.m2:/var/maven/.m2 \
 		-v $(PWD):/usr/src/mymaven \
 		-w /usr/src/mymaven \
-		maven:alpine \
+		maven:$(maven.image) \
 		mvn -Duser.home=/var/maven $(task)
 
 # clean command
