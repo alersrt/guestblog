@@ -1,7 +1,6 @@
 # Guest Blog
-Guest blog with using such technology stack as Spring WebFlux, Spring Data, MongoDB and Spring Boot for autoconfiguration. You can to see the application [here][1]. This service has the next features:
+Guest blog with using such technology stack as Spring MVC, Spring Data, MongoDB and Spring Boot for autoconfiguration. You can to see the application [here][1]. This service has the next features:
 - REST-API
-- reactive code
 - JWT authorization (according to [article][5])
 - simple web-client with using of [ReactJS][2]
 - stores images in the [GridFS][3]
@@ -89,7 +88,7 @@ returned id of the user:
 }
 ```
 
-### `POST /users/signin`
+### `POST /users/sign/in`
 
 Returns token by username and password.
 
@@ -108,6 +107,9 @@ Answer:
 }
 ```
 
+### `GET /users/current`
+
+Returns current logged user.
 
 
 
