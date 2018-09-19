@@ -26,7 +26,7 @@ public class DefaultUserController implements UserController {
   }
 
   @Override
-  public ResponseEntity<Map<String, String>> register(@RequestBody User user) {
+  public ResponseEntity<Map<String, Long>> register(@RequestBody User user) {
     return userService.save(user)
       .map(u -> ResponseEntity.ok(Map.of("id", u.getId())))
       .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());

@@ -54,10 +54,14 @@ class Messages extends React.Component {
     let messages = this.state.messages;
 
     return <div className="messages">
-      {messages.map(m => {
-        let file = m.file !== undefined ? '/api/files/' + m.file : undefined;
-        return <Message id={m.id} timestamp={m.timestamp} title={m.title} text={m.text} file={file}/>;
-      })}
+      {!!messages
+        ? messages.map(m => {
+          let file = m.file !== undefined ? '/api/files/' + m.file : undefined;
+          return <Message id={m.id} timestamp={m.timestamp} title={m.title} text={m.text} file={file}/>;
+        })
+        : () => {
+        }
+      }
     </div>;
   }
 }

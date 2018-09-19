@@ -1,13 +1,13 @@
 package org.student.guestblog.repository;
 
 import java.util.Optional;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.student.guestblog.model.User;
 
 /** Represents MongoDB repository for the {@link User} entity. */
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
   /**
    * Returns user by its username.

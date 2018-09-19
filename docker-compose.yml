@@ -6,14 +6,24 @@ services:
     image: ${COMPOSE_IMAGE_NAME}
     build: .
     depends_on:
-      - mongodb
-    network_mode: "service:mongodb"
+    - postgresql
+    network_mode: "service:postgresql"
+    environment:
+    - GB_POSTGRES_USERNAME=postgres
+    - GB_POSTGRES_PASSWORD=postgres
+    - GB_POSTGRES_URL=jdbc:postgresql://localhost:5432/testdb
 
-  mongodb:
-    image: mongo:latest
-    container_name: ${COMPOSE_PROJECT_NAME}-${MONGO_CONTAINER_NAME}
+  postgresql:
+    image: postgres:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}-${DATABASE_CONTAINER_NAME}
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=testdb
     volumes:
-      - "$PWD/database:/data/db"
+    - "$PWD/database:/var/lib/postgresql/data"
     ports:
-      - "80:8080" # tomcat port
-
+    - "80:8080" # tomcat port
+    - "5432:5432" # postgresql port
+    env_file:
+      - .env

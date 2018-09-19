@@ -1,54 +1,52 @@
 package org.student.guestblog.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.CreationTimestamp;
 
 /** Represents information about post. */
 @Data
 @NoArgsConstructor
-@Document
+@AllArgsConstructor
+@Builder
+@Entity
 public class Message {
 
   /** Id of the post. */
-  @JsonProperty("id")
   @Id
-  private String id;
+  @GeneratedValue
+  private long id;
 
   /** Title of the post. */
-  @JsonProperty("title")
   @Size(max = 100)
   private String title;
 
   /** Body of the post. */
-  @JsonProperty("text")
   @Size(max = 1024)
   private String text;
 
-  /** Attachment. Name of the file in GridFS. */
-  @JsonProperty("file")
-  private String file;
+  /** Attachment. */
+  @OneToOne(cascade = CascadeType.REMOVE)
+  private File file;
 
   /** Time when this post was created or edited. */
-  @JsonProperty("timestamp")
-  @NotNull
-  @CreatedDate
+  @CreationTimestamp
   private Date timestamp;
 
   /** Flag determines was this post edited or no. */
-  @JsonProperty("edited")
   private boolean edited;
 
   /** Author of this post. */
-  @Getter(onMethod = @__(@JsonProperty("user")))
-  @DBRef(db = "user", lazy = true)
+  @ManyToOne
   private User user;
 }

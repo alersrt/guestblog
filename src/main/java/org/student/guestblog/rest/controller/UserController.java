@@ -19,7 +19,7 @@ public interface UserController {
   ResponseEntity<User> currentUser();
 
   @PostMapping("/register")
-  ResponseEntity<Map<String, String>> register(@RequestBody User user);
+  ResponseEntity<Map<String, Long>> register(@RequestBody User user);
 
   @PostMapping("/sign/in")
   ResponseEntity<AuthResponse> signIn(@RequestBody AuthRequest authRequest);
