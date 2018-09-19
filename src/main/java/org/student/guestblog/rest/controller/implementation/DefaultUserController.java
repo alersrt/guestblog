@@ -1,6 +1,5 @@
 package org.student.guestblog.rest.controller.implementation;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class DefaultUserController implements UserController {
     return userService.getCurrentUser()
       .map(user -> UserResponse.builder()
         .username(user.getUsername())
-        .email(Optional.ofNullable(user.getEmail()))
+        .email(user.getEmail())
         .roles(user.getRoles())
         .build()
       )
@@ -36,8 +35,8 @@ public class DefaultUserController implements UserController {
 
   @Override
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
-    return userService
-      .save(User.builder()
+    return userService.save(
+      User.builder()
         .username(registerRequest.getUsername())
         .password(registerRequest.getPassword())
         .email(registerRequest.getEmail().get())

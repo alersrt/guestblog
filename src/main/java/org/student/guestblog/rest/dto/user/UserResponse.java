@@ -1,7 +1,6 @@
 package org.student.guestblog.rest.dto.user;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +14,6 @@ import org.student.guestblog.model.Role;
 public class UserResponse {
 
   private String username;
-  private Optional<String> email;
+  private String email;
   private List<Role> roles;
 }
