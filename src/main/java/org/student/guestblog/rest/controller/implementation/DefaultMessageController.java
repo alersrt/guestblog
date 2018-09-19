@@ -34,7 +34,7 @@ public class DefaultMessageController implements MessageController {
         .title(m.getTitle())
         .text(m.getText())
         .timestamp(m.getTimestamp())
-        .file(m.getFile() != null ? m.getFile().getId() : null)
+        .file(m.getFile() != null ? m.getFile().getFilename() : null)
         .build())
       .collect(Collectors.toList());
     var httpStatus = !messages.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT;
@@ -50,7 +50,7 @@ public class DefaultMessageController implements MessageController {
         .title(m.getTitle())
         .text(m.getText())
         .timestamp(m.getTimestamp())
-        .file(m.getFile() != null ? m.getFile().getId() : null)
+        .file(m.getFile() != null ? m.getFile().getFilename() : null)
         .build())
       .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
   }

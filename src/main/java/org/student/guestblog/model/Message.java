@@ -1,6 +1,6 @@
 package org.student.guestblog.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +41,7 @@ public class Message {
 
   /** Time when this post was created or edited. */
   @CreationTimestamp
-  private Date timestamp;
+  private LocalDateTime timestamp;
 
   /** Flag determines was this post edited or no. */
   private boolean edited;

@@ -1,31 +1,25 @@
 package org.student.guestblog.rest.controller.implementation;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.student.guestblog.model.File;
-import org.student.guestblog.repository.FileRepository;
 import org.student.guestblog.rest.controller.FileController;
+import org.student.guestblog.service.FileService;
+import org.student.guestblog.service.internal.FileResource;
 
 @Component
 @RequiredArgsConstructor
 public class DefaultFileController implements FileController {
 
-  private final FileRepository fileRepository;
+  private final FileService fileService;
 
   @Override
-  public ResponseEntity<Resource> getFile(@PathVariable long id) {
-    Optional<File> file = fileRepository.findById(id);
-    Resource resource = file
-      .map(File::getBlob)
-      .map(ByteArrayResource::new).get();
-    return file
-      .map(f -> ResponseEntity.status(HttpStatus.OK).body(resource))
+  public ResponseEntity<FileResource> getFile(@PathVariable String filename) {
+    return fileService.getResource(filename)
+      .map(f -> ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(f.getMime())).body(f))
       .orElseGet(() -> ResponseEntity.noContent().build());
   }
 }
