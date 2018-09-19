@@ -1,6 +1,6 @@
 package org.student.guestblog.rest.controller.implementation;
 
-import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,9 @@ import org.student.guestblog.model.User;
 import org.student.guestblog.rest.controller.UserController;
 import org.student.guestblog.rest.dto.auth.AuthRequest;
 import org.student.guestblog.rest.dto.auth.AuthResponse;
+import org.student.guestblog.rest.dto.register.RegisterRequest;
+import org.student.guestblog.rest.dto.register.RegisterResponse;
+import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.service.UserService;
 
 @Component
@@ -19,16 +22,28 @@ public class DefaultUserController implements UserController {
   private final UserService userService;
 
   @Override
-  public ResponseEntity<User> currentUser() {
+  public ResponseEntity<UserResponse> currentUser() {
     return userService.getCurrentUser()
+      .map(user -> UserResponse.builder()
+        .username(user.getUsername())
+        .email(Optional.ofNullable(user.getEmail()))
+        .roles(user.getRoles())
+        .build()
+      )
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.noContent().build());
   }
 
   @Override
-  public ResponseEntity<Map<String, Long>> register(@RequestBody User user) {
-    return userService.save(user)
-      .map(u -> ResponseEntity.ok(Map.of("id", u.getId())))
+  public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
+    return userService
+      .save(User.builder()
+        .username(registerRequest.getUsername())
+        .password(registerRequest.getPassword())
+        .email(registerRequest.getEmail().get())
+        .build())
+      .map(User::getId)
+      .map(id -> ResponseEntity.ok(new RegisterResponse(id)))
       .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
   }
 
