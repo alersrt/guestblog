@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.student.guestblog.model.User;
-import org.student.guestblog.rest.auth.AuthRequest;
-import org.student.guestblog.rest.auth.AuthResponse;
 import org.student.guestblog.rest.controller.UserController;
+import org.student.guestblog.rest.dto.auth.AuthRequest;
+import org.student.guestblog.rest.dto.auth.AuthResponse;
 import org.student.guestblog.service.UserService;
 
 @Component

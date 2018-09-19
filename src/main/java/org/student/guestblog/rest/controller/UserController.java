@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.model.User;
-import org.student.guestblog.rest.auth.AuthRequest;
-import org.student.guestblog.rest.auth.AuthResponse;
+import org.student.guestblog.rest.dto.auth.AuthRequest;
+import org.student.guestblog.rest.dto.auth.AuthResponse;
 
 @RestController
 @RequestMapping("/api/users")

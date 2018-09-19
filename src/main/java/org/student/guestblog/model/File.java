@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents file.
+ * Represents file emtity.
  */
 @Data
 @Builder
@@ -24,12 +24,24 @@ public class File {
   @GeneratedValue
   private long id;
 
+  /**
+   * Filename.
+   */
   private String filename;
 
+  /**
+   * Mime type of this file.
+   */
   private String mime;
 
+  /**
+   * Binary data.
+   */
   private byte[] blob;
 
+  /**
+   * Message which contains this file.
+   */
   @OneToOne
   private Message message;
 }
