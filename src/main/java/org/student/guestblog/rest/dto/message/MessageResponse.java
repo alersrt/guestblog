@@ -1,8 +1,20 @@
 package org.student.guestblog.rest.dto.message;
 
-import lombok.Value;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageResponse {
 
+  private Long id;
+  private String title;
+  private String text;
+  private Date timestamp;
+  private Long file;
 }

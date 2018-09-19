@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterResponse {
 
-  private long id;
+  private Long id;
 }

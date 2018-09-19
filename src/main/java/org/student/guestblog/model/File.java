@@ -3,7 +3,6 @@ package org.student.guestblog.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,10 +37,4 @@ public class File {
    * Binary data.
    */
   private byte[] blob;
-
-  /**
-   * Message which contains this file.
-   */
-  @OneToOne
-  private Message message;
 }
