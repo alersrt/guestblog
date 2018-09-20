@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import connect from 'react-redux/es/connect/connect';
-import {getUser} from '../actions/user';
+import {getUser} from '../../actions/user';
 
 class Greeting extends Component {
 

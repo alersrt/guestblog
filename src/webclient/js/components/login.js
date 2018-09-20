@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import connect from 'react-redux/es/connect/connect';
 import {signIn, signOut} from '../actions/token';
-import Greeting from './greeting';
+import Greeting from './login/greeting';
 import LoginForm from './login/loginForm';
 import SignButton from './login/signButton';
 

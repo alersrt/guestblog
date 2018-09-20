@@ -1,6 +1,8 @@
-export function messagesHasErrored(state = false, action) {
+import event from '../constants/event';
+
+export function errorMessages(state = false, action) {
   switch (action.type) {
-    case 'MESSAGES_HAS_ERRORED':
+    case event.messages.ERROR:
       return action.hasErrored;
 
     default:
@@ -8,9 +10,9 @@ export function messagesHasErrored(state = false, action) {
   }
 }
 
-export function messagesIsLoading(state = false, action) {
+export function receiveMessages(state = false, action) {
   switch (action.type) {
-    case 'MESSAGES_IS_LOADING':
+    case event.messages.LOADING:
       return action.isLoading;
 
     default:
@@ -20,7 +22,7 @@ export function messagesIsLoading(state = false, action) {
 
 export function messages(state = [], action) {
   switch (action.type) {
-    case 'MESSAGES_FETCH_DATA_SUCCESS':
+    case event.messages.SUCCESS:
       return action.messages;
 
     default:

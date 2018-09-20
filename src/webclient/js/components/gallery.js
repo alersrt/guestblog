@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Message from './message';
 import {connect} from 'react-redux';
-import {messagesFetchData} from '../actions/messages';
+import {getMessages} from '../actions/messages';
 
 class Gallery extends Component {
   componentDidMount() {
-    this.props.fetchData();
+    this.props.getMessages();
   }
 
   render() {
@@ -30,14 +30,14 @@ class Gallery extends Component {
 const mapStateToProps = (state) => {
   return {
     messages: state.messages,
-    hasErrored: state.messagesHasErrored,
-    isLoading: state.messagesIsLoading,
+    hasErrored: state.errorMessages,
+    isLoading: state.receiveMessages,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchData: () => dispatch(messagesFetchData()),
+    getMessages: () => dispatch(getMessages()),
   };
 };
 

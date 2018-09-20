@@ -1,37 +1,39 @@
-export function messagesHasErrored(bool) {
+import event from '../constants/event';
+
+export function errorMessages(bool) {
   return {
-    type: 'MESSAGES_HAS_ERRORED',
+    type: event.messages.ERROR,
     hasErrored: bool,
   };
 }
 
-export function messagesIsLoading(bool) {
+export function receiveMessages(bool) {
   return {
-    type: 'MESSAGES_IS_LOADING',
+    type: event.messages.LOADING,
     isLoading: bool,
   };
 }
 
-export function messagesFetchDataSuccess(messages) {
+export function successMessages(messages) {
   return {
-    type: 'MESSAGES_FETCH_DATA_SUCCESS',
+    type: event.messages.SUCCESS,
     messages,
   };
 }
 
-export function messagesFetchData() {
+export function getMessages() {
   return (dispatch) => {
-    dispatch(messagesIsLoading(true));
+    dispatch(receiveMessages(true));
     fetch('http://localhost:8080/api/messages')
     .then(response => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(messagesIsLoading(false));
+      dispatch(receiveMessages(false));
       return response;
     })
     .then(response => response.json())
-    .then(messages => dispatch(messagesFetchDataSuccess(messages)))
-    .catch(() => dispatch(messagesHasErrored(true)));
+    .then(messages => dispatch(successMessages(messages)))
+    .catch(() => dispatch(errorMessages(true)));
   };
 }
