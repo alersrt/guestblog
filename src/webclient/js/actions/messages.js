@@ -1,20 +1,20 @@
 import event from '../constants/event';
 
-export function errorMessages(bool) {
+export function messagesHasErrored(bool) {
   return {
     type: event.messages.ERROR,
     hasErrored: bool,
   };
 }
 
-export function receiveMessages(bool) {
+export function messagesIsLoading(bool) {
   return {
     type: event.messages.LOADING,
     isLoading: bool,
   };
 }
 
-export function successMessages(messages) {
+export function messagesFetchSuccess(messages) {
   return {
     type: event.messages.SUCCESS,
     messages,
@@ -23,17 +23,17 @@ export function successMessages(messages) {
 
 export function getMessages() {
   return (dispatch) => {
-    dispatch(receiveMessages(true));
+    dispatch(messagesIsLoading(true));
     fetch('/api/messages')
     .then(response => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(receiveMessages(false));
+      dispatch(messagesIsLoading(false));
       return response;
     })
     .then(response => response.json())
-    .then(messages => dispatch(successMessages(messages)))
-    .catch(() => dispatch(errorMessages(true)));
+    .then(messages => dispatch(messagesFetchSuccess(messages)))
+    .catch(() => dispatch(messagesHasErrored(true)));
   };
 }

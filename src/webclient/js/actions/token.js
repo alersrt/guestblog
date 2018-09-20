@@ -1,27 +1,27 @@
 import event from '../constants/event';
 
-export function errorToken(bool) {
+export function tokenHasErrored(bool) {
   return {
     type: event.token.ERROR,
     hasErrored: bool,
   };
 }
 
-export function receiveToken(bool) {
+export function tokenIsLoading(bool) {
   return {
-    type: event.token.RECEIVE,
+    type: event.token.LOADING,
     isLoading: bool,
   };
 }
 
-export function addToken(token) {
+export function tokenGetSuccess(token) {
   return {
-    type: event.token.ADD,
+    type: event.token.GET,
     token,
   };
 }
 
-export function removeToken() {
+export function tokenRemove() {
   return {
     type: event.token.REMOVE,
   };
@@ -29,7 +29,7 @@ export function removeToken() {
 
 export function signIn(username, password) {
   return (dispatch) => {
-    dispatch(receiveToken(true));
+    dispatch(tokenIsLoading(true));
     fetch('/api/users/sign/in', {
       method: 'POST',
       headers: {
@@ -45,17 +45,17 @@ export function signIn(username, password) {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(receiveToken(false));
+      dispatch(tokenIsLoading(false));
       return response;
     })
     .then(response => response.json())
-    .then(data => dispatch(addToken(data.token)))
-    .catch(() => dispatch(errorToken(true)));
+    .then(data => dispatch(tokenGetSuccess(data.token)))
+    .catch(() => dispatch(tokenHasErrored(true)));
   };
 }
 
 export function signOut() {
   return (dispatch) => {
-    dispatch(removeToken());
+    dispatch(tokenRemove());
   };
 }

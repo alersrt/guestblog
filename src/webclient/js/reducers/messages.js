@@ -1,6 +1,6 @@
 import event from '../constants/event';
 
-export function errorMessages(state = false, action) {
+export function messagesHasErrored(state = false, action) {
   switch (action.type) {
     case event.messages.ERROR:
       return action.hasErrored;
@@ -10,7 +10,7 @@ export function errorMessages(state = false, action) {
   }
 }
 
-export function receiveMessages(state = false, action) {
+export function messagesIsLoading(state = false, action) {
   switch (action.type) {
     case event.messages.LOADING:
       return action.isLoading;

@@ -1,6 +1,6 @@
 import event from '../constants/event';
 
-export function errorUser(state = false, action) {
+export function userHasErrored(state = false, action) {
   switch (action.type) {
     case event.user.ERROR:
       return action.hasErrored;
@@ -10,7 +10,7 @@ export function errorUser(state = false, action) {
   }
 }
 
-export function receiveUser(state = false, action) {
+export function userIsLoading(state = false, action) {
   switch (action.type) {
     case event.user.LOADING:
       return action.isLoading;

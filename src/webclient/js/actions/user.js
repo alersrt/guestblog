@@ -1,20 +1,20 @@
 import event from '../constants/event';
 
-export function errorUser(bool) {
+export function userHasErrored(bool) {
   return {
     type: event.user.ERROR,
     hasErrored: bool,
   };
 }
 
-export function receiveUser(bool) {
+export function userIsLoading(bool) {
   return {
     type: event.user.LOADING,
     isLoading: bool,
   };
 }
 
-export function successUser(user) {
+export function userGetSuccess(user) {
   return {
     type: event.user.SUCCESS,
     user,
@@ -23,7 +23,7 @@ export function successUser(user) {
 
 export function getUser() {
   return (dispatch) => {
-    dispatch(receiveUser(true));
+    dispatch(userIsLoading(true));
     fetch('/api/users/current', {
       method: 'get',
       headers: {
@@ -34,11 +34,11 @@ export function getUser() {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(receiveUser(false));
+      dispatch(userIsLoading(false));
       return response;
     })
     .then(response => response.status !== 204 ? response.json() : null)
-    .then(user => dispatch(successUser(user)))
-    .catch(() => dispatch(errorUser(true)));
+    .then(user => dispatch(userGetSuccess(user)))
+    .catch(() => dispatch(userHasErrored(true)));
   };
 }

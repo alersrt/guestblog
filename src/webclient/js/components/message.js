@@ -15,9 +15,7 @@ export default class Message extends Component {
         <p id="message-text">{text}</p>
         <img src={file}/>
         <p/>
-        <button onClick={() => {
-        }}>Delete
-        </button>
+        <button onClick={() => this.props.delete(id)}>Delete</button>
       </div>
     );
   }

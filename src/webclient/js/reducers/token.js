@@ -1,6 +1,6 @@
 import event from '../constants/event';
 
-export function errorToken(state = false, action) {
+export function tokenHasErrored(state = false, action) {
   switch (action.type) {
     case event.token.ERROR:
       return action.hasErrored;
@@ -10,9 +10,9 @@ export function errorToken(state = false, action) {
   }
 }
 
-export function receiveToken(state = false, action) {
+export function tokenIsLoading(state = false, action) {
   switch (action.type) {
-    case event.token.RECEIVE:
+    case event.token.LOADING:
       return action.isLoading;
 
     default:
@@ -22,7 +22,7 @@ export function receiveToken(state = false, action) {
 
 export function token(state = localStorage.getItem('TOKEN'), action) {
   switch (action.type) {
-    case event.token.ADD:
+    case event.token.GET:
       localStorage.setItem('TOKEN', action.token);
       return action.token;
     case event.token.REMOVE:
