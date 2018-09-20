@@ -25,7 +25,6 @@ export function getUser() {
   return (dispatch) => {
     dispatch(userIsLoading(true));
     fetch('/api/users/current', {
-      method: 'get',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('TOKEN'),
       },
