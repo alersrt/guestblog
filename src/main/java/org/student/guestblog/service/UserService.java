@@ -80,10 +80,10 @@ public class UserService implements UserDetailsService {
    * @return JSON web token.
    */
   public Optional<String> login(String username, String password) {
-    var user = this.getByUsername(username).get();
-    return passwordEncoder.matches(password, user.getPassword())
-      ? Optional.of(tokenProvider.generateToken(user))
-      : Optional.empty();
+    return this.getByUsername(username)
+      .map(user -> passwordEncoder.matches(password, user.getPassword())
+      ? tokenProvider.generateToken(user)
+      : null);
   }
 
   /**
