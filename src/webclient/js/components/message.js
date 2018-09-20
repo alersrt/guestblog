@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import {deleteMessage} from '../actions/message';
+import connect from 'react-redux/es/connect/connect';
 
-export default class Message extends Component {
+class Message extends Component {
   render() {
     let date = new Date(this.props.timestamp);
     let id = this.props.id;
@@ -15,8 +17,20 @@ export default class Message extends Component {
         <p id="message-text">{text}</p>
         <img src={file}/>
         <p/>
-        <button onClick={() => this.props.delete(id)}>Delete</button>
+        <button onClick={() => this.props.deleteMessage(id)}>Delete</button>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteMessage: (id) => dispatch(deleteMessage(id)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Message);

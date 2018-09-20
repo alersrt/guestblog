@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import {addMessage} from '../actions/message';
+import connect from 'react-redux/es/connect/connect';
 
-export default class New extends Component {
+class New extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,19 +28,6 @@ export default class New extends Component {
     document.getElementById('preview').src = '';
   }
 
-  addMessage() {
-    instanceAxios.post('/messages/', {
-      title: document.getElementById('message-title').value,
-      text: document.getElementById('message-text').value,
-      file: document.getElementById('message-file').dataset.dataFile,
-    }).then(() => {
-      this.setState({addState: false});
-      getMessages();
-    }).catch(function(error) {
-      console.log(error);
-    });
-  }
-
   render() {
     let newMessageForm = <div id="new-message">
       <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
@@ -47,10 +36,27 @@ export default class New extends Component {
       <p/><img id="preview" height="200px" onClick={() => this.clearFile()}/>
       <p/>
       <button onClick={() => this.setState({addState: false})}>Cancel</button>
-      <button id="add-message" onClick={() => this.addMessage()}>Submit</button>
+      <button id="add-message" onClick={() => this.props.addMessage({
+        title: document.getElementById('message-title').value,
+        text: document.getElementById('message-text').value,
+        file: document.getElementById('message-file').dataset.dataFile,
+      })}>Submit
+      </button>
     </div>;
     let newMessageButton = <button onClick={() => this.setState({addState: true})}>New Message</button>;
 
     return (this.state.addState ? newMessageForm : newMessageButton);
   }
 }
+
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addMessage: (message) => dispatch(addMessage(message)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(New);
