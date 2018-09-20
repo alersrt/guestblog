@@ -3,10 +3,16 @@
 
 ## Include project files
 !/src/
+!/src/webclient/
 !/target/
 !/.m2/
+!/node_modules/
 !pom.xml
+!package.json
+!package-lock.json
 !lombok.config
+!.babelrc
+!webpack.config.js
 
 ## Exclude IDE files
 # JetBrains

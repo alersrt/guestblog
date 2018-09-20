@@ -3,7 +3,10 @@
 
 ## Include project files
 !/src/
+!/src/webclient/
 !pom.xml
+!package.json
+!package-lock.json
 !.dockerignore
 !.gitignore
 !.editorconfig
@@ -11,6 +14,8 @@
 !Dockerfile
 !docker-compose.yml
 !lombok.config
+!.babelrc
+!webpack.config.js
 !Procfile
 !system.properties
 !Makefile
