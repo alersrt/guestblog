@@ -24,7 +24,7 @@ export function successUser(user) {
 export function getUser() {
   return (dispatch) => {
     dispatch(receiveUser(true));
-    fetch('http://localhost:8080/api/users/current', {
+    fetch('/api/users/current', {
       method: 'get',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('TOKEN'),

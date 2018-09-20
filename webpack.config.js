@@ -27,7 +27,13 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, 'src/main/resources/static/'),
     port: 3000,
-    publicPath: 'http://localhost:8080/dist/',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/',
+        secure: false,
+      },
+    },
+    publicPath: 'http://localhost:3000/dist/',
     hotOnly: true,
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],

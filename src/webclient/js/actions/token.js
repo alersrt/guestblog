@@ -30,7 +30,7 @@ export function removeToken() {
 export function signIn(username, password) {
   return (dispatch) => {
     dispatch(receiveToken(true));
-    fetch('http://localhost:8080/api/users/sign/in', {
+    fetch('/api/users/sign/in', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

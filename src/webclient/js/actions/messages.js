@@ -24,7 +24,7 @@ export function successMessages(messages) {
 export function getMessages() {
   return (dispatch) => {
     dispatch(receiveMessages(true));
-    fetch('http://localhost:8080/api/messages')
+    fetch('/api/messages')
     .then(response => {
       if (!response.ok) {
         throw Error(response.statusText);

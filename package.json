@@ -22,6 +22,6 @@
   },
   "scripts": {
     "start": "webpack-dev-server --mode development",
-    "build": "webpack --mode development"
+    "build": "webpack --mode development && cp ./target/bundle.js ./src/main/resources/static/dist"
   }
 }
