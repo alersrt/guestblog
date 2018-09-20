@@ -4,6 +4,7 @@
   "dependencies": {
     "react": "16.5.2",
     "react-dom": "16.5.2",
+    "react-redux": "5.0.7",
     "redux": "4.0.0",
     "redux-thunk": "2.3.0"
   },
@@ -20,6 +21,7 @@
     "babel-loader": "7.1.4"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development"
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode development"
   }
 }

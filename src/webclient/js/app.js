@@ -11,7 +11,7 @@ export default class App extends Component {
         <hr/>
         <New/>
         <hr/>
-        <Gallery/>
+        <Gallery/>,
       </div>
     );
   }
