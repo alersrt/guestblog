@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import {messages, messagesHasErrored, messagesIsLoading} from './messages';
 import {errorToken, receiveToken, token} from './token';
-import {user, userHasErrored, userIsLoading} from './user';
+import {errorUser, receiveUser, user} from './user';
 
 export default combineReducers({
   messages,
@@ -11,6 +11,6 @@ export default combineReducers({
   receiveToken,
   errorToken,
   user,
-  userIsLoading,
-  userHasErrored,
+  receiveUser,
+  errorUser,
 });

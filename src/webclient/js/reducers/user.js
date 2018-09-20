@@ -1,6 +1,8 @@
-export function userHasErrored(state = false, action) {
+import event from '../constants/event';
+
+export function errorUser(state = false, action) {
   switch (action.type) {
-    case 'USER_HAS_ERRORED':
+    case event.user.ERROR:
       return action.hasErrored;
 
     default:
@@ -8,9 +10,9 @@ export function userHasErrored(state = false, action) {
   }
 }
 
-export function userIsLoading(state = false, action) {
+export function receiveUser(state = false, action) {
   switch (action.type) {
-    case 'USER_IS_LOADING':
+    case event.user.LOADING:
       return action.isLoading;
 
     default:
@@ -20,8 +22,7 @@ export function userIsLoading(state = false, action) {
 
 export function user(state = null, action) {
   switch (action.type) {
-    case 'USER_FETCH_DATA_SUCCESS':
-      console.log("reducers: " + action.user)
+    case event.user.SUCCESS:
       return action.user;
 
     default:

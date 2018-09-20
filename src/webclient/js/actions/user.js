@@ -1,27 +1,29 @@
-export function userHasErrored(bool) {
+import event from '../constants/event';
+
+export function errorUser(bool) {
   return {
-    type: 'USER_HAS_ERRORED',
+    type: event.user.ERROR,
     hasErrored: bool,
   };
 }
 
-export function userIsLoading(bool) {
+export function receiveUser(bool) {
   return {
-    type: 'USER_IS_LOADING',
+    type: event.user.LOADING,
     isLoading: bool,
   };
 }
 
-export function userFetchDataSuccess(user) {
+export function successUser(user) {
   return {
-    type: 'USER_FETCH_DATA_SUCCESS',
+    type: event.user.SUCCESS,
     user,
   };
 }
 
 export function getUser() {
   return (dispatch) => {
-    dispatch(userIsLoading(true));
+    dispatch(receiveUser(true));
     fetch('http://localhost:8080/api/users/current', {
       method: 'get',
       headers: {
@@ -32,14 +34,11 @@ export function getUser() {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(userIsLoading(false));
+      dispatch(receiveUser(false));
       return response;
     })
     .then(response => response.status !== 204 ? response.json() : null)
-    .then(user => {
-      console.log('actions: ' + user);
-      return dispatch(userFetchDataSuccess(user));
-    })
-    .catch(() => dispatch(userHasErrored(true)));
+    .then(user => dispatch(successUser(user)))
+    .catch(() => dispatch(errorUser(true)));
   };
 }
