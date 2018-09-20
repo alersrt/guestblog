@@ -1,20 +1,20 @@
 import event from '../constants/event';
 
-export function messagesHasErrored(bool) {
+function messagesHasErrored(bool) {
   return {
     type: event.messages.ERROR,
     hasErrored: bool,
   };
 }
 
-export function messagesIsLoading(bool) {
+function messagesIsLoading(bool) {
   return {
     type: event.messages.LOADING,
     isLoading: bool,
   };
 }
 
-export function messagesFetchSuccess(messages) {
+function messagesFetchSuccess(messages) {
   return {
     type: event.messages.SUCCESS,
     messages,

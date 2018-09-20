@@ -1,27 +1,27 @@
 import event from '../constants/event';
 
-export function tokenHasErrored(bool) {
+function tokenHasErrored(bool) {
   return {
     type: event.token.ERROR,
     hasErrored: bool,
   };
 }
 
-export function tokenIsLoading(bool) {
+function tokenIsLoading(bool) {
   return {
     type: event.token.LOADING,
     isLoading: bool,
   };
 }
 
-export function tokenGetSuccess(token) {
+function tokenGetSuccess(token) {
   return {
     type: event.token.GET,
     token,
   };
 }
 
-export function tokenRemove() {
+function tokenRemove() {
   return {
     type: event.token.REMOVE,
   };

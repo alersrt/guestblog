@@ -1,20 +1,20 @@
 import event from '../constants/event';
 
-export function userHasErrored(bool) {
+function userHasErrored(bool) {
   return {
     type: event.user.ERROR,
     hasErrored: bool,
   };
 }
 
-export function userIsLoading(bool) {
+function userIsLoading(bool) {
   return {
     type: event.user.LOADING,
     isLoading: bool,
   };
 }
 
-export function userGetSuccess(user) {
+function userGetSuccess(user) {
   return {
     type: event.user.SUCCESS,
     user,
