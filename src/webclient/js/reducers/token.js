@@ -1,6 +1,8 @@
-export function tokenHasErrored(state = false, action) {
+import event from '../constants/event';
+
+export function errorToken(state = false, action) {
   switch (action.type) {
-    case 'TOKEN_HAS_ERRORED':
+    case event.token.ERROR:
       return action.hasErrored;
 
     default:
@@ -8,9 +10,9 @@ export function tokenHasErrored(state = false, action) {
   }
 }
 
-export function tokenIsLoading(state = false, action) {
+export function receiveToken(state = false, action) {
   switch (action.type) {
-    case 'TOKEN_IS_LOADING':
+    case event.token.RECEIVE:
       return action.isLoading;
 
     default:
@@ -20,12 +22,14 @@ export function tokenIsLoading(state = false, action) {
 
 export function token(state = localStorage.getItem('TOKEN'), action) {
   switch (action.type) {
-    case 'TOKEN_FETCH_DATA_SUCCESS':
+    case event.token.ADD:
       localStorage.setItem('TOKEN', action.token);
-      break;
-    case 'TOKEN_LOGOUT':
+      return action.token;
+    case event.token.REMOVE:
       localStorage.removeItem('TOKEN');
-      break;
+      return null;
+
+    default:
+      return state;
   }
-  return state;
 }

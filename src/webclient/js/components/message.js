@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
-import {options as fetchOptions} from '../constants/fetch';
 
 export default class Message extends Component {
-  delMessage(id) {
-    fetch('/api/messages/' + id, fetchOptions('delete')).catch(error => console.log(error));
-  }
-
   render() {
     let date = new Date(this.props.timestamp);
     let id = this.props.id;
@@ -20,7 +15,9 @@ export default class Message extends Component {
         <p id="message-text">{text}</p>
         <img src={file}/>
         <p/>
-        <button onClick={() => this.delMessage(this.props.id)}>Delete</button>
+        <button onClick={() => {
+        }}>Delete
+        </button>
       </div>
     );
   }

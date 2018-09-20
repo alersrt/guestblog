@@ -1,33 +1,35 @@
-export function tokenHasErrored(bool) {
+import event from '../constants/event';
+
+export function errorToken(bool) {
   return {
-    type: 'TOKEN_HAS_ERRORED',
+    type: event.token.ERROR,
     hasErrored: bool,
   };
 }
 
-export function tokenIsLoading(bool) {
+export function receiveToken(bool) {
   return {
-    type: 'TOKEN_IS_LOADING',
+    type: event.token.RECEIVE,
     isLoading: bool,
   };
 }
 
-export function tokenFetchDataSuccess(token) {
+export function addToken(token) {
   return {
-    type: 'TOKEN_FETCH_DATA_SUCCESS',
+    type: event.token.ADD,
     token,
   };
 }
 
-export function tokenLogout() {
+export function removeToken() {
   return {
-    type: 'TOKEN_LOGOUT',
+    type: event.token.REMOVE,
   };
 }
 
 export function signIn(username, password) {
   return (dispatch) => {
-    dispatch(tokenIsLoading(true));
+    dispatch(receiveToken(true));
     fetch('http://localhost:8080/api/users/sign/in', {
       method: 'POST',
       headers: {
@@ -43,17 +45,17 @@ export function signIn(username, password) {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      dispatch(tokenIsLoading(false));
+      dispatch(receiveToken(false));
       return response;
     })
     .then(response => response.json())
-    .then(data => dispatch(tokenFetchDataSuccess(data.token)))
-    .catch(() => dispatch(tokenHasErrored(true)));
+    .then(data => dispatch(addToken(data.token)))
+    .catch(() => dispatch(errorToken(true)));
   };
 }
 
 export function signOut() {
   return (dispatch) => {
-    dispatch(tokenLogout());
+    dispatch(removeToken());
   };
 }

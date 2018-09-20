@@ -19,13 +19,13 @@ export function userFetchDataSuccess(user) {
   };
 }
 
-export function getUser(token) {
+export function getUser() {
   return (dispatch) => {
     dispatch(userIsLoading(true));
     fetch('http://localhost:8080/api/users/current', {
       method: 'get',
       headers: {
-        'Authorization': 'Bearer ' + token,
+        'Authorization': 'Bearer ' + localStorage.getItem('TOKEN'),
       },
     })
     .then(response => {
@@ -35,8 +35,11 @@ export function getUser(token) {
       dispatch(userIsLoading(false));
       return response;
     })
-    .then(response => response.json())
-    .then(user => dispatch(userFetchDataSuccess(user)))
+    .then(response => response.status !== 204 ? response.json() : null)
+    .then(user => {
+      console.log('actions: ' + user);
+      return dispatch(userFetchDataSuccess(user));
+    })
     .catch(() => dispatch(userHasErrored(true)));
   };
 }

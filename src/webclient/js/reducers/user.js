@@ -21,6 +21,7 @@ export function userIsLoading(state = false, action) {
 export function user(state = null, action) {
   switch (action.type) {
     case 'USER_FETCH_DATA_SUCCESS':
+      console.log("reducers: " + action.user)
       return action.user;
 
     default:
