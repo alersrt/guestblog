@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {addMessage} from '../actions/message';
-import {getMessages} from '../actions/messages';
 import connect from 'react-redux/es/connect/connect';
 
 class New extends Component {
@@ -43,7 +42,6 @@ class New extends Component {
           text: document.getElementById('message-text').value,
           file: document.getElementById('message-file').dataset.dataFile,
         });
-        this.props.getMessages();
         this.setState({addState: false});
       }}>Submit
       </button>
@@ -60,7 +58,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getMessages: () => dispatch(getMessages()),
     addMessage: (message) => dispatch(addMessage(message)),
   };
 };

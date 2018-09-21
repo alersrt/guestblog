@@ -10,7 +10,7 @@ export function messageDeleted(state = null, action) {
   }
 }
 
-export function messageAdd(state = null, action) {
+export function messageAdded(state = null, action) {
   switch (action.type) {
     case event.message.add.SUCCESS:
       return action.id;

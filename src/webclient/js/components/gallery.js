@@ -8,6 +8,16 @@ class Gallery extends Component {
     this.props.getMessages();
   }
 
+  componentDidUpdate(prevProps) {
+    if (((prevProps.messageDeleted !== this.props.messageDeleted)
+      && prevProps.messages.map(m => m.id).includes(this.props.messageDeleted))
+      || ((prevProps.messageAdded !== this.props.messageAdded)
+        && !prevProps.messages.map(m => m.id).includes(this.props.messageAdded))) {
+
+      this.props.getMessages();
+    }
+  };
+
   render() {
     if (this.props.hasErrored) {
       return <p>Sorry! There was an error loading the items</p>;
@@ -28,6 +38,8 @@ class Gallery extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    messageAdded: state.messageAdded,
+    messageDeleted: state.messageDeleted,
     messages: state.messages,
     hasErrored: state.messagesHasErrored,
     isLoading: state.messagesIsLoading,

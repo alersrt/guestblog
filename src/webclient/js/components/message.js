@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {deleteMessage} from '../actions/message';
-import {getMessages} from '../actions/messages';
 import connect from 'react-redux/es/connect/connect';
 
 class Message extends Component {
@@ -20,7 +19,6 @@ class Message extends Component {
         <p/>
         <button onClick={() => {
           this.props.deleteMessage(id);
-          this.props.getMessages();
         }}>Delete
         </button>
       </div>
@@ -34,7 +32,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getMessages: () => dispatch(getMessages()),
     deleteMessage: (id) => dispatch(deleteMessage(id)),
   };
 };
