@@ -2,7 +2,6 @@ package org.student.guestblog.rest.controller;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,19 +16,15 @@ import org.student.guestblog.rest.dto.message.MessageResponse;
 @RequestMapping("/api/messages")
 public interface MessageController {
 
-  @CrossOrigin(origins = "*")
   @GetMapping
   ResponseEntity<List<MessageResponse>> getMessages();
 
-  @CrossOrigin(origins = "*")
   @GetMapping("/{id}")
   ResponseEntity<MessageResponse> getMessage(@PathVariable long id);
 
-  @CrossOrigin(origins = "*")
   @PostMapping
   ResponseEntity<MessageResponse> addMessage(@RequestBody MessageRequest messageRequest);
 
-  @CrossOrigin(origins = "*")
   @DeleteMapping("/{id}")
   ResponseEntity deleteMessage(@PathVariable long id);
 }
