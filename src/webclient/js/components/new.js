@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {addMessage} from '../actions/message';
+import {getMessages} from '../actions/messages';
 import connect from 'react-redux/es/connect/connect';
 
 class New extends Component {
@@ -30,17 +31,21 @@ class New extends Component {
 
   render() {
     let newMessageForm = <div id="new-message">
-      <p/><label htmlFor="message-title">Title:</label><input id="message-title"/>
-      <p/><label htmlFor="message-text">Text:</label><textarea id="message-text"/>
+      <p/><input id="message-title"/>
+      <p/><textarea id="message-text"/>
       <p/><input type="file" id="message-file" data-file="" onChange={() => this.loadFile()}/>
       <p/><img id="preview" height="200px" onClick={() => this.clearFile()}/>
       <p/>
       <button onClick={() => this.setState({addState: false})}>Cancel</button>
-      <button id="add-message" onClick={() => this.props.addMessage({
-        title: document.getElementById('message-title').value,
-        text: document.getElementById('message-text').value,
-        file: document.getElementById('message-file').dataset.dataFile,
-      })}>Submit
+      <button id="add-message" onClick={() => {
+        this.props.addMessage({
+          title: document.getElementById('message-title').value,
+          text: document.getElementById('message-text').value,
+          file: document.getElementById('message-file').dataset.dataFile,
+        });
+        this.props.getMessages();
+        this.setState({addState: false});
+      }}>Submit
       </button>
     </div>;
     let newMessageButton = <button onClick={() => this.setState({addState: true})}>New Message</button>;
@@ -55,6 +60,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getMessages: () => dispatch(getMessages()),
     addMessage: (message) => dispatch(addMessage(message)),
   };
 };

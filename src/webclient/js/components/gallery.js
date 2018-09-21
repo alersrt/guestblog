@@ -17,9 +17,8 @@ class Gallery extends Component {
       return <p>Loading…</p>;
     }
 
-    let messages = this.props.messages;
     return <div className="messages">
-      {messages.map(m => {
+      {this.props.messages.map(m => {
         let file = !!m.file ? '/api/files/' + m.file : undefined;
         return <Message key={m.id} id={m.id} timestamp={m.timestamp} title={m.title} text={m.text} file={file}/>;
       })}
