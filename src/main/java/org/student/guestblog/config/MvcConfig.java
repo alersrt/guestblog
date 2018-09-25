@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.WebJarsResourceResolver;
 
 /** Spring MVC configuration. */
 @Configuration
@@ -24,9 +23,8 @@ public class MvcConfig {
       public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
           .addResourceHandler("/**")
-          .addResourceLocations("/webjars/", "classpath:/static/")
-          .resourceChain(true)
-          .addResolver(webJarsResourceResolver());
+          .addResourceLocations("classpath:/static/")
+          .resourceChain(true);
       }
 
       @Override
@@ -34,15 +32,5 @@ public class MvcConfig {
         registry.addViewController("/").setViewName("forward:/index.html");
       }
     };
-  }
-
-  /**
-   * Registers {@link WebJarsResourceResolver} bean.
-   *
-   * @return registered bean.
-   */
-  @Bean
-  public WebJarsResourceResolver webJarsResourceResolver() {
-    return new WebJarsResourceResolver();
   }
 }
