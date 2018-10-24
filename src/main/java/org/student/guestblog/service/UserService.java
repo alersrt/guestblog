@@ -3,6 +3,8 @@ package org.student.guestblog.service;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +25,10 @@ import org.student.guestblog.security.JwtTokenProvider;
 public class UserService implements UserDetailsService {
 
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider tokenProvider;
+
+  @Setter(onMethod = @__(@Autowired))
+  private final PasswordEncoder passwordEncoder;
 
   @Value("${security.admin.secret}")
   private String adminSecret;
@@ -82,8 +86,8 @@ public class UserService implements UserDetailsService {
   public Optional<String> login(String username, String password) {
     return this.getByUsername(username)
       .map(user -> passwordEncoder.matches(password, user.getPassword())
-      ? tokenProvider.generateToken(user)
-      : null);
+        ? tokenProvider.generateToken(user)
+        : null);
   }
 
   /**
