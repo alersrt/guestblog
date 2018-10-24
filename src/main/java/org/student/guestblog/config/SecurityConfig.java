@@ -1,7 +1,6 @@
 package org.student.guestblog.config;
 
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,8 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.student.guestblog.security.ApplicationAuthenticationProvider;
 import org.student.guestblog.security.ApplicationSecurityContextRepository;
 import org.student.guestblog.service.UserService;
@@ -20,26 +17,12 @@ import org.student.guestblog.service.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Setter(onMethod = @__(@Autowired))
-  private ApplicationAuthenticationProvider authenticationProvider;
-
-  @Setter(onMethod = @__(@Autowired))
-  private ApplicationSecurityContextRepository securityContextRepository;
-
-  @Setter(onMethod = @__(@Autowired))
-  private UserService userService;
-
-  /**
-   * Returns password's encoder.
-   *
-   * @return {@link BCryptPasswordEncoder} bean.
-   */
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(11);
-  }
+  private final ApplicationAuthenticationProvider authenticationProvider;
+  private final ApplicationSecurityContextRepository securityContextRepository;
+  private final UserService userService;
 
   /**
    * Returns configured {@link WebSecurityConfigurerAdapter}.
