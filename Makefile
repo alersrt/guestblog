@@ -85,7 +85,7 @@ maven:
 	docker run \
 		--rm \
 		--name maven-worker \
-		-u 1000 \
+		--user $(id -u):$(id -g) \
 		-e MAVEN_CONFIG=/var/maven/.m2 \
 		-v $(PWD)/.m2:/var/maven/.m2 \
 		-v $(PWD):/usr/src/mymaven \
