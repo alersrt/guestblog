@@ -1,16 +1,13 @@
 package org.student.guestblog.exception;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Describes exceptions of the current application.
  */
-@RequiredArgsConstructor
 public class ApplicationException extends RuntimeException {
 
-  /** Code of this exception. */
-  @NonNull
+  /**
+   * Code of this exception.
+   */
   private Code code = Code.GENERIC_ERROR_CODE;
 
   /**
@@ -24,6 +21,10 @@ public class ApplicationException extends RuntimeException {
     this.code = code;
   }
 
+  public ApplicationException(Code code) {
+    this(null, code);
+  }
+
   /**
    * Returns information about exception code.
    *
@@ -33,14 +34,15 @@ public class ApplicationException extends RuntimeException {
     return code.getValue();
   }
 
-  /** Describes exceptions' codes. */
-  @RequiredArgsConstructor
-  public static enum Code {
+  /**
+   * Describes exceptions' codes.
+   */
+  public enum Code {
     GENERIC_ERROR_CODE(1);
 
-    private int value;
+    private final int value;
 
-    private Code(int value) {
+    Code(int value) {
       this.value = value;
     }
 

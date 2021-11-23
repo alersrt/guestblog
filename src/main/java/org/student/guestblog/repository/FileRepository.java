@@ -8,5 +8,5 @@ import org.student.guestblog.model.File;
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
 
-  public Optional<File> findByFilename(String filename);
+  Optional<File> findByFilename(String filename);
 }

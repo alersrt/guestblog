@@ -1,19 +1,13 @@
 package org.student.guestblog.rest.dto.user;
 
-import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.student.guestblog.model.Role;
+import java.util.Optional;
+import java.util.Set;
+import org.student.guestblog.model.Account;
+import org.student.guestblog.model.Authority;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserResponse {
+public record UserResponse(Optional<Long> id, String username, String email, Set<Authority> authorities) {
 
-  private String username;
-  private String email;
-  private List<Role> roles;
+  public UserResponse(Account model) {
+    this(Optional.ofNullable(model.getId()), model.getUsername(), model.getEmail(), model.getAuthoritiesSet());
+  }
 }

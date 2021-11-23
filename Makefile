@@ -49,7 +49,9 @@ endif
 # Aliases #
 ###########
 
-build: maven.build
+build:
+	@make yarn yarncmd='run build'
+	@make maven.build
 
 clean: maven.clean
 
@@ -58,7 +60,9 @@ clean: maven.clean
 # Usage:
 #	make deps
 
-deps: maven.deps
+deps:
+	@make yarn.deps
+	@make maven.deps
 
 docs: maven.docs
 
@@ -78,20 +82,11 @@ up: docker.up
 # Usage:
 #	make mvn [task=]
 task ?=
-maven.image = 3-jdk-10
+maven.image = 3-openjdk-16
 
 maven:
 	mkdir -p $(PWD)/.m2
-	docker run \
-		--rm \
-		--name maven-worker \
-		--user $(id -u):$(id -g) \
-		-e MAVEN_CONFIG=/var/maven/.m2 \
-		-v $(PWD)/.m2:/var/maven/.m2 \
-		-v $(PWD):/usr/src/mymaven \
-		-w /usr/src/mymaven \
-		maven:$(maven.image) \
-		mvn -Duser.home=/var/maven $(task)
+	./mvnw -Duser.home=$(PWD) $(task)
 
 # clean command
 maven.clean:
@@ -103,11 +98,11 @@ maven.deps:
 
 # build command
 maven.build:
-	@make maven task='package'
+	@make maven task='-Dmaven.test.skip package'
 
 # docs command
 maven.docs:
-	@make maven task='javadoc:javadoc'
+	@make maven task='-Dmaven.test.skip javadoc:javadoc'
 
 # test command
 maven.test:
@@ -122,15 +117,16 @@ maven.test:
 #
 # Usage:
 #	make yarn [yarn-cmd=]
-yarn-cmd ?=
+yarncmd ?=
 
 yarn:
 	docker run \
 		--rm \
+		--user $(shell id -u):$(shell id -g) \
 		-v "$(PWD)":/app -w /app \
 		-e YARN_CACHE_FOLDER=/app/_cache/yarn \
 		node \
-			yarn $(yarn-cmd) --non-interactive
+			yarn --non-interactive $(yarncmd)
 
 # Resolve Yarn project dependencies.
 #
@@ -143,7 +139,7 @@ yarn:
 yarn-deps-cmd = $(if $(call eq,$(cmd),),install --pure-lockfile,$(cmd))
 
 yarn.deps:
-	@make yarn yarn-cmd='$(yarn-deps-cmd)'
+	@make yarn yarncmd='$(yarn-deps-cmd)'
 
 
 
@@ -152,6 +148,12 @@ yarn.deps:
 # Docker commands #
 ###################
 
+# Execute docker command with needed params.
+#
+# Usage:
+docker.run:
+
+
 # Stop project in Docker Compose development environment
 # and remove all related containers.
 #
@@ -159,7 +161,7 @@ yarn.deps:
 #	make docker.down
 
 docker.down:
-	docker-compose down --rmi=local -v
+	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose down --rmi=local -v
 
 # Run Docker Compose development environment.
 #
@@ -171,7 +173,7 @@ rebuild ?= yes
 background ?= no
 
 docker.up: docker.down
-	docker-compose up \
+	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose up \
 		$(if $(call eq,$(rebuild),no),,--build) \
 		$(if $(call eq,$(background),yes),-d,--abort-on-container-exit)
 

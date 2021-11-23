@@ -1,26 +1,29 @@
 package org.student.guestblog.service;
 
-import java.util.Base64;
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import org.apache.tika.Tika;
-import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.student.guestblog.model.File;
 import org.student.guestblog.repository.FileRepository;
 import org.student.guestblog.service.internal.FileResource;
+import org.student.guestblog.util.MimeTypesAndExtensions;
 
-@Log
 @Service
-@RequiredArgsConstructor
 public class FileService {
 
-  private final Tika tika;
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private final FileRepository fileRepository;
+
+  public FileService(FileRepository fileRepository) {
+    this.fileRepository = fileRepository;
+  }
 
   /**
    * Returns file as {@link Resource}.
@@ -29,28 +32,24 @@ public class FileService {
    * @return Resource.
    */
   public Optional<FileResource> getResource(String filename) {
-    return fileRepository.findByFilename(filename)
-      .map(file -> new FileResource(file.getBlob(), file.getFilename(), file.getMime()));
+    return fileRepository
+        .findByFilename(filename)
+        .map(file -> new FileResource(file.getBlob(), file.getFilename(), file.getMime()));
   }
 
-  /**
-   * Saves base64 file's representations to database as file.
-   *
-   * @param base64Representation file's base 64 representation.
-   * @return saved file in database.
-   */
-  public File save(String base64Representation) {
-    var blob = Base64.getDecoder().decode(base64Representation.split(",")[1]);
-    var mime = tika.detect(blob);
-    String extension = null;
+  public File save(MultipartFile file) {
     try {
-      extension = MimeTypes.getDefaultMimeTypes().forName(mime).getExtension();
-    } catch (MimeTypeException e) {
-      log.warning(e.toString());
+      String extension = MimeTypesAndExtensions.getDefaultExt(file.getContentType());
+      var filename = UUID.randomUUID() + "." + extension;
+      return fileRepository.save(
+          new File()
+              .setFilename(filename)
+              .setMime(file.getContentType())
+              .setBlob(file.getBytes())
+      );
+    } catch (IOException e) {
+      return null;
     }
-    var filename = UUID.randomUUID().toString() + extension;
-
-    return fileRepository.save(File.builder().filename(filename).mime(mime).blob(blob).build());
   }
 
   /**
@@ -62,4 +61,7 @@ public class FileService {
     fileRepository.deleteById(id);
   }
 
+  public void delete(File model) {
+    fileRepository.delete(model);
+  }
 }

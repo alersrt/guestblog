@@ -1,29 +1,45 @@
-version: '2'
+version: '3'
 
 services:
+
+  pre-up:
+    image: alpine:latest
+    user: ${CURRENT_UID}
+    container_name: ${COMPOSE_PROJECT_NAME}-${PRE_UP_CONTAINER_NAME}
+    volumes:
+      - ${PWD}:/tmp/mounted
+    command: sh -c 'mkdir -p /tmp/mounted/database && tail -F anything'
+    env_file:
+      - .env
+
   guestblog:
-    container_name: ${COMPOSE_PROJECT_NAME}-${GUESTBLOG_CONTAINER_NAME}
     image: ${COMPOSE_IMAGE_NAME}
+    user: ${CURRENT_UID}
+    container_name: ${COMPOSE_PROJECT_NAME}-${GUESTBLOG_CONTAINER_NAME}
     build: .
-    depends_on:
-    - postgresql
-    network_mode: "service:postgresql"
+    ports:
+      - "80:8080" # tomcat port
     environment:
-    - GB_POSTGRES_USERNAME=postgres
-    - GB_POSTGRES_PASSWORD=postgres
-    - GB_POSTGRES_URL=jdbc:postgresql://localhost:5432/testdb
+      - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/testdb
+    depends_on:
+      - postgresql
+    env_file:
+      - .env
 
   postgresql:
-    image: postgres:alpine
+    image: postgres
+    user: ${CURRENT_UID}
+    command: postgres -N 500
     container_name: ${COMPOSE_PROJECT_NAME}-${DATABASE_CONTAINER_NAME}
     environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=postgres
-    - POSTGRES_DB=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=testdb
     volumes:
-    - "$PWD/database:/var/lib/postgresql/data"
+      - ${PWD}/database/:/var/lib/postgresql/data
     ports:
-    - "80:8080" # tomcat port
-    - "5432:5432" # postgresql port
+      - "5432:5432" # postgresql port
+    depends_on:
+      - pre-up
     env_file:
       - .env

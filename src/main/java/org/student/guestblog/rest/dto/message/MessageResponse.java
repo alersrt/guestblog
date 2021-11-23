@@ -1,20 +1,27 @@
 package org.student.guestblog.rest.dto.message;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.student.guestblog.model.Message;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class MessageResponse {
+public record MessageResponse(
+    Long id,
+    Long authorId,
+    String title,
+    String text,
+    LocalDateTime createdAt,
+    LocalDateTime editedAt,
+    String file
+) {
 
-  private Long id;
-  private String title;
-  private String text;
-  private LocalDateTime timestamp;
-  private String file;
+  public MessageResponse(Message model) {
+    this(
+        model.getId(),
+        model.getAuthorId(),
+        model.getTitle(),
+        model.getText(),
+        model.getCreatedAt(),
+        model.getUpdatedAt(),
+        model.getFile() != null ? model.getFile().getFilename() : null
+    );
+  }
 }

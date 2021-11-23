@@ -3,24 +3,37 @@
 
 ## Include project files
 !/src/
-!/src/webclient/
+
+# Backend
 !pom.xml
+!system.properties
+
+# Frontend
 !package.json
-!package-lock.json
-!.dockerignore
-!.gitignore
-!.editorconfig
+!webpack.config.js
+!tsconfig.json
+
+# Infrastructure
 !.env
+!.editorconfig
+!Procfile
+!Makefile
 !Dockerfile
 !docker-compose.yml
-!lombok.config
-!.babelrc
-!webpack.config.js
-!Procfile
-!system.properties
-!Makefile
+!.gitignore
+!.dockerignore
+
+# Documentation
 !README.md
 !CONTRIBUTING.md
+
+# Test API example
+!src/main/http/example.http
+
+# Maven wrapper
+!mvnw
+!mvnw.cmd
+!.mvn
 
 ## Exclude IDE files
 # JetBrains

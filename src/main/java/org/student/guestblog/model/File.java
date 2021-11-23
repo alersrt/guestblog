@@ -3,25 +3,21 @@ package org.student.guestblog.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.SequenceGenerator;
 
 /**
  * Represents file emtity.
  */
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class File {
 
-  /** Id of the post. */
+  /**
+   * Id of the post.
+   */
   @Id
-  @GeneratedValue
-  private long id;
+  @SequenceGenerator(name = "file_id_gen", sequenceName = "file_id_seq", allocationSize = 1)
+  @GeneratedValue(generator = "file_id_gen")
+  private Long id;
 
   /**
    * Filename.
@@ -37,4 +33,40 @@ public class File {
    * Binary data.
    */
   private byte[] blob;
+
+  public Long getId() {
+    return id;
+  }
+
+  public File setId(Long id) {
+    this.id = id;
+    return this;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public File setFilename(String filename) {
+    this.filename = filename;
+    return this;
+  }
+
+  public String getMime() {
+    return mime;
+  }
+
+  public File setMime(String mime) {
+    this.mime = mime;
+    return this;
+  }
+
+  public byte[] getBlob() {
+    return blob;
+  }
+
+  public File setBlob(byte[] blob) {
+    this.blob = blob;
+    return this;
+  }
 }

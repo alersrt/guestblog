@@ -2,17 +2,19 @@
 *
 
 ## Include project files
+
+# Sources
 !/src/
-!/src/webclient/
-!/target/
-!/.m2/
-!/node_modules/
+
+# Maven
 !pom.xml
+!/.m2/
+!/target/
+
+# Node
 !package.json
-!package-lock.json
-!lombok.config
-!.babelrc
 !webpack.config.js
+!/node_modules/
 
 ## Exclude IDE files
 # JetBrains

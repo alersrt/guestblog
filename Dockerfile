@@ -3,11 +3,11 @@
 #
 # https://hub.docker.com/_/maven
 
-FROM maven:3-jdk-10 AS dist
+FROM maven:3-openjdk-17 AS dist
 USER root
 COPY / /app
 WORKDIR /app
-RUN mvn -Duser.home=/app package
+RUN mvn -Dmaven.test.skip -Duser.home=/app package
 
 #
 # Stage 'runtime' creates final Docker image to use in runtime.

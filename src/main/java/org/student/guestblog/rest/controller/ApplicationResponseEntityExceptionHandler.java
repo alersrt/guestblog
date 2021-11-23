@@ -15,20 +15,12 @@ public class ApplicationResponseEntityExceptionHandler extends ResponseEntityExc
 
   @ExceptionHandler(value = {ApplicationException.class})
   protected ResponseEntity<Object> handleApplicationException(ApplicationException ex, WebRequest request) {
-    ErrorResponse bodyOfResponse = ErrorResponse.builder()
-      .code(String.valueOf(ex.getCodeValue()))
-      .error(ex.getClass().getName())
-      .message(ex.getMessage())
-      .build();
-    return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
-  }
-
-  @ExceptionHandler(value = {Exception.class})
-  protected ResponseEntity<Object> handleGeneralException(Exception ex, WebRequest request) {
-    ErrorResponse bodyOfResponse = ErrorResponse.builder()
-      .error(ex.getClass().getName())
-      .message(ex.getMessage())
-      .build();
+    ErrorResponse bodyOfResponse = new ErrorResponse(
+        ex.getCodeValue(),
+        ex.getClass().getName(),
+        ex.getMessage()
+    );
+    ex.printStackTrace();
     return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 }

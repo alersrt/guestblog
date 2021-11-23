@@ -2,51 +2,145 @@ package org.student.guestblog.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-/** Represents information about post. */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+/**
+ * Represents information about post.
+ */
 @Entity
 public class Message {
 
-  /** Id of the post. */
+  /**
+   * Id of the post.
+   */
   @Id
-  @GeneratedValue
-  private long id;
+  @SequenceGenerator(name = "message_id_gen", sequenceName = "message_id_seq", allocationSize = 1)
+  @GeneratedValue(generator = "message_id_gen")
+  private Long id;
 
-  /** Title of the post. */
+  @Column(name = "author_id")
+  private Long authorId;
+
+  /**
+   * Title of the post.
+   */
   @Size(max = 100)
   private String title;
 
-  /** Body of the post. */
-  @Size(max = 1024)
+  /**
+   * Body of the post.
+   */
+  @Column(columnDefinition = "text")
   private String text;
 
-  /** Attachment. */
+  /**
+   * Attachment.
+   */
   @OneToOne(cascade = CascadeType.REMOVE)
   private File file;
 
-  /** Time when this post was created or edited. */
+  /**
+   * Time when this post was created.
+   */
   @CreationTimestamp
-  private LocalDateTime timestamp;
+  private LocalDateTime createdAt;
 
-  /** Flag determines was this post edited or no. */
-  private boolean edited;
+  /**
+   * Time whe this post was edited.
+   */
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 
-  /** Author of this post. */
+  /**
+   * Author of this post.
+   */
+  @JoinColumn(name = "author_id", referencedColumnName = "id", insertable = false, updatable = false)
   @ManyToOne
-  private User user;
+  private Account author;
+
+  public Long getId() {
+    return id;
+  }
+
+  public Message setId(Long id) {
+    this.id = id;
+    return this;
+  }
+
+  public Long getAuthorId() {
+    return authorId;
+  }
+
+  public Message setAuthorId(Long authorId) {
+    this.authorId = authorId;
+    return this;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public Message setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public Message setText(String text) {
+    this.text = text;
+    return this;
+  }
+
+  public File getFile() {
+    return file;
+  }
+
+  public Message setFile(File file) {
+    this.file = file;
+    return this;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public Message setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+    return this;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public Message setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+    return this;
+  }
+
+  public boolean isEdited() {
+    return updatedAt != null && updatedAt.isAfter(createdAt);
+  }
+
+  public Account getAuthor() {
+    return author;
+  }
+
+  public Message setAuthor(Account account) {
+    this.author = account;
+    return this;
+  }
 }

@@ -1,6 +1,5 @@
 package org.student.guestblog.service.internal;
 
-import lombok.Getter;
 import org.springframework.core.io.ByteArrayResource;
 
 /**
@@ -8,11 +7,9 @@ import org.springframework.core.io.ByteArrayResource;
  */
 public class FileResource extends ByteArrayResource {
 
-  @Getter
-  private String mime;
+  private final String mime;
 
-  @Getter
-  private String filename;
+  private final String filename;
 
   /**
    * Creates this resource.
@@ -25,5 +22,14 @@ public class FileResource extends ByteArrayResource {
     super(byteArray);
     this.filename = filename;
     this.mime = mime;
+  }
+
+  public String getMime() {
+    return mime;
+  }
+
+  @Override
+  public String getFilename() {
+    return filename;
   }
 }

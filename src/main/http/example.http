@@ -1,0 +1,30 @@
+### Authentication
+// @no-log
+POST {{host}}/api/auth/login
+Authorization: Basic {{username}} {{password}}
+
+### Message
+// @no-log
+POST {{host}}/api/message
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="metadata"; filename="metadata.json"
+Content-Type: application/json
+
+{
+  "title": "EXAMPLE",
+  "text": "SOME IMAGE DESCRIPTION"
+}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="image.png"
+Content-Type: image/png
+
+< ../../test/resources/test.png
+--WebAppBoundary--
+
+
+
+
+

@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './src/webclient/index.js',
+  entry: ['babel-polyfill', './src/webclient/index.tsx'],
   mode: 'development',
   module: {
     rules: [
@@ -16,25 +16,28 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
+      {
+        test: /\.(ts|tsx)$/,
+        use: 'ts-loader'
+      }
     ],
   },
-  resolve: {extensions: ['*', '.js', '.jsx']},
+  resolve: {extensions: ['*', '.js', '.jsx', '.ts', '.tsx']},
   output: {
     path: path.resolve(__dirname, 'target/'),
     publicPath: '/dist/',
     filename: 'bundle.js',
   },
   devServer: {
-    contentBase: path.join(__dirname, 'src/main/resources/static/'),
+    static: path.join(__dirname, 'src/main/resources/static/'),
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/',
+        target: 'http://localhost/',
         secure: false,
       },
     },
-    publicPath: 'http://localhost:3000/dist/',
-    hotOnly: true,
+    hot: 'only',
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
 };

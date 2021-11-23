@@ -7,9 +7,6 @@ Contribution Guide
 ## Requirements
 
 - If you don't use docker-wrapped commands, make sure that tools you use have the same version as in docker-wrapped commands. It's latest version, mainly.
-- Here is used Lombok Library. For make your IDEs supports it, you should to go at the [site][2], select `Install` menu, choose your IDE in `IDE` section and follows instructions.
-
-
 
 
 ## Operations
@@ -60,4 +57,3 @@ make docs
 
 
 [1]: Makefile
-[2]: https://projectlombok.org/

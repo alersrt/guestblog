@@ -1,17 +1,8 @@
 package org.student.guestblog.rest.dto.error;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record ErrorResponse(Integer code, String error, String message) {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ErrorResponse {
-
-  private String code;
-  private String error;
-  private String message;
+  public ErrorResponse(String error, String message) {
+    this(null, error, message);
+  }
 }

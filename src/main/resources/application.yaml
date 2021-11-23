@@ -1,18 +1,17 @@
-logging:
-  level:
-    root: info
-security:
-  admin:
-    secret: ${GB_ADMIN_SECRET:admin}
-  jwt:
-    secret: ${GB_JWT_SECRET:verySecretJwtSecret}
-    expiration: 28800
 server:
   error:
+    disable-default-exception-handling: true
     whitelabel:
       enabled: false
   port: ${GB_SERVER_PORT:8080}
 spring:
+  sql:
+    init:
+      schema-locations:
+        - classpath:schema.sql
+      data-locations:
+        - classpath:data.sql
+      mode: always
   servlet:
     multipart:
       enabled: true
@@ -26,19 +25,18 @@ spring:
   # to find more information here:
   # https://vkuzel.com/spring-boot-jpa-hibernate-atomikos-postgresql-exception
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   datasource:
-    platform: postgres
+    hikari:
+      leak-detection-threshold: 60000
+      maximum-pool-size: 100
     url: ${GB_POSTGRES_URL:jdbc:postgresql://localhost:5432/testdb}
     username: ${GB_POSTGRES_USERNAME:postgres}
     password: ${GB_POSTGRES_PASSWORD:postgres}
-
----
-spring:
-  profiles: test
+    driver-class-name: org.postgresql.Driver
