@@ -27,8 +27,8 @@ create table if not exists message
         constraint message_id_pk primary key,
     created_at timestamp,
     updated_at timestamp,
-    text       varchar(255),
-    title      varchar(255),
+    text       text,
+    title      text,
     author_id  bigint
         constraint message_author_id_fk references account (id),
     file_id    bigint

@@ -34,7 +34,7 @@ public class Message {
   /**
    * Title of the post.
    */
-  @Size(max = 100)
+  @Column(columnDefinition = "text")
   private String title;
 
   /**
