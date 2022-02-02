@@ -21,11 +21,11 @@ function fetcher(input: RequestInfo, init?: RequestInit): Promise<any> {
   return fetch(input, init)
 }
 
-export async function login(username: string, password: string): Promise<UserDto> {
+export async function login(email: string, password: string): Promise<UserDto> {
   const response = await fetcher('/api/auth/login', {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${encode(`${username}:${password}`)}`
+      'Authorization': `Basic ${encode(`${email}:${password}`)}`
     }
   })
 

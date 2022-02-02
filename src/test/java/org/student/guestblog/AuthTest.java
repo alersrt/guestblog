@@ -34,7 +34,7 @@ public class AuthTest extends AbstractIntegrationTest {
   @Test
   void obtainToken_positive() throws Exception {
     /*------ Arranges ------*/
-    String username = "user";
+    String username = "user@test.dev";
     String password = "password";
     String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
 
@@ -84,7 +84,7 @@ public class AuthTest extends AbstractIntegrationTest {
   @Test
   void obtainToken_negative() throws Exception {
     /*------ Arranges ------*/
-    String username = "user";
+    String username = "user@test.dev";
     String password = "wrong_password";
     String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
 

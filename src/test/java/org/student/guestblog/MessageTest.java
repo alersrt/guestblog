@@ -41,7 +41,7 @@ public class MessageTest extends AbstractIntegrationTest {
   @Test
   void createMessage_withAuth() throws Exception {
     /*------ Arranges ------*/
-    var authCookie = getUserAuthorization("user", "password");
+    var authCookie = getUserAuthorization("user@test.dev", "password");
     var messageMetadata = new MessageRequest("TEST", "Lorem ipsum...");
 
     /*------ Actions ------*/

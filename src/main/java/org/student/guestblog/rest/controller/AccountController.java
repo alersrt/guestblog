@@ -37,7 +37,7 @@ public class AccountController {
   @PreAuthorize("isAuthenticated()")
   @GetMapping("/me")
   public ResponseEntity<UserResponse> currentUser(Authentication authentication) {
-    return accountService.getById(((User) authentication.getPrincipal()).id())
+    return accountService.getByEmail(((User) authentication.getPrincipal()).email())
         .map(UserResponse::new)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
@@ -45,8 +45,8 @@ public class AccountController {
 
   @PostMapping
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
-    return accountService.create(registerRequest.username(), registerRequest.password(), registerRequest.email().orElse(null))
-        .map(Account::getId)
+    return accountService.create(registerRequest.email(), registerRequest.password())
+        .map(Account::id)
         .map(id -> ResponseEntity.ok(new RegisterResponse(id)))
         .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
   }

@@ -1,21 +1,58 @@
 package org.student.guestblog.config.security;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.student.guestblog.model.Account;
 import org.student.guestblog.model.Authority;
+import org.student.guestblog.model.PassportType;
 
 public record User(
     Long id,
-    String username,
-    Collection<GrantedAuthority> authorities,
-    String password
-) implements UserDetails {
-  
+    String email,
+    String name,
+    String avatar,
+    Set<Authority> authorities,
+    String hash,
+    String clientName,
+    Map<String, Object> attributes
+) implements UserDetails, OAuth2User {
+
   public User(Account model) {
-    this(model.getId(), model.getUsername(), (Collection<GrantedAuthority>) model.getAuthorities(), model.getPassword());
+    this(
+        model.id(),
+        model.email(),
+        model.name(),
+        model.avatar(),
+        model.authorities(),
+        model.passports().stream()
+            .filter(passport -> PassportType.PASSWORD.equals(passport.type()))
+            .findFirst()
+            .orElseThrow()
+            .hash(),
+        null,
+        null
+    );
+  }
+
+  public User(Account model, String clientName, Map<String, Object> attributes) {
+    this(
+        model.id(),
+        model.email(),
+        model.name(),
+        model.avatar(),
+        model.authorities(),
+        model.passports().stream()
+            .filter(passport -> clientName.equals(passport.type().id()))
+            .findFirst()
+            .orElseThrow()
+            .hash(),
+        clientName,
+        attributes
+    );
   }
 
   @Override
@@ -25,12 +62,12 @@ public record User(
 
   @Override
   public String getPassword() {
-    return password;
+    return hash;
   }
 
   @Override
   public String getUsername() {
-    return username;
+    return email;
   }
 
   @Override
@@ -51,5 +88,15 @@ public record User(
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  public Map<String, Object> getAttributes() {
+    return attributes;
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 }

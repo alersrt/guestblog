@@ -1,9 +1,9 @@
 export class UserDto {
-  constructor(id: number, username: string, email: string, authorities: string[]) {
+  constructor(id: number, email: string, authorities: string[], avatar: string) {
     this._id = id;
-    this._username = username;
     this._email = email;
     this._authorities = authorities;
+    this._avatar = avatar;
   }
 
   private _id?: number;
@@ -14,16 +14,6 @@ export class UserDto {
 
   set id(value: number) {
     this._id = value;
-  }
-
-  private _username: string;
-
-  get username(): string {
-    return this._username;
-  }
-
-  set username(value: string) {
-    this._username = value;
   }
 
   private _email: string;
@@ -44,5 +34,15 @@ export class UserDto {
 
   set authorities(value: string[]) {
     this._authorities = value;
+  }
+
+  private _avatar: string;
+
+  get avatar(): string {
+    return this._avatar;
+  }
+
+  set avatar(value: string) {
+    this._avatar = value;
   }
 }

@@ -13,6 +13,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -20,7 +23,9 @@ import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.student.guestblog.config.security.oauth2.CustomOAuth2UserService;
 import org.student.guestblog.repository.AccountRepository;
+import org.student.guestblog.repository.PassportRepository;
 import org.student.guestblog.util.Cookie;
 
 @Configuration
@@ -40,15 +45,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
   };
 
   private final AccountRepository accountRepository;
+  private final PassportRepository passportRepository;
   private final PasswordEncoder passwordEncoder;
   private final DataSource dataSource;
 
   public WebSecurityConfig(
       AccountRepository accountRepository,
+      PassportRepository passportRepository,
       PasswordEncoder passwordEncoder,
       DataSource dataSource
   ) {
     this.accountRepository = accountRepository;
+    this.passportRepository = passportRepository;
     this.passwordEncoder = passwordEncoder;
     this.dataSource = dataSource;
   }
@@ -57,11 +65,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
   public UserDetailsService customUserDetailsServiceBean() throws Exception {
     return username -> {
       var account = accountRepository
-          .findByUsername(username)
+          .findByEmail(username)
           .orElseThrow(() -> new UsernameNotFoundException(username));
 
       return new User(account);
     };
+  }
+
+  @Bean
+  public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserServiceBean() {
+    return new CustomOAuth2UserService(accountRepository);
   }
 
   @Bean
@@ -125,6 +138,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     http
         .authorizeRequests()
         .anyRequest().permitAll()
+        .and();
+
+    // OAuth2
+    http
+        .oauth2Login()
+        .defaultSuccessUrl("/")
+        .userInfoEndpoint()
+        .userService(oAuth2UserServiceBean())
         .and();
   }
 

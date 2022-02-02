@@ -1,5 +1,6 @@
 package org.student.guestblog.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +10,8 @@ import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.exception.ApplicationException.Code;
 import org.student.guestblog.model.Account;
 import org.student.guestblog.model.Authority;
+import org.student.guestblog.model.Passport;
+import org.student.guestblog.model.PassportType;
 import org.student.guestblog.repository.AccountRepository;
 
 /**
@@ -33,30 +36,37 @@ public class AccountService {
   }
 
   /**
-   * Return user by its username.
+   * Return user by its email.
    *
-   * @param username user's username.
+   * @param email user's email.
    * @return user.
    */
-  public Optional<Account> getByUsername(String username) {
-    return accountRepository.findByUsername(username);
+  public Optional<Account> getByEmail(String email) {
+    return accountRepository.findByEmail(email);
   }
 
-  public Optional<Account> create(String username, String password, String email) {
+  public Optional<Account> create(String email, String password) {
     Account account = new Account()
-        .setUsername(username.toLowerCase())
         .setEmail(email)
-        .setPassword(passwordEncoder.encode(password))
         .setAuthorities(Set.of(Authority.USER));
 
-    var isExist = accountRepository.existsByUsername(account.getUsername()) || "admin".equals(account.getUsername());
+    Passport passwordPass = new Passport(account, PassportType.PASSWORD, passwordEncoder.encode(password));
+    account.passports().add(passwordPass);
+
+    var isExist = accountRepository.existsByEmail(account.email()) || "admin@test.dev".equals(account.email());
     return isExist ? Optional.empty() : Optional.of(accountRepository.save(account));
   }
 
-  public Account update(Long id, Optional<String> username, Optional<String> password) {
+  public Account update(Long id, Optional<String> email, Optional<String> password) {
     var account = accountRepository.findById(id).orElseThrow(() -> new ApplicationException(Code.GENERIC_ERROR_CODE));
-    username.ifPresent(account::setUsername);
-    password.map(passwordEncoder::encode).ifPresent(account::setPassword);
+    email.ifPresent(account::setEmail);
+    password.map(passwordEncoder::encode).ifPresent(s -> account
+        .passports().stream()
+        .filter(passport -> passport.type().equals(PassportType.PASSWORD))
+        .findFirst()
+        .orElseThrow()
+        .setHash(s)
+    );
     return accountRepository.save(account);
   }
 }

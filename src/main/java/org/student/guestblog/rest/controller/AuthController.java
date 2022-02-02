@@ -34,7 +34,7 @@ public class AuthController {
     var user = (User) authentication.getPrincipal();
     log.info(String.format("[ID: %s] - [IP: %s]", user.id(), getRemoteAddress(request)));
 
-    return accountService.getByUsername(authentication.getName())
+    return accountService.getByEmail(user.getUsername())
         .map(UserResponse::new)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());

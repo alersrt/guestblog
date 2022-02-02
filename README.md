@@ -23,7 +23,7 @@ The documentation about restpoints available by the next path: `<this service ur
 ## Credentials
 
 The default credentials are
-- username: `admin`
+- username: `admin@test.dev`
 - password: `admin`
 
 Its possible to change it later.

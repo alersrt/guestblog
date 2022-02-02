@@ -12,26 +12,30 @@ import "./assets/styles/common.css"
 export function App(props: any) {
 
   const LoginForm: FC<any> = (props): ReactElement => {
-    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     function handleLogin(event: FormEvent<HTMLFormElement>) {
-      login(username, password).then(value => userCtx.populateUser(value))
+      login(email, password).then(value => userCtx.populateUser(value))
       event.preventDefault()
     }
 
     return (
         <UserContext.Consumer>
           {(ctx) => (
-              <form onSubmit={handleLogin}>
-                <input type={"text"}
-                       placeholder={"login..."}
-                       onChange={(e) => setUsername(e.target.value)}/>
-                <input type={"password"}
-                       placeholder={"password..."}
-                       onChange={(e) => setPassword(e.target.value)}/>
-                <button type={"submit"}>Submit</button>
-              </form>
+              <div>
+                <form onSubmit={handleLogin}>
+                  <input type={"text"}
+                         placeholder={"login..."}
+                         onChange={(e) => setEmail(e.target.value)}/>
+                  <input type={"password"}
+                         placeholder={"password..."}
+                         onChange={(e) => setPassword(e.target.value)}/>
+                  <button type={"submit"}>Submit</button>
+                </form>
+                <button><a href={"/oauth2/authorization/google"}>Google</a></button>
+                <button><a href={"/oauth2/authorization/facebook"}>Facebook</a></button>
+              </div>
           )}
         </UserContext.Consumer>
     )
@@ -46,7 +50,8 @@ export function App(props: any) {
         <UserContext.Consumer>
           {(ctx) => (
               <div>
-                {ctx.user.username}
+                <img src={ctx.user.avatar}/>
+                {ctx.user.email}
                 <button type={"button"} onClick={handleLogout}><FontAwesomeIcon icon={faSignOutAlt}/></button>
               </div>
           )}

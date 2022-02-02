@@ -1,28 +1,26 @@
 package org.student.guestblog.model;
 
-import com.vladmihalcea.hibernate.type.array.EnumArrayType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -30,40 +28,36 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Entity
 @Table(name = "account")
-public class Account implements UserDetails {
+public class Account {
 
   /**
    * Id of the user.
    */
   @Id
   @SequenceGenerator(name = "account_id_gen", sequenceName = "account_id_seq", allocationSize = 1)
-  @GeneratedValue(generator = "account_id_gen")
+  @GeneratedValue(generator = "account_id_gen", strategy = GenerationType.IDENTITY)
   private Long id;
 
-  /**
-   * Username of the user.
-   */
-  @NotBlank
-  @Size(min = 6, max = 32)
-  private String username;
-
-  /**
-   * Hash code of the user password.
-   */
-  @NotBlank
-  private String password;
+  @LazyCollection(value = LazyCollectionOption.FALSE)
+  @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<Passport> passports = new ArrayList<>();
 
   /**
    * E-mail of the user.
    */
+  @NotBlank
   @Email
   private String email;
+
+  private String name;
+
+  private String avatar;
 
   /**
    * List of the user's messages.
    */
   @OneToMany(mappedBy = "author")
-  private List<Message> messages;
+  private List<Message> messages = new ArrayList<>();
 
   /**
    * Authorities of this user.
@@ -72,12 +66,69 @@ public class Account implements UserDetails {
   @Column(columnDefinition = "varchar[]")
   private Set<Authority> authorities = new HashSet<>();
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return authorities;
+  public Account() {
   }
 
-  public Set<Authority> getAuthoritiesSet() {
+  public Account(String email) {
+    this.email = email;
+    this.authorities.add(Authority.USER);
+  }
+
+  public Long id() {
+    return id;
+  }
+
+  public Account setId(Long id) {
+    this.id = id;
+    return this;
+  }
+
+  public List<Passport> passports() {
+    return passports;
+  }
+
+  private Account setPassports(List<Passport> passports) {
+    this.passports = passports;
+    return this;
+  }
+
+  public String email() {
+    return email;
+  }
+
+  public Account setEmail(String email) {
+    this.email = email;
+    return this;
+  }
+
+  public String name() {
+    return name;
+  }
+
+  public Account setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public String avatar() {
+    return avatar;
+  }
+
+  public Account setAvatar(String avatar) {
+    this.avatar = avatar;
+    return this;
+  }
+
+  public List<Message> messages() {
+    return messages;
+  }
+
+  private Account setMessages(List<Message> messages) {
+    this.messages = messages;
+    return this;
+  }
+
+  public Set<Authority> authorities() {
     return authorities;
   }
 
@@ -87,74 +138,21 @@ public class Account implements UserDetails {
   }
 
   @Override
-  public boolean isAccountNonExpired() {
-    return true;
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Account account = (Account) o;
+
+    return id.equals(account.id);
   }
 
   @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
-
-  @Override
-  public String toString() {
-    return username;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public Account setId(Long id) {
-    this.id = id;
-    return this;
-  }
-
-  @Override
-  public String getUsername() {
-    return username;
-  }
-
-  public Account setUsername(String username) {
-    this.username = username;
-    return this;
-  }
-
-  @Override
-  public String getPassword() {
-    return password;
-  }
-
-  public Account setPassword(String password) {
-    this.password = password;
-    return this;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public Account setEmail(String email) {
-    this.email = email;
-    return this;
-  }
-
-  public List<Message> getMessages() {
-    return messages;
-  }
-
-  public Account setMessages(List<Message> messages) {
-    this.messages = messages;
-    return this;
+  public int hashCode() {
+    return id.hashCode();
   }
 }

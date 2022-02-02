@@ -19,8 +19,8 @@ public record MessageResponse(
         model.getAuthorId(),
         model.getTitle(),
         model.getText(),
-        model.getCreatedAt(),
-        model.getUpdatedAt(),
+        model.getCreated(),
+        model.getUpdated(),
         model.getFile() != null ? model.getFile().getFilename() : null
     );
   }

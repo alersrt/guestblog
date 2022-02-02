@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -53,13 +52,13 @@ public class Message {
    * Time when this post was created.
    */
   @CreationTimestamp
-  private LocalDateTime createdAt;
+  private LocalDateTime created;
 
   /**
    * Time whe this post was edited.
    */
   @UpdateTimestamp
-  private LocalDateTime updatedAt;
+  private LocalDateTime updated;
 
   /**
    * Author of this post.
@@ -113,26 +112,26 @@ public class Message {
     return this;
   }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
+  public LocalDateTime getCreated() {
+    return created;
   }
 
-  public Message setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
+  public Message setCreated(LocalDateTime createdAt) {
+    this.created = createdAt;
     return this;
   }
 
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
+  public LocalDateTime getUpdated() {
+    return updated;
   }
 
-  public Message setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
+  public Message setUpdated(LocalDateTime updatedAt) {
+    this.updated = updatedAt;
     return this;
   }
 
   public boolean isEdited() {
-    return updatedAt != null && updatedAt.isAfter(createdAt);
+    return updated != null && updated.isAfter(created);
   }
 
   public Account getAuthor() {
