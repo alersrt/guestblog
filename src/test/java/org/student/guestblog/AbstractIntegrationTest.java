@@ -76,8 +76,8 @@ public abstract class AbstractIntegrationTest {
     String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
     ResultActions resultActions = mockMvc.perform(
         post("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", String.format("Basic %s", clientAuth))
+            .param("username", username)
+            .param("password", password)
     );
 
     var authResponse = resultActions.andReturn().getResponse();

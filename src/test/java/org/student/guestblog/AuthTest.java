@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.student.guestblog.model.Authority;
+import org.student.guestblog.rest.dto.auth.AuthRequest;
 import org.student.guestblog.rest.dto.register.RegisterRequest;
 import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.util.Cookie;
@@ -42,14 +43,10 @@ public class AuthTest extends AbstractIntegrationTest {
     log.info("===> LOGIN");
     ResultActions loginAction = mockMvc.perform(
         post("/api/auth/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", String.format("Basic %s", clientAuth))
+            .param("username", username)
+            .param("password", password)
     );
     var authResponse = loginAction.andReturn().getResponse();
-    UserResponse authDto = objectMapper.readValue(
-        authResponse.getContentAsString(),
-        UserResponse.class
-    );
 
     var authCookie = Arrays.stream(authResponse.getCookies())
         .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
@@ -76,7 +73,8 @@ public class AuthTest extends AbstractIntegrationTest {
         () -> assertThat(Arrays.stream(authResponse.getCookies())
             .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
             .findFirst()).isNotEmpty(),
-        () -> assertThat(meDto).isEqualTo(authDto)
+        () -> assertThat(meDto.id().get()).isNotNull().isEqualTo(2),
+        () -> assertThat(meDto.email()).isNotBlank().isEqualTo(username)
     );
   }
 

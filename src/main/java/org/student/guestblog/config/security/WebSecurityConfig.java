@@ -1,8 +1,17 @@
 package org.student.guestblog.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -10,12 +19,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -45,20 +56,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
   };
 
   private final AccountRepository accountRepository;
-  private final PassportRepository passportRepository;
   private final PasswordEncoder passwordEncoder;
   private final DataSource dataSource;
+  private final ObjectMapper objectMapper;
 
   public WebSecurityConfig(
       AccountRepository accountRepository,
-      PassportRepository passportRepository,
       PasswordEncoder passwordEncoder,
-      DataSource dataSource
+      DataSource dataSource,
+      ObjectMapper objectMapper
   ) {
     this.accountRepository = accountRepository;
-    this.passportRepository = passportRepository;
     this.passwordEncoder = passwordEncoder;
     this.dataSource = dataSource;
+    this.objectMapper = objectMapper;
   }
 
   @Bean
@@ -113,6 +124,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     // Setup login
     http
         .httpBasic()
+        .disable()
+        .formLogin()
+        .loginProcessingUrl("/api/auth/login")
+        .successHandler((request, response, authentication) -> {})
+        .failureHandler((request, response, exception) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
         .and()
         .rememberMe()
         .alwaysRemember(true)
@@ -143,10 +159,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     // OAuth2
     http
         .oauth2Login()
-        .defaultSuccessUrl("/")
         .userInfoEndpoint()
-        .userService(oAuth2UserServiceBean())
-        .and();
+        .userService(oAuth2UserServiceBean());
   }
 
   @Override

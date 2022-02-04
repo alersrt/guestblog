@@ -22,16 +22,13 @@ function fetcher(input: RequestInfo, init?: RequestInit): Promise<any> {
 }
 
 export async function login(email: string, password: string): Promise<UserDto> {
-  const response = await fetcher('/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${encode(`${email}:${password}`)}`
-    }
+  const response = await fetcher(`/api/auth/login?username=${email}&password=${password}`, {
+    method: 'POST'
   })
 
   switch (response.status) {
     case 200: {
-      return response.json();
+      return me();
     }
     default: {
       throw new Error()
