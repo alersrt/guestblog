@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
 
@@ -43,3 +43,8 @@ services:
       - pre-up
     env_file:
       - .env
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"

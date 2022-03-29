@@ -1,3 +1,12 @@
+#!/usr/bin/env make
+
+env.file ?=
+
+ifdef env.file
+	include $(env.file)
+	export $(shell sed 's/=.*//' $(env.file))
+endif
+
 ###############################
 # Common defaults/definitions #
 ###############################
@@ -172,7 +181,7 @@ docker.down:
 rebuild ?= yes
 background ?= no
 
-docker.up: docker.down
+docker.up:
 	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose up \
 		$(if $(call eq,$(rebuild),no),,--build) \
 		$(if $(call eq,$(background),yes),-d,--abort-on-container-exit)
