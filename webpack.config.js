@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: ['babel-polyfill', './src/webclient/index.tsx'],
+  entry: ['babel-polyfill', './src/web/index.tsx'],
   mode: 'development',
   module: {
     rules: [
