@@ -1,27 +1,25 @@
 package org.student.guestblog.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents information about user which is stored in the database.
@@ -62,16 +60,16 @@ public class Account {
   /**
    * Authorities of this user.
    */
-  @Type(type = "org.student.guestblog.model.AuthoritySetUserType")
+  @Type(ListArrayType.class)
   @Column(columnDefinition = "varchar[]")
-  private Set<Authority> authorities = new HashSet<>();
+  private List<String> authorities = new ArrayList<>();
 
   public Account() {
   }
 
   public Account(String email) {
     this.email = email;
-    this.authorities.add(Authority.USER);
+    this.authorities.add(Authority.USER.name());
   }
 
   public Long id() {
@@ -128,12 +126,12 @@ public class Account {
     return this;
   }
 
-  public Set<Authority> authorities() {
-    return authorities;
+  public List<Authority> authorities() {
+    return authorities.stream().map(Authority::valueOf).toList();
   }
 
-  public Account setAuthorities(Set<Authority> authorities) {
-    this.authorities = authorities;
+  public Account setAuthorities(List<Authority> authorities) {
+    this.authorities = authorities.stream().map(Authority::name).toList();
     return this;
   }
 

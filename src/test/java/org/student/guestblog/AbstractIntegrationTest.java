@@ -1,12 +1,7 @@
 package org.student.guestblog;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Base64;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -27,6 +21,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Base64;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -42,10 +42,10 @@ public abstract class AbstractIntegrationTest {
    */
   @Container
   protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-      .withDatabaseName("testdb")
-      .withUsername("postgres")
-      .withPassword("postgres")
-      .withStartupTimeout(Duration.ofSeconds(600));
+    .withDatabaseName("testdb")
+    .withUsername("postgres")
+    .withPassword("postgres")
+    .withStartupTimeout(Duration.ofSeconds(600));
 
   /**
    * The main testing tool.
@@ -72,28 +72,26 @@ public abstract class AbstractIntegrationTest {
    * @return authorization token.
    * @throws Exception if something went wrong.
    */
-  protected javax.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
+  protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
     String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
     ResultActions resultActions = mockMvc.perform(
-        post("/api/auth/login")
-            .param("username", username)
-            .param("password", password)
+      post("/api/auth/login")
+        .param("username", username)
+        .param("password", password)
     );
 
     var authResponse = resultActions.andReturn().getResponse();
 
-    var authCookie = Arrays.stream(authResponse.getCookies())
-        .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-        .findFirst()
-        .get();
-
-    return authCookie;
+    return Arrays.stream(authResponse.getCookies())
+      .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+      .findFirst()
+      .get();
   }
 
-  protected javax.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
+  protected jakarta.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
     return Arrays.stream(response.getCookies())
-        .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-        .findFirst()
-        .get();
+      .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+      .findFirst()
+      .get();
   }
 }

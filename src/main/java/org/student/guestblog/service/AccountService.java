@@ -1,8 +1,5 @@
 package org.student.guestblog.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +11,9 @@ import org.student.guestblog.model.Passport;
 import org.student.guestblog.model.PassportType;
 import org.student.guestblog.repository.AccountRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Describes user's managing service and implements {@link UserDetailsService}.
  */
@@ -24,8 +24,8 @@ public class AccountService {
   private final PasswordEncoder passwordEncoder;
 
   public AccountService(
-      AccountRepository accountRepository,
-      PasswordEncoder passwordEncoder
+    AccountRepository accountRepository,
+    PasswordEncoder passwordEncoder
   ) {
     this.accountRepository = accountRepository;
     this.passwordEncoder = passwordEncoder;
@@ -47,8 +47,8 @@ public class AccountService {
 
   public Optional<Account> create(String email, String password) {
     Account account = new Account()
-        .setEmail(email)
-        .setAuthorities(Set.of(Authority.USER));
+      .setEmail(email)
+      .setAuthorities(List.of(Authority.USER));
 
     Passport passwordPass = new Passport(account, PassportType.PASSWORD, passwordEncoder.encode(password));
     account.passports().add(passwordPass);
@@ -61,11 +61,11 @@ public class AccountService {
     var account = accountRepository.findById(id).orElseThrow(() -> new ApplicationException(Code.GENERIC_ERROR_CODE));
     email.ifPresent(account::setEmail);
     password.map(passwordEncoder::encode).ifPresent(s -> account
-        .passports().stream()
-        .filter(passport -> passport.type().equals(PassportType.PASSWORD))
-        .findFirst()
-        .orElseThrow()
-        .setHash(s)
+      .passports().stream()
+      .filter(passport -> passport.type().equals(PassportType.PASSWORD))
+      .findFirst()
+      .orElseThrow()
+      .setHash(s)
     );
     return accountRepository.save(account);
   }
