@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * The root configuration of the application.
@@ -23,19 +21,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class RootConfig {
 
-  /**
-   * Returns the object mapper.
-   *
-   * @return {@link ObjectMapper} bean.
-   */
-  @Primary
-  @Bean
-  public ObjectMapper objectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    mapper.setSerializationInclusion(Include.NON_NULL);
-    mapper.registerModule(new JavaTimeModule());
-    mapper.registerModule(new Jdk8Module());
-    return mapper;
-  }
+    /**
+     * Returns the object mapper.
+     *
+     * @return {@link ObjectMapper} bean.
+     */
+    @Primary
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new Jdk8Module());
+        return mapper;
+    }
 }

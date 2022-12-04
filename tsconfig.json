@@ -1,24 +1,24 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2015",
-    "noImplicitAny": false,
-    "noImplicitThis": true,
-    "strictNullChecks": false,
-    "lib": [
-      "ES6",
-      "es2018",
-      "dom"
-    ],
-    "jsx": "react",
-    "allowSyntheticDefaultImports": true
-  }
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./",
+        "sourceMap": true,
+        "declaration": false,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es2015",
+        "noImplicitAny": false,
+        "noImplicitThis": true,
+        "strictNullChecks": false,
+        "lib": [
+            "ES6",
+            "es2018",
+            "dom"
+        ],
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true
+    }
 }

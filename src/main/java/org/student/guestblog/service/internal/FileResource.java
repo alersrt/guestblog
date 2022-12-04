@@ -7,29 +7,29 @@ import org.springframework.core.io.ByteArrayResource;
  */
 public class FileResource extends ByteArrayResource {
 
-  private final String mime;
+    private final String mime;
 
-  private final String filename;
+    private final String filename;
 
-  /**
-   * Creates this resource.
-   *
-   * @param byteArray bytes of the file.
-   * @param filename name of the file.
-   * @param mime mime type of the file.
-   */
-  public FileResource(byte[] byteArray, String filename, String mime) {
-    super(byteArray);
-    this.filename = filename;
-    this.mime = mime;
-  }
+    /**
+     * Creates this resource.
+     *
+     * @param byteArray bytes of the file.
+     * @param filename  name of the file.
+     * @param mime      mime type of the file.
+     */
+    public FileResource(byte[] byteArray, String filename, String mime) {
+        super(byteArray);
+        this.filename = filename;
+        this.mime = mime;
+    }
 
-  public String getMime() {
-    return mime;
-  }
+    public String getMime() {
+        return mime;
+    }
 
-  @Override
-  public String getFilename() {
-    return filename;
-  }
+    @Override
+    public String getFilename() {
+        return filename;
+    }
 }

@@ -37,61 +37,61 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-  /**
-   * Container with the PostgreSQL database.
-   */
-  @Container
-  protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-    .withDatabaseName("testdb")
-    .withUsername("postgres")
-    .withPassword("postgres")
-    .withStartupTimeout(Duration.ofSeconds(600));
+    /**
+     * Container with the PostgreSQL database.
+     */
+    @Container
+    protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
+        .withDatabaseName("testdb")
+        .withUsername("postgres")
+        .withPassword("postgres")
+        .withStartupTimeout(Duration.ofSeconds(600));
 
-  /**
-   * The main testing tool.
-   */
-  @Autowired
-  protected MockMvc mockMvc;
+    /**
+     * The main testing tool.
+     */
+    @Autowired
+    protected MockMvc mockMvc;
 
-  /**
-   * Needs for the mapping of the responses.
-   */
-  @Autowired
-  protected ObjectMapper objectMapper;
+    /**
+     * Needs for the mapping of the responses.
+     */
+    @Autowired
+    protected ObjectMapper objectMapper;
 
-  @DynamicPropertySource
-  static void applicationProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-    registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-  }
+    @DynamicPropertySource
+    static void applicationProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+    }
 
-  /**
-   * Retrieve user authorization token
-   *
-   * @return authorization token.
-   * @throws Exception if something went wrong.
-   */
-  protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
-    String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
-    ResultActions resultActions = mockMvc.perform(
-      post("/api/auth/login")
-        .param("username", username)
-        .param("password", password)
-    );
+    /**
+     * Retrieve user authorization token
+     *
+     * @return authorization token.
+     * @throws Exception if something went wrong.
+     */
+    protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
+        String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
+        ResultActions resultActions = mockMvc.perform(
+            post("/api/auth/login")
+                .param("username", username)
+                .param("password", password)
+        );
 
-    var authResponse = resultActions.andReturn().getResponse();
+        var authResponse = resultActions.andReturn().getResponse();
 
-    return Arrays.stream(authResponse.getCookies())
-      .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-      .findFirst()
-      .get();
-  }
+        return Arrays.stream(authResponse.getCookies())
+            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+            .findFirst()
+            .get();
+    }
 
-  protected jakarta.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
-    return Arrays.stream(response.getCookies())
-      .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-      .findFirst()
-      .get();
-  }
+    protected jakarta.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
+        return Arrays.stream(response.getCookies())
+            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+            .findFirst()
+            .get();
+    }
 }

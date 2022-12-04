@@ -1,3 +1,4 @@
 package org.student.guestblog.rest.dto.register;
 
-public record RegisterResponse(Long id) {}
+public record RegisterResponse(Long id) {
+}

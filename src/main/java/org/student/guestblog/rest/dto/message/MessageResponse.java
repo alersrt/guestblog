@@ -1,7 +1,8 @@
 package org.student.guestblog.rest.dto.message;
 
-import java.time.LocalDateTime;
 import org.student.guestblog.model.Message;
+
+import java.time.LocalDateTime;
 
 public record MessageResponse(
     Long id,
@@ -13,15 +14,15 @@ public record MessageResponse(
     String file
 ) {
 
-  public MessageResponse(Message model) {
-    this(
-        model.getId(),
-        model.getAuthorId(),
-        model.getTitle(),
-        model.getText(),
-        model.getCreated(),
-        model.getUpdated(),
-        model.getFile() != null ? model.getFile().getFilename() : null
-    );
-  }
+    public MessageResponse(Message model) {
+        this(
+            model.getId(),
+            model.getAuthorId(),
+            model.getTitle(),
+            model.getText(),
+            model.getCreated(),
+            model.getUpdated(),
+            model.getFile() != null ? model.getFile().getFilename() : null
+        );
+    }
 }

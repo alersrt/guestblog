@@ -11,62 +11,62 @@ import jakarta.persistence.SequenceGenerator;
 @Entity
 public class File {
 
-  /**
-   * Id of the post.
-   */
-  @Id
-  @SequenceGenerator(name = "file_id_gen", sequenceName = "file_id_seq", allocationSize = 1)
-  @GeneratedValue(generator = "file_id_gen")
-  private Long id;
+    /**
+     * Id of the post.
+     */
+    @Id
+    @SequenceGenerator(name = "file_id_gen", sequenceName = "file_id_seq", allocationSize = 1)
+    @GeneratedValue(generator = "file_id_gen")
+    private Long id;
 
-  /**
-   * Filename.
-   */
-  private String filename;
+    /**
+     * Filename.
+     */
+    private String filename;
 
-  /**
-   * Mime type of this file.
-   */
-  private String mime;
+    /**
+     * Mime type of this file.
+     */
+    private String mime;
 
-  /**
-   * Binary data.
-   */
-  private byte[] blob;
+    /**
+     * Binary data.
+     */
+    private byte[] blob;
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public File setId(Long id) {
-    this.id = id;
-    return this;
-  }
+    public File setId(Long id) {
+        this.id = id;
+        return this;
+    }
 
-  public String getFilename() {
-    return filename;
-  }
+    public String getFilename() {
+        return filename;
+    }
 
-  public File setFilename(String filename) {
-    this.filename = filename;
-    return this;
-  }
+    public File setFilename(String filename) {
+        this.filename = filename;
+        return this;
+    }
 
-  public String getMime() {
-    return mime;
-  }
+    public String getMime() {
+        return mime;
+    }
 
-  public File setMime(String mime) {
-    this.mime = mime;
-    return this;
-  }
+    public File setMime(String mime) {
+        this.mime = mime;
+        return this;
+    }
 
-  public byte[] getBlob() {
-    return blob;
-  }
+    public byte[] getBlob() {
+        return blob;
+    }
 
-  public File setBlob(byte[] blob) {
-    this.blob = blob;
-    return this;
-  }
+    public File setBlob(byte[] blob) {
+        this.blob = blob;
+        return this;
+    }
 }
