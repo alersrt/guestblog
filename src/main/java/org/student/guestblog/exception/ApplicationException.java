@@ -1,8 +1,12 @@
 package org.student.guestblog.exception;
 
+import lombok.Getter;
+import lombok.experimental.StandardException;
+
 /**
  * Describes exceptions of the current application.
  */
+@StandardException
 public class ApplicationException extends RuntimeException {
 
     /**
@@ -37,6 +41,7 @@ public class ApplicationException extends RuntimeException {
     /**
      * Describes exceptions' codes.
      */
+    @Getter
     public enum Code {
         GENERIC_ERROR_CODE(1);
 
@@ -44,10 +49,6 @@ public class ApplicationException extends RuntimeException {
 
         Code(int value) {
             this.value = value;
-        }
-
-        public int getValue() {
-            return this.value;
         }
     }
 }
