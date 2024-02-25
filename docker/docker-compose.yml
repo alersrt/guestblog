@@ -31,6 +31,8 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+      hazelcast:
+        condition: service_healthy
       zipkin:
         condition: service_healthy
     env_file:
@@ -94,6 +96,11 @@ services:
       - HZ_CLUSTERNAME=gb-hazelcast
     ports:
       - "5701:5701"
+    healthcheck:
+      test: curl -f http://hazelcast:5701/hazelcast/health/node-state || exit 1
+      interval: 2s
+      timeout: 3s
+      retries: 3
     env_file:
       - .env
     networks:
