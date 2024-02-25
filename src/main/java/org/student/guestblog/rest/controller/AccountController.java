@@ -1,6 +1,8 @@
 package org.student.guestblog.rest.controller;
 
 import java.lang.invoke.MethodHandles;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.config.security.User;
-import org.student.guestblog.model.Account;
+import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.rest.dto.register.RegisterRequest;
 import org.student.guestblog.rest.dto.register.RegisterResponse;
 import org.student.guestblog.rest.dto.user.UserResponse;
@@ -46,14 +48,14 @@ public class AccountController {
   @PostMapping
   public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
     return accountService.create(registerRequest.email(), registerRequest.password())
-        .map(Account::id)
+        .map(AccountEntity::getId)
         .map(id -> ResponseEntity.ok(new RegisterResponse(id)))
         .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @PutMapping("/{id}")
-  public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
+  public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody UserUpdateRequest request) {
     var updated = accountService.update(id, request.username(), request.password());
     return ResponseEntity.ok(new UserResponse(updated));
   }

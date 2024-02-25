@@ -13,6 +13,10 @@ The main goal of this application is studying technology stack which was specifi
 - `GB_POSTGRES_URL` - url for PostgreSQL database
 - `GB_POSTGRES_USERNAME` - username of the database
 - `GB_POSTGRES_PASSWORD` - password for this username
+- `OAUTH2_GOOGLE_CLIENT_ID`
+- `OAUTH2_GOOGLE_CLIENT_SECRET`
+- `OAUTH2_FACEBOOK_CLIENT_ID`
+- `OAUTH2_FACEBOOK_CLIENT_SECRET`
 
 
 

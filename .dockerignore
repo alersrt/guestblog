@@ -5,8 +5,12 @@
 
 # Sources
 !/src/
+!lombok.config
+!system.properties
 
 # Maven
+!/.mvn/
+!mvnw
 !pom.xml
 !/.m2/
 !/target/

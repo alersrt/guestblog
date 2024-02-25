@@ -4,48 +4,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 import org.student.guestblog.util.Cookie;
+import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.images.PullPolicy;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @AutoConfigureMockMvc
-@AutoConfigureTestDatabase(replace = Replace.NONE)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext
-@Transactional
-@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
     /**
      * Container with the PostgreSQL database.
      */
-    @Container
-    protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-        .withDatabaseName("testdb")
-        .withUsername("postgres")
-        .withPassword("postgres")
-        .withStartupTimeout(Duration.ofSeconds(600));
+    protected static final PostgreSQLContainer<?> DB;
+
+    static {
+        var network = Network.newNetwork();
+
+        var dbImage = new ImageFromDockerfile("test-debt-court-db", false)
+            .withFileFromPath(".", Path.of("./docker/postgres/.").toAbsolutePath());
+        dbImage.get();
+        DB = new PostgreSQLContainer<>(DockerImageName.parse(dbImage.getDockerImageName()).asCompatibleSubstituteFor("postgres"))
+            .withDatabaseName("postgres")
+            .withUsername("postgres")
+            .withPassword("postgres")
+            .withImagePullPolicy(PullPolicy.ageBased(Duration.ofDays(30)))
+            .withNetwork(network)
+            .withFileSystemBind(Path.of("./docker/postgres/postgresql.conf").toAbsolutePath().toString(), "/etc/postgresql/postgresql.conf")
+            .withCommand("postgres", "-c", "max_prepared_transactions=100", "-c", "config_file=/etc/postgresql/postgresql.conf");
+
+        Startables.deepStart(Stream.of(DB)).join();
+
+        System.setProperty("GB_POSTGRES_URL", DB.getJdbcUrl());
+        System.setProperty("GB_POSTGRES_USERNAME", DB.getUsername());
+        System.setProperty("GB_POSTGRES_PASSWORD", DB.getPassword());
+    }
 
     /**
      * The main testing tool.
@@ -58,13 +71,6 @@ public abstract class AbstractIntegrationTest {
      */
     @Autowired
     protected ObjectMapper objectMapper;
-
-    @DynamicPropertySource
-    static void applicationProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-    }
 
     /**
      * Retrieve user authorization token

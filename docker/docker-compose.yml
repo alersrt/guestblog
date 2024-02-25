@@ -1,0 +1,73 @@
+version: '3.9'
+
+networks:
+  internal:
+
+volumes:
+  gb-db-volume:
+  gb-db-tblspc:
+
+services:
+
+  guestblog:
+    image: ${COMPOSE_IMAGE_NAME}
+    user: ${CURRENT_UID}
+    container_name: ${COMPOSE_PROJECT_NAME}-${GUESTBLOG_CONTAINER_NAME}
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
+    ports:
+      - "80:8080" # tomcat port
+    environment:
+      OTEL_SERVICE_NAME: guestblog
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: zipkin
+      OTEL_EXPORTER_ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
+      OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED: true
+      OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED: true
+      GB_POSTGRES_URL: jdbc:postgresql://postgresql:5432/gbdb
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - internal
+
+  postgresql:
+    container_name: ${COMPOSE_PROJECT_NAME}-${DATABASE_CONTAINER_NAME}
+    image: postgres
+    build:
+      context: postgres/
+    healthcheck:
+      test: pg_isready -U postgres -d postgres
+      interval: 2s
+      timeout: 3s
+      retries: 3
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - gb-db-volume:/var/lib/postgresql/data
+      - gb-db-tblspc:/u01
+      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+    ports:
+      - "5432:5432" # postgresql port
+    env_file:
+      - .env
+    networks:
+      - internal
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - internal

@@ -14,11 +14,11 @@
 !tsconfig.json
 
 # Infrastructure
-!.env
+!docker
+!docker/.env
 !.editorconfig
 !Procfile
 !Makefile
-!Dockerfile
 !docker-compose.yml
 !.gitignore
 !.dockerignore

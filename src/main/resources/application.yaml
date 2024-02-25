@@ -23,13 +23,11 @@ spring:
             scope:
               - email
               - public_profile
-  sql:
-    init:
-      schema-locations:
-        - classpath:schema.sql
-      data-locations:
-        - classpath:data.sql
-      mode: always
+  liquibase:
+    change-log: db/changelog/master_gb.xml
+    url: ${GB_POSTGRES_URL:jdbc:postgresql://localhost:5432/gbdb}
+    user: ${GB_POSTGRES_USERNAME:postgres}
+    password: ${GB_POSTGRES_PASSWORD:postgres}
   servlet:
     multipart:
       enabled: true
@@ -49,14 +47,16 @@ spring:
           use_jdbc_metadata_defaults: true
     hibernate:
       ddl-auto: none
+    show-sql: true
   datasource:
     hikari:
       leak-detection-threshold: 60000
-      maximum-pool-size: 100
-    url: ${GB_POSTGRES_URL:jdbc:postgresql://localhost:5432/testdb}
-    username: ${GB_POSTGRES_USERNAME:postgres}
-    password: ${GB_POSTGRES_PASSWORD:postgres}
+      maximum-pool-size: 50
+      schema: gbsm
+    url: ${GB_POSTGRES_URL:jdbc:postgresql://localhost:5432/gbdb}
+    username: ${GB_POSTGRES_USERNAME:gb_user_rw}
+    password: ${GB_POSTGRES_PASSWORD:gb_user_rw}
     driver-class-name: org.postgresql.Driver
 # Springdoc
 springdoc:
-  packages-to-scan: com.stikipixels.backend
+  packages-to-scan: org.student.guestblog

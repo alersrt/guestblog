@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.student.guestblog.model.File;
-import org.student.guestblog.repository.FileRepository;
+import org.student.guestblog.data.entity.FileEntity;
+import org.student.guestblog.data.repository.FileRepository;
 import org.student.guestblog.service.internal.FileResource;
 import org.student.guestblog.util.MimeTypesAndExtensions;
 
@@ -35,18 +35,20 @@ public class FileService {
     public Optional<FileResource> getResource(String filename) {
         return fileRepository
             .findByFilename(filename)
-            .map(file -> new FileResource(file.getBlob(), file.getFilename(), file.getMime()));
+            .map(fileEntity -> new FileResource(fileEntity.getBlob(), fileEntity.getFilename(), fileEntity.getMime()));
     }
 
-    public File save(MultipartFile file) {
+    public FileEntity save(MultipartFile file) {
         try {
             String extension = MimeTypesAndExtensions.getDefaultExt(file.getContentType());
             var filename = UUID.randomUUID() + "." + extension;
             return fileRepository.save(
-                new File()
-                    .setFilename(filename)
-                    .setMime(file.getContentType())
-                    .setBlob(file.getBytes())
+                FileEntity.builder()
+                    .id(UUID.randomUUID())
+                    .filename(filename)
+                    .mime(file.getContentType())
+                    .blob(file.getBytes())
+                    .build()
             );
         } catch (IOException e) {
             return null;
@@ -58,11 +60,11 @@ public class FileService {
      *
      * @param id file's identifier.
      */
-    public void delete(long id) {
+    public void delete(UUID id) {
         fileRepository.deleteById(id);
     }
 
-    public void delete(File model) {
+    public void delete(FileEntity model) {
         fileRepository.delete(model);
     }
 }
