@@ -120,8 +120,8 @@ services:
       # Setup in KRaft
       - KAFKA_PROCESS_ROLES=broker,controller
       - KAFKA_CONTROLLER_QUORUM_VOTERS=1@broker:29093
-      - KAFKA_CONTROLLER_LISTENER_NAME=CONTROLLER
-      - CLUSTER_ID=ClusterIdentifier
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - CLUSTER_ID=51559115-45d6-4832-bfb9-1b420a426fac
     volumes:
       - kafka-volume:/var/lib/kafka/data
     ports:
