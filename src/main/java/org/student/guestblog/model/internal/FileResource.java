@@ -1,4 +1,4 @@
-package org.student.guestblog.service.internal;
+package org.student.guestblog.model.internal;
 
 import org.springframework.core.io.ByteArrayResource;
 

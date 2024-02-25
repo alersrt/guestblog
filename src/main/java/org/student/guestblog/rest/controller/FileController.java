@@ -3,13 +3,12 @@ package org.student.guestblog.rest.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.service.FileService;
-import org.student.guestblog.service.internal.FileResource;
+import org.student.guestblog.model.internal.FileResource;
 
 @RestController
 @RequestMapping("/api/file")
