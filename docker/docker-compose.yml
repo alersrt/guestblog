@@ -7,6 +7,7 @@ volumes:
   db-volume:
   db-tblspc:
   elastic-volume:
+  kafka-volume:
 
 services:
 
@@ -103,6 +104,30 @@ services:
       retries: 3
     env_file:
       - .env
+    networks:
+      - gb-internal
+
+  kafka:
+    container_name: ${COMPOSE_PROJECT_NAME}-kafka
+    image: confluentinc/cp-kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAME=CONTROLLER
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka-volume:/var/lib/kafka/data
+    ports:
+      - "29092:29092"
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      start_period: 5s
+      interval: 5s
+      timeout: 10s
+      retries: 10
     networks:
       - gb-internal
 
