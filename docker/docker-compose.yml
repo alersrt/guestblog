@@ -119,9 +119,9 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
       # Setup in KRaft
       - KAFKA_PROCESS_ROLES=broker,controller
-      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@broker:29093
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
       - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - CLUSTER_ID=ClusterIdentifier
+    command: "bash -c 'echo \"export CLUSTER_ID=$(kafka-storage random-uuid)\" >> /etc/confluent/docker/bash-config && /etc/confluent/docker/run'"
     volumes:
       - kafka-volume:/var/lib/kafka/data
     ports:
