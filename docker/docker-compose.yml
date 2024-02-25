@@ -1,34 +1,33 @@
 version: '3.9'
 
 networks:
-  internal:
+  gb-internal:
 
 volumes:
-  gb-db-volume:
-  gb-db-tblspc:
+  db-volume:
+  db-tblspc:
+  elastic-volume:
 
 services:
 
   guestblog:
+    container_name: ${COMPOSE_PROJECT_NAME}-guestblog
     image: ${COMPOSE_IMAGE_NAME}
     user: ${CURRENT_UID}
-    container_name: ${COMPOSE_PROJECT_NAME}-${GUESTBLOG_CONTAINER_NAME}
     build:
       context: ../
       dockerfile: docker/Dockerfile
-      args:
-        ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
     ports:
       - "80:8080" # tomcat port
     environment:
-      OTEL_SERVICE_NAME: guestblog
-      OTEL_METRICS_EXPORTER: none
-      OTEL_LOGS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: zipkin
-      OTEL_EXPORTER_ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
-      OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED: true
-      OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED: true
-      GB_POSTGRES_URL: jdbc:postgresql://postgresql:5432/gbdb
+      - OTEL_SERVICE_NAME=guestblog
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+      - OTEL_TRACES_EXPORTER=zipkin
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED=true
+      - OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED=true
+      - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     depends_on:
       postgresql:
         condition: service_healthy
@@ -37,10 +36,10 @@ services:
     env_file:
       - .env
     networks:
-      - internal
+      - gb-internal
 
   postgresql:
-    container_name: ${COMPOSE_PROJECT_NAME}-${DATABASE_CONTAINER_NAME}
+    container_name: ${COMPOSE_PROJECT_NAME}-postgresql
     image: postgres
     build:
       context: postgres/
@@ -54,8 +53,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      - gb-db-volume:/var/lib/postgresql/data
-      - gb-db-tblspc:/u01
+      - db-volume:/var/lib/postgresql/data
+      - db-tblspc:/u01
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
       - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
     ports:
@@ -63,11 +62,45 @@ services:
     env_file:
       - .env
     networks:
-      - internal
+      - gb-internal
+
+  elastic:
+    container_name: ${COMPOSE_PROJECT_NAME}-elastic
+    image: elasticsearch:8.12.2
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms128m -Xmx512m"
+      - ELASTIC_PASSWORD=elastic
+      - xpack.security.enabled=true
+    volumes:
+      - elastic-volume:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: curl -s http://elastic:9200 >/dev/null || exit 1
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    env_file:
+      - .env
+    networks:
+      - gb-internal
 
   zipkin:
+    container_name: ${COMPOSE_PROJECT_NAME}-zipkin
     image: openzipkin/zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://elastic:9200
+      - ES_INDEX=zipkin
+      - ES_USERNAME=elastic
+      - ES_PASSWORD=elastic
     ports:
       - "9411:9411"
+    depends_on:
+      elastic:
+        condition: service_healthy
+    env_file:
+      - .env
     networks:
-      - internal
+      - gb-internal
