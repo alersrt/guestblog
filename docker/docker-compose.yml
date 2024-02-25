@@ -34,6 +34,8 @@ services:
         condition: service_healthy
       hazelcast:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
       zipkin:
         condition: service_healthy
     env_file:
