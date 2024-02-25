@@ -116,8 +116,12 @@ services:
       - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_CONTROLLER_LISTENER_NAME=CONTROLLER
       - ALLOW_PLAINTEXT_LISTENER=yes
+      # Setup in KRaft
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@broker:29093
+      - KAFKA_CONTROLLER_LISTENER_NAME=CONTROLLER
+      - CLUSTER_ID=ClusterIdentifier
     volumes:
       - kafka-volume:/var/lib/kafka/data
     ports:
