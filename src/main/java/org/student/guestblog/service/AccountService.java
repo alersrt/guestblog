@@ -7,7 +7,7 @@ import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.data.entity.PassportEntity;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
-import org.student.guestblog.exception.ApplicationException.Code;
+import org.student.guestblog.exception.ErrorCode;
 import org.student.guestblog.model.Authority;
 import org.student.guestblog.model.PassportType;
 
@@ -61,7 +61,7 @@ public class AccountService {
     }
 
     public AccountEntity update(UUID id, Optional<String> email, Optional<String> password) {
-        var account = accountRepository.findById(id).orElseThrow(() -> new ApplicationException(Code.GENERIC_ERROR_CODE));
+        var account = accountRepository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.GENERIC_ERROR_CODE));
         email.ifPresent(account::setEmail);
         password.map(passwordEncoder::encode).ifPresent(s -> account
             .getPassports().stream()

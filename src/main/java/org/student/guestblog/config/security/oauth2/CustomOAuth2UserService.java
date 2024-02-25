@@ -9,7 +9,7 @@ import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.data.entity.PassportEntity;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
-import org.student.guestblog.exception.ApplicationException.Code;
+import org.student.guestblog.exception.ErrorCode;
 import org.student.guestblog.model.PassportType;
 
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -29,7 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         var info = switch (registrationId) {
             case "facebook" -> new FacebookUserInfo(user);
             case "google" -> new GoogleUserInfo(user);
-            default -> throw new ApplicationException(Code.GENERIC_ERROR_CODE);
+            default -> throw new ApplicationException(ErrorCode.GENERIC_ERROR_CODE);
         };
 
         var existed = accountRepository.findByEmail(info.email()).orElse(AccountEntity.builder()
