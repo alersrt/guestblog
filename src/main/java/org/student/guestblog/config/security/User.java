@@ -3,16 +3,17 @@ package org.student.guestblog.config.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.student.guestblog.model.Account;
+import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.model.Authority;
 import org.student.guestblog.model.PassportType;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public record User(
-    Long id,
+    UUID id,
     String email,
     String name,
     String avatar,
@@ -22,35 +23,35 @@ public record User(
     Map<String, Object> attributes
 ) implements UserDetails, OAuth2User {
 
-    public User(Account model) {
+    public User(AccountEntity model) {
         this(
-            model.id(),
-            model.email(),
-            model.name(),
-            model.avatar(),
-            model.authorities(),
-            model.passports().stream()
-                .filter(passport -> PassportType.PASSWORD.equals(passport.type()))
+            model.getId(),
+            model.getEmail(),
+            model.getName(),
+            model.getAvatar(),
+            model.getAuthorities().stream().map(Authority::valueOf).toList(),
+            model.getPassports().stream()
+                .filter(passport -> PassportType.PASSWORD.equals(passport.getType()))
                 .findFirst()
                 .orElseThrow()
-                .hash(),
+                .getHash(),
             null,
             null
         );
     }
 
-    public User(Account model, String clientName, Map<String, Object> attributes) {
+    public User(AccountEntity model, String clientName, Map<String, Object> attributes) {
         this(
-            model.id(),
-            model.email(),
-            model.name(),
-            model.avatar(),
-            model.authorities(),
-            model.passports().stream()
-                .filter(passport -> clientName.equals(passport.type().id()))
+            model.getId(),
+            model.getEmail(),
+            model.getName(),
+            model.getAvatar(),
+            model.getAuthorities().stream().map(Authority::valueOf).toList(),
+            model.getPassports().stream()
+                .filter(passport -> clientName.equals(passport.getType().id()))
                 .findFirst()
                 .orElseThrow()
-                .hash(),
+                .getHash(),
             clientName,
             attributes
         );

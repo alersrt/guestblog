@@ -1,4 +1,6 @@
 package org.student.guestblog.rest.dto.register;
 
-public record RegisterResponse(Long id) {
+import java.util.UUID;
+
+public record RegisterResponse(UUID id) {
 }

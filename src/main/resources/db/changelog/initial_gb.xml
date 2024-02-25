@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+    logicalFilePath="initial_gb.xml">
+
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+    <changeSet author="alersrt" id="gb-00" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onFailMessage="Extension exists">
+            <sqlCheck expectedResult="0">
+                select count(1)
+                from pg_available_extensions
+                where name = 'pg_stat_statements'
+                  and installed_version is not null
+            </sqlCheck>
+        </preConditions>
+        <comment>create the extension</comment>
+        <sql>create extension pg_stat_statements</sql>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-01" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onFailMessage="User gb_user already exists">
+            <sqlCheck expectedResult="0">
+                select count(1)
+                from pg_user
+                where usename = 'gb_user'
+            </sqlCheck>
+        </preConditions>
+        <comment>User gb_user</comment>
+        <sql>create user gb_user password 'gb_user'</sql>
+        <rollback>drop user gb_user</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-02" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onFailMessage="User gb_user_rw already exists">
+            <sqlCheck expectedResult="0">
+                select count(1)
+                from pg_user
+                where usename = 'gb_user_rw'
+            </sqlCheck>
+        </preConditions>
+        <comment>User gb_user_rw</comment>
+        <sql>create user gb_user_rw password 'gb_user_rw'</sql>
+        <rollback>drop user gb_user_rw</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-03" runInTransaction="false" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onFailMessage="Tablespace gb_tbs already exists">
+            <sqlCheck expectedResult="0">
+                select count(1)
+                from pg_tablespace
+                where spcname = 'gb_tbs'
+            </sqlCheck>
+        </preConditions>
+        <comment>Tablespace gb_tbs</comment>
+        <sql>create tablespace gb_tbs owner gb_user location '/u01/gb'</sql>
+        <rollback>drop tablespace gb_tbs</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-04" runInTransaction="false" dbms="postgresql">
+        <preConditions onFail="MARK_RAN" onFailMessage="Database gbdb already exists">
+            <sqlCheck expectedResult="0">
+                select count(1)
+                from pg_database
+                where datname = 'gbdb'
+            </sqlCheck>
+        </preConditions>
+        <comment>Database gbdb</comment>
+        <sql>create database gbdb owner gb_user tablespace gb_tbs</sql>
+        <rollback>drop database gbdb</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-05" dbms="postgresql">
+        <comment>Grants for connection to gbdb for gb_user_rw</comment>
+        <sql>grant connect on database gbdb to gb_user_rw</sql>
+        <rollback>revoke connect on database gbdb from gb_user_rw</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-06" dbms="postgresql">
+        <comment>Revoke public grants for connection to gbdb</comment>
+        <sql>revoke connect on database gbdb from public</sql>
+        <rollback>grant connect on database gbdb to public</rollback>
+    </changeSet>
+</databaseChangeLog>

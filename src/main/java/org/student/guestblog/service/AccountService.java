@@ -3,16 +3,17 @@ package org.student.guestblog.service;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.student.guestblog.data.entity.AccountEntity;
+import org.student.guestblog.data.entity.PassportEntity;
+import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.exception.ApplicationException.Code;
-import org.student.guestblog.model.Account;
 import org.student.guestblog.model.Authority;
-import org.student.guestblog.model.Passport;
 import org.student.guestblog.model.PassportType;
-import org.student.guestblog.repository.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Describes user's managing service and implements {@link UserDetailsService}.
@@ -31,7 +32,7 @@ public class AccountService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<Account> getById(Long accountId) {
+    public Optional<AccountEntity> getById(UUID accountId) {
         return accountRepository.findById(accountId);
     }
 
@@ -41,28 +42,30 @@ public class AccountService {
      * @param email user's email.
      * @return user.
      */
-    public Optional<Account> getByEmail(String email) {
+    public Optional<AccountEntity> getByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
 
-    public Optional<Account> create(String email, String password) {
-        Account account = new Account()
-            .setEmail(email)
-            .setAuthorities(List.of(Authority.USER));
+    public Optional<AccountEntity> create(String email, String password) {
+        AccountEntity accountEntity = AccountEntity.builder()
+            .id(UUID.randomUUID())
+            .email(email)
+            .authorities(List.of(Authority.USER.getAuthority()))
+            .build();
 
-        Passport passwordPass = new Passport(account, PassportType.PASSWORD, passwordEncoder.encode(password));
-        account.passports().add(passwordPass);
+        PassportEntity passwordPass = new PassportEntity(accountEntity, PassportType.PASSWORD, passwordEncoder.encode(password));
+        accountEntity.getPassports().add(passwordPass);
 
-        var isExist = accountRepository.existsByEmail(account.email()) || "admin@test.dev".equals(account.email());
-        return isExist ? Optional.empty() : Optional.of(accountRepository.save(account));
+        var isExist = accountRepository.existsByEmail(accountEntity.getEmail()) || "admin@test.dev".equals(accountEntity.getEmail());
+        return isExist ? Optional.empty() : Optional.of(accountRepository.save(accountEntity));
     }
 
-    public Account update(Long id, Optional<String> email, Optional<String> password) {
+    public AccountEntity update(UUID id, Optional<String> email, Optional<String> password) {
         var account = accountRepository.findById(id).orElseThrow(() -> new ApplicationException(Code.GENERIC_ERROR_CODE));
         email.ifPresent(account::setEmail);
         password.map(passwordEncoder::encode).ifPresent(s -> account
-            .passports().stream()
-            .filter(passport -> passport.type().equals(PassportType.PASSWORD))
+            .getPassports().stream()
+            .filter(passport -> passport.getType().equals(PassportType.PASSWORD))
             .findFirst()
             .orElseThrow()
             .setHash(s)

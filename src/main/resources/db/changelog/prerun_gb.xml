@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+    logicalFilePath="prerun_gb.xml">
+
+    <preConditions>
+        <dbms type="postgresql"/>
+    </preConditions>
+
+    <changeSet author="alersrt" id="gb-pre-01" dbms="postgresql">
+        <sql>
+            create schema if not exists gbsm authorization gb_user;
+            grant usage on schema gbsm to gb_user_rw;
+        </sql>
+        <rollback>drop schema gbsm</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-pre-02" dbms="postgresql">
+        <sql>alter user gb_user set default_tablespace = gb_tbs</sql>
+        <rollback>alter user gb_user set default_tablespace = pg_default</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-pre-03" dbms="postgresql">
+        <sql>alter user gb_user set search_path = gbsm,public</sql>
+        <rollback>alter user gb_user set search_path = public</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-pre-04" dbms="postgresql">
+        <sql>alter user gb_user_rw set default_tablespace = gb_tbs</sql>
+        <rollback>alter user gb_user_rw set default_tablespace = pg_default</rollback>
+    </changeSet>
+
+    <changeSet author="alersrt" id="gb-pre-05" dbms="postgresql">
+        <sql>alter user gb_user_rw set search_path = gbsm,public</sql>
+        <rollback>alter user gb_user_rw set search_path = public</rollback>
+    </changeSet>
+</databaseChangeLog>

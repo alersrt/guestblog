@@ -16,7 +16,7 @@ export function MessageCard(props: MessageCardProps): FC<any> {
     return (
         <div id={`message-id-${message.id}`} className={"card"}>
             <p id={"message-title"}>{message.title}</p>
-            <p id={"message-timestamp"}>{moment(message.createdAt + 'Z').toNow()}</p>
+            <p id={"message-timestamp"}>{moment(message.createdAt).toNow()}</p>
             {!!message.file ? <img src={`/api/file/${message.file}`}/> : <div/>}
             <p id={"message-text"}>{message.text}</p>
             <button onClick={() => props.delFunc(message.id)}><FontAwesomeIcon icon={faTrashAlt}/></button>

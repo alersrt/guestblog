@@ -5,12 +5,12 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.student.guestblog.config.security.User;
+import org.student.guestblog.data.entity.AccountEntity;
+import org.student.guestblog.data.entity.PassportEntity;
+import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.exception.ApplicationException.Code;
-import org.student.guestblog.model.Account;
-import org.student.guestblog.model.Passport;
 import org.student.guestblog.model.PassportType;
-import org.student.guestblog.repository.AccountRepository;
 
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
@@ -32,14 +32,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             default -> throw new ApplicationException(Code.GENERIC_ERROR_CODE);
         };
 
-        var existed = accountRepository.findByEmail(info.email()).orElse(new Account(info.email()).setAvatar(info.imageUrl()));
+        var existed = accountRepository.findByEmail(info.email()).orElse(AccountEntity.builder()
+            .email(info.email())
+            .avatar(info.imageUrl())
+            .build());
 
-        var identity = existed.passports().stream()
-            .filter(passport -> registrationId.equals(passport.type().id()))
+        var identity = existed.getPassports().stream()
+            .filter(passport -> registrationId.equals(passport.getType().id()))
             .findFirst();
 
         if (identity.isEmpty()) {
-            existed.passports().add(new Passport(existed, PassportType.get(registrationId), info.id()));
+            existed.getPassports().add(new PassportEntity(existed, PassportType.get(registrationId), info.id()));
         }
 
         accountRepository.saveAndFlush(existed);

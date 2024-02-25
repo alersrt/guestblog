@@ -69,7 +69,7 @@ public class AuthTest extends AbstractIntegrationTest {
             () -> assertThat(Arrays.stream(authResponse.getCookies())
                 .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
                 .findFirst()).isNotEmpty(),
-            () -> assertThat(meDto.id().get()).isNotNull().isEqualTo(2),
+            () -> assertThat(meDto.id()).isNotEmpty(),
             () -> assertThat(meDto.email()).isNotBlank().isEqualTo(username)
         );
     }

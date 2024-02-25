@@ -3,14 +3,15 @@ package org.student.guestblog.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.student.guestblog.model.File;
-import org.student.guestblog.model.Message;
-import org.student.guestblog.repository.AccountRepository;
-import org.student.guestblog.repository.MessageRepository;
+import org.student.guestblog.data.entity.FileEntity;
+import org.student.guestblog.data.entity.MessageEntity;
+import org.student.guestblog.data.repository.AccountRepository;
+import org.student.guestblog.data.repository.MessageRepository;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service manages of messages. Here is implemented such features as adding, deleting, editing, getting of messages.
@@ -33,24 +34,26 @@ public class MessageService {
      *
      * @param title the message title.
      * @param text  text content of the message.
-     * @param file  related file.
+     * @param fileEntity  related file.
      * @return new stored message.
      */
-    public Message addMessage(String title, String text, File file, Long authorId) {
-        var message = new Message()
-            .setTitle(title)
-            .setText(text)
-            .setFile(file)
-            .setAuthorId(authorId);
+    public MessageEntity addMessage(String title, String text, FileEntity fileEntity, UUID authorId) {
+        var message = MessageEntity.builder()
+            .id(UUID.randomUUID())
+            .title(title)
+            .text(text)
+            .file(fileEntity)
+            .authorId(authorId)
+            .build();
         return messageRepository.save(message);
     }
 
     /**
-     * Removes {@link Message} from database by it's id.
+     * Removes {@link MessageEntity} from database by it's id.
      *
      * @param messageId received id of message.
      */
-    public void deleteMessage(Long messageId) {
+    public void deleteMessage(UUID messageId) {
         messageRepository.deleteById(messageId);
     }
 
@@ -60,7 +63,7 @@ public class MessageService {
      * @param messageId identifier of a message.
      * @return message.
      */
-    public Optional<Message> getMessage(Long messageId) {
+    public Optional<MessageEntity> getMessage(UUID messageId) {
         return messageRepository.findById(messageId);
     }
 
@@ -69,7 +72,7 @@ public class MessageService {
      *
      * @return list of the messages.
      */
-    public List<Message> getAllMessages() {
+    public List<MessageEntity> getAllMessages() {
         return messageRepository.findAll();
     }
 }
