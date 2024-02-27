@@ -1,18 +1,9 @@
-version: '3.9'
-
-networks:
-  gb-internal:
-
-volumes:
-  db-volume:
-  db-tblspc:
-  elastic-volume:
-  kafka-volume:
+include:
+  - docker-compose.env.yml
 
 services:
 
   guestblog:
-    container_name: ${COMPOSE_PROJECT_NAME}-guestblog
     image: ${COMPOSE_IMAGE_NAME}
     user: ${CURRENT_UID}
     build:
@@ -37,119 +28,6 @@ services:
       kafka:
         condition: service_healthy
       zipkin:
-        condition: service_healthy
-    env_file:
-      - .env
-    networks:
-      - gb-internal
-
-  postgresql:
-    container_name: ${COMPOSE_PROJECT_NAME}-postgresql
-    image: postgres
-    build:
-      context: postgres/
-    healthcheck:
-      test: pg_isready -U postgres -d postgres
-      interval: 2s
-      timeout: 3s
-      retries: 3
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-    volumes:
-      - db-volume:/var/lib/postgresql/data
-      - db-tblspc:/u01
-      - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-      - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
-    ports:
-      - "5432:5432" # postgresql port
-    env_file:
-      - .env
-    networks:
-      - gb-internal
-
-  elastic:
-    container_name: ${COMPOSE_PROJECT_NAME}-elastic
-    image: elasticsearch:8.12.2
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms128m -Xmx512m"
-      - ELASTIC_PASSWORD=elastic
-      - xpack.security.enabled=true
-    volumes:
-      - elastic-volume:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    healthcheck:
-      test: curl -s http://elastic:9200 >/dev/null || exit 1
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    env_file:
-      - .env
-    networks:
-      - gb-internal
-
-  hazelcast:
-    container_name: ${COMPOSE_PROJECT_NAME}-hazelcast
-    image: hazelcast/hazelcast
-    environment:
-      - JAVA_OPTS=-Xms512M -Xmx1024M
-      - HZ_CLUSTERNAME=gb-hazelcast
-    ports:
-      - "5701:5701"
-    healthcheck:
-      test: curl -f http://hazelcast:5701/hazelcast/health/node-state || exit 1
-      interval: 2s
-      timeout: 3s
-      retries: 3
-    env_file:
-      - .env
-    networks:
-      - gb-internal
-
-  kafka:
-    container_name: ${COMPOSE_PROJECT_NAME}-kafka
-    image: confluentinc/cp-kafka
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
-      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      # Setup in KRaft
-      - KAFKA_PROCESS_ROLES=broker,controller
-      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
-      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
-    command: "bash -c 'echo \"export CLUSTER_ID=$(kafka-storage random-uuid)\" >> /etc/confluent/docker/bash-config && /etc/confluent/docker/run'"
-    volumes:
-      - kafka-volume:/var/lib/kafka/data
-    ports:
-      - "29092:29092"
-    healthcheck:
-      test: nc -z localhost 9092 || exit -1
-      start_period: 5s
-      interval: 5s
-      timeout: 10s
-      retries: 10
-    networks:
-      - gb-internal
-
-  zipkin:
-    container_name: ${COMPOSE_PROJECT_NAME}-zipkin
-    image: openzipkin/zipkin
-    environment:
-      - STORAGE_TYPE=elasticsearch
-      - ES_HOSTS=http://elastic:9200
-      - ES_INDEX=zipkin
-      - ES_USERNAME=elastic
-      - ES_PASSWORD=elastic
-    ports:
-      - "9411:9411"
-    depends_on:
-      elastic:
         condition: service_healthy
     env_file:
       - .env
