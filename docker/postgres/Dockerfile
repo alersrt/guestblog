@@ -1,6 +1,6 @@
-FROM postgres:15-alpine3.19
+FROM postgres:alpine
 
-#ENV TZ="Europe/Moscow"
+ENV TZ="UTC"
 
 RUN mkdir -p /u01/gb && chown postgres /u01/gb
 COPY *.sh /docker-entrypoint-initdb.d/
