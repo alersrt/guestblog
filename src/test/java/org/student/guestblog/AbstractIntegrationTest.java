@@ -35,6 +35,10 @@ public abstract class AbstractIntegrationTest {
 
     private static final String POSTGRESQL_SERVICE = "postgresql";
     private static final int POSTGRESQL_PORT = 5432;
+    private static final String HAZELCAST_SERVICE = "hazelcast";
+    private static final int HAZELCAST_PORT = 5701;
+    private static final String KAFKA_SERVICE = "kafka";
+    private static final int KAFKA_PORT = 29092;
 
     static {
         ENVIRONMENT_TEST = new DockerComposeContainer<>(new File("./docker/docker-compose.env.yml"))
