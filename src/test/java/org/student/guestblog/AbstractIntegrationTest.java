@@ -28,10 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-    /**
-     * Environment.
-     */
-    protected static final DockerComposeContainer<?> ENVIRONMENT_TEST;
+    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(new File("./docker/docker-compose.env.yml"));
 
     private static final String POSTGRESQL_SERVICE = "postgresql";
     private static final int POSTGRESQL_PORT = 5432;
@@ -41,20 +38,29 @@ public abstract class AbstractIntegrationTest {
     private static final int KAFKA_PORT = 29092;
 
     static {
-        ENVIRONMENT_TEST = new DockerComposeContainer<>(new File("./docker/docker-compose.env.yml"))
+        ENVIRONMENT
             .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
-            .withLocalCompose(true);
+            .withExposedService(HAZELCAST_SERVICE, HAZELCAST_PORT)
+            .withExposedService(KAFKA_SERVICE, KAFKA_PORT);
 
-        Startables.deepStart(Stream.of(ENVIRONMENT_TEST)).join();
+        Startables.deepStart(Stream.of(ENVIRONMENT)).join();
 
+        String jdbcUrlForLiquibase = "jdbc:postgresql://%s:%s/postgres".formatted(
+            ENVIRONMENT.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
+            ENVIRONMENT.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
+        );
         String jdbcUrl = "jdbc:postgresql://%s:%s/gbdb".formatted(
-            ENVIRONMENT_TEST.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
-            ENVIRONMENT_TEST.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
+            ENVIRONMENT.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
+            ENVIRONMENT.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
         );
 
+        System.setProperty("LIQUIBASE_POSTGRES_URL", jdbcUrlForLiquibase);
+        System.setProperty("LIQUIBASE_POSTGRES_USERNAME", "postgres");
+        System.setProperty("LIQUIBASE_POSTGRES_PASSWORD", "postgres");
+
         System.setProperty("GB_POSTGRES_URL", jdbcUrl);
-        System.setProperty("GB_POSTGRES_USERNAME", "postgres");
-        System.setProperty("GB_POSTGRES_PASSWORD", "postgres");
+        System.setProperty("GB_POSTGRES_USERNAME", "gb_user_rw");
+        System.setProperty("GB_POSTGRES_PASSWORD", "gb_user_rw");
     }
 
     /**
