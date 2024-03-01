@@ -44,19 +44,6 @@ public abstract class AbstractIntegrationTest {
             .withExposedService(KAFKA_SERVICE, KAFKA_PORT);
 
         Startables.deepStart(Stream.of(ENVIRONMENT)).join();
-
-        String jdbcUrl = "jdbc:postgresql://%s:%s/gbdb".formatted(
-            ENVIRONMENT.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
-            ENVIRONMENT.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
-        );
-
-        System.setProperty("LIQUIBASE_POSTGRES_URL", jdbcUrl);
-        System.setProperty("LIQUIBASE_POSTGRES_USERNAME", "postgres");
-        System.setProperty("LIQUIBASE_POSTGRES_PASSWORD", "postgres");
-
-        System.setProperty("GB_POSTGRES_URL", jdbcUrl);
-        System.setProperty("GB_POSTGRES_USERNAME", "gb_user_rw");
-        System.setProperty("GB_POSTGRES_PASSWORD", "gb_user_rw");
     }
 
     /**
