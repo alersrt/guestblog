@@ -45,16 +45,12 @@ public abstract class AbstractIntegrationTest {
 
         Startables.deepStart(Stream.of(ENVIRONMENT)).join();
 
-        String jdbcUrlForLiquibase = "jdbc:postgresql://%s:%s/postgres".formatted(
-            ENVIRONMENT.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
-            ENVIRONMENT.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
-        );
         String jdbcUrl = "jdbc:postgresql://%s:%s/gbdb".formatted(
             ENVIRONMENT.getServiceHost(POSTGRESQL_SERVICE, POSTGRESQL_PORT),
             ENVIRONMENT.getServicePort(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
         );
 
-        System.setProperty("LIQUIBASE_POSTGRES_URL", jdbcUrlForLiquibase);
+        System.setProperty("LIQUIBASE_POSTGRES_URL", jdbcUrl);
         System.setProperty("LIQUIBASE_POSTGRES_USERNAME", "postgres");
         System.setProperty("LIQUIBASE_POSTGRES_PASSWORD", "postgres");
 

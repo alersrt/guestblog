@@ -25,7 +25,7 @@ spring:
               - public_profile
   liquibase:
     change-log: db/changelog/master_gb.xml
-    url: ${LIQUIBASE_POSTGRES_URL:jdbc:postgresql://localhost:5432/postgres}
+    url: ${LIQUIBASE_POSTGRES_URL:jdbc:postgresql://localhost:5432/gbdb}
     user: ${LIQUIBASE_POSTGRES_USERNAME:postgres}
     password: ${LIQUIBASE_POSTGRES_PASSWORD:postgres}
   servlet:
