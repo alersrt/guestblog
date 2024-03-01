@@ -1,4 +1,4 @@
-package org.student.guestblog.config.security.oauth2;
+package org.student.guestblog.security.oauth2;
 
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

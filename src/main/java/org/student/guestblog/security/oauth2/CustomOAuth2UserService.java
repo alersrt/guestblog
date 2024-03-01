@@ -1,10 +1,10 @@
-package org.student.guestblog.config.security.oauth2;
+package org.student.guestblog.security.oauth2;
 
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.student.guestblog.config.security.User;
+import org.student.guestblog.security.User;
 import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.data.entity.PassportEntity;
 import org.student.guestblog.data.repository.AccountRepository;

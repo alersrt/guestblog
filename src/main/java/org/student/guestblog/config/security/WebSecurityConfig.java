@@ -19,17 +19,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.student.guestblog.config.security.oauth2.CustomOAuth2UserService;
+import org.student.guestblog.security.User;
+import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.util.Cookie;
 
-import java.util.Date;
 import javax.sql.DataSource;
 
 @Configuration

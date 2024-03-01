@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.student.guestblog.config.security.User;
+import org.student.guestblog.security.User;
 import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.rest.dto.register.RegisterRequest;
 import org.student.guestblog.rest.dto.register.RegisterResponse;
