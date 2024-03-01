@@ -34,6 +34,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
             .addAddress("localhost", "localhost:5701");
         clientConfig
             .getSerializationConfig()
+            .setAllowUnsafe(true)
             .setAllowOverrideDefaultSerializers(true)
             .getCompactSerializationConfig()
             .addSerializer(new CompactSerializer<Date>() {
