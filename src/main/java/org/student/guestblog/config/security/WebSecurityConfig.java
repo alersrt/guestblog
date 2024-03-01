@@ -1,6 +1,7 @@
 package org.student.guestblog.config.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,17 +20,19 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.security.User;
 import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
-import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.util.Cookie;
 
 import javax.sql.DataSource;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableMethodSecurity(
     proxyTargetClass = true,
@@ -47,13 +50,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     };
 
     private final AccountRepository accountRepository;
-    private final DataSource dataSource;
-
-    public WebSecurityConfig(AccountRepository accountRepository,
-                             DataSource dataSource) {
-        this.accountRepository = accountRepository;
-        this.dataSource = dataSource;
-    }
+    private final PersistentTokenRepository persistentTokenRepository;
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {
@@ -82,14 +79,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public JdbcTokenRepositoryImpl jdbcTokenRepository(DataSource dataSource) {
-        var repository = new JdbcTokenRepositoryImpl();
-        repository.setCreateTableOnStartup(false);
-        repository.setDataSource(dataSource);
-        return repository;
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             // Disable CORS and disable CSRF
@@ -97,7 +86,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .csrf(AbstractHttpConfigurer::disable)
             // Set session management to never created
             .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .sessionFixation()
                 .migrateSession())
             // Set request cache to null
@@ -115,7 +104,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .useSecureCookie(true)
                 .rememberMeCookieName(Cookie.X_AUTH_REMEMBER_ME)
                 .userDetailsService(customUserDetailsServiceBean())
-                .tokenRepository(jdbcTokenRepository(dataSource)))
+                .tokenRepository(persistentTokenRepository))
             // Setup logout
             .logout(logoutConfigurer -> logoutConfigurer
                 .permitAll()
