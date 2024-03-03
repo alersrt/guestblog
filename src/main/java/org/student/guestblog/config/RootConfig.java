@@ -7,8 +7,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.config.ClientUserCodeDeploymentConfig;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.nio.serialization.compact.CompactReader;
+import com.hazelcast.nio.serialization.compact.CompactSerializer;
+import com.hazelcast.nio.serialization.compact.CompactWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken;
+import org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken.Fields;
+
+import javax.annotation.Nonnull;
 
 /**
  * The root configuration of the application.
@@ -59,16 +65,46 @@ public class RootConfig {
         @Value("${hazelcast.server-address}") String hzServerAddress,
         @Value("${hazelcast.cluster-name}") String hzClusterName
     ) {
-        var clientUserCodeDeploymentConfig = new ClientUserCodeDeploymentConfig();
-        clientUserCodeDeploymentConfig.setEnabled(true);
-        clientUserCodeDeploymentConfig.addClass("org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken");
-
         var clientConfig = new ClientConfig();
         clientConfig.setClusterName(hzClusterName);
         clientConfig
             .getNetworkConfig()
             .addAddress(hzServerAddress);
-        clientConfig.setUserCodeDeploymentConfig(clientUserCodeDeploymentConfig);
+        clientConfig
+            .getSerializationConfig()
+            .getCompactSerializationConfig()
+            .addSerializer(new CompactSerializer<HzPersistentRememberMeToken>() {
+                @Nonnull
+                @Override
+                public HzPersistentRememberMeToken read(@Nonnull CompactReader reader) {
+                    var token = new HzPersistentRememberMeToken();
+                    token.setUsername(reader.readString(Fields.username));
+                    token.setSeriesId(reader.readString(Fields.seriesId));
+                    token.setTokenValue(reader.readString(Fields.tokenValue));
+                    token.setLastUsedDate(reader.readTimestamp(Fields.lastUsedDate));
+                    return token;
+                }
+
+                @Override
+                public void write(@Nonnull CompactWriter writer, @Nonnull HzPersistentRememberMeToken object) {
+                    writer.writeString(Fields.username, object.getUsername());
+                    writer.writeString(Fields.seriesId, object.getSeriesId());
+                    writer.writeString(Fields.tokenValue, object.getTokenValue());
+                    writer.writeTimestamp(Fields.lastUsedDate, object.getLastUsedDate());
+                }
+
+                @Nonnull
+                @Override
+                public String getTypeName() {
+                    return HzPersistentRememberMeToken.class.getCanonicalName();
+                }
+
+                @Nonnull
+                @Override
+                public Class<HzPersistentRememberMeToken> getCompactClass() {
+                    return HzPersistentRememberMeToken.class;
+                }
+            });
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }

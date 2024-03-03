@@ -21,7 +21,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
     private static final String SQL_MAPPING = """
         CREATE MAPPING IF NOT EXISTS persistent_logins (
             __key           VARCHAR,
-            series          VARCHAR,
+            seriesId        VARCHAR,
             username        VARCHAR,
             tokenValue      VARCHAR,
             lastUsedDate    TIMESTAMP
@@ -29,19 +29,19 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         TYPE IMap
         OPTIONS (
             'keyFormat'='varchar',
-            'valueFormat'='java',
-            'valueJavaClass'='org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken'
+            'valueFormat'='compact',
+            'valueCompactTypeName'='org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken'
         )
         """;
     private static final String SQL_INSERT = """
-        INSERT INTO persistent_logins (__key, series, username, tokenValue, lastUsedDate)
+        INSERT INTO persistent_logins (__key, seriesId, username, tokenValue, lastUsedDate)
         VALUES (?, ?, ?, ?, ?)
         """;
     private static final String SQL_UPDATE = """
         UPDATE persistent_logins
         SET tokenValue = ?,
             lastUsedDate = ?
-        WHERE series = ?
+        WHERE seriesId = ?
         """;
     private static final String SQL_DELETE = """
         DELETE FROM persistent_logins
@@ -87,8 +87,8 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         var row = sqlResult.iterator().next();
         return new PersistentRememberMeToken(
             (String) row.getObject("username"),
-            (String) row.getObject("series"),
-            (String) row.getObject("token"),
+            (String) row.getObject("seriesId"),
+            (String) row.getObject("tokenValue"),
             Date.from(((LocalDateTime) row.getObject("lastUsedDate")).atZone(ZoneId.systemDefault()).toInstant())
         );
     }
