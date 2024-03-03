@@ -40,7 +40,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
     private static final String SQL_UPDATE = """
         UPDATE persistent_logins
         SET tokenValue = ?,
-            lastUsedDate = ?
+            lastUsedDate = CAST(? AS TIMESTAMP)
         WHERE seriesId = ?
         """;
     private static final String SQL_DELETE = """
