@@ -4,11 +4,13 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 public class HzPersistentRememberMeToken implements DataSerializable {
 
     private String username;
