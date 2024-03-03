@@ -50,7 +50,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
     private static final String SQL_SELECT = """
         SELECT *
         FROM persistent_logins
-        WHERE series = ?
+        WHERE seriesId = ?
         """;
 
     private final SqlService sql;
