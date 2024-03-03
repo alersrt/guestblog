@@ -16,7 +16,6 @@ import java.util.Date;
 @Component
 public class HazelcastTokenRepository implements PersistentTokenRepository {
 
-    private static final String MAP_NAME = "persistent_logins";
     private static final String SQL_MAPPING = """
         CREATE MAPPING IF NOT EXISTS persistent_logins (
             __key       VARCHAR,

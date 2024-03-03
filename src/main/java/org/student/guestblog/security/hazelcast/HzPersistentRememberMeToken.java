@@ -4,13 +4,9 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 import lombok.Getter;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 @Getter
 public class HzPersistentRememberMeToken implements DataSerializable {
@@ -22,15 +18,6 @@ public class HzPersistentRememberMeToken implements DataSerializable {
 
     public HzPersistentRememberMeToken() {
         this(null, null, null, null);
-    }
-
-    public HzPersistentRememberMeToken(PersistentRememberMeToken token) {
-        this(
-            token.getUsername(),
-            token.getSeries(),
-            token.getTokenValue(),
-            token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
-        );
     }
 
     private HzPersistentRememberMeToken(String username,
