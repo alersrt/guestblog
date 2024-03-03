@@ -4,17 +4,11 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.hazelcast.nio.serialization.compact.CompactReader;
-import com.hazelcast.nio.serialization.compact.CompactSerializer;
-import com.hazelcast.nio.serialization.compact.CompactWriter;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
 import java.util.Date;
-import java.util.Map;
-import javax.annotation.Nonnull;
 
 /**
  * Token repository with Hazelcast backend.
