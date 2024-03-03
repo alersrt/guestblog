@@ -32,48 +32,19 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         clientConfig
             .getNetworkConfig()
             .addAddress("localhost", "localhost:5701");
-        clientConfig
-            .getSerializationConfig()
-            .setAllowUnsafe(true)
-            .setAllowOverrideDefaultSerializers(true)
-            .getCompactSerializationConfig()
-            .addSerializer(new CompactSerializer<Date>() {
-                @Nonnull
-                @Override
-                public Date read(@Nonnull CompactReader compactReader) {
-                    return Date.from(compactReader.readTimestamp("date").atZone(ZoneId.systemDefault()).toInstant());
-                }
-
-                @Override
-                public void write(@Nonnull CompactWriter compactWriter, @Nonnull Date date) {
-                    compactWriter.writeTimestamp("date", date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                }
-
-                @Nonnull
-                @Override
-                public String getTypeName() {
-                    return Date.class.getTypeName();
-                }
-
-                @Nonnull
-                @Override
-                public Class<Date> getCompactClass() {
-                    return Date.class;
-                }
-            });
 
         client = HazelcastClient.newHazelcastClient(clientConfig);
     }
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
-        Map<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
         tokens.put(token.getSeries(), token);
     }
 
     @Override
     public void updateToken(String series, String tokenValue, Date lastUsed) {
-        Map<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
         var token = tokens.get(series);
         if (token != null) {
             tokens.replace(series, token, new PersistentRememberMeToken(token.getUsername(), series, tokenValue, lastUsed));
@@ -82,7 +53,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
 
     @Override
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
-        Map<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
         return tokens.get(seriesId);
     }
 
