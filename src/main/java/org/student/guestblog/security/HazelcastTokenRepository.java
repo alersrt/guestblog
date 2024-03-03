@@ -4,6 +4,7 @@ import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,17 @@ import java.util.Date;
 public class HazelcastTokenRepository implements PersistentTokenRepository {
 
     private final HazelcastInstance client;
-
     private final String MAP_NAME = "persistent_logins";
 
-    public HazelcastTokenRepository() {
+    public HazelcastTokenRepository(
+        @Value("${hazelcast.server-address}") String hzServerAddress,
+        @Value("${hazelcast.cluster-name}") String hzClusterName
+    ) {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setClusterName("gb-hazelcast");
+        clientConfig.setClusterName(hzClusterName);
         clientConfig
             .getNetworkConfig()
-            .addAddress("localhost", "localhost:5701");
+            .addAddress(hzServerAddress);
 
         client = HazelcastClient.newHazelcastClient(clientConfig);
     }
