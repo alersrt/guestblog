@@ -17,7 +17,13 @@ import java.util.Date;
 public class HazelcastTokenRepository implements PersistentTokenRepository {
 
     private static final String SQL_MAPPING = """
-        CREATE MAPPING IF NOT EXISTS persistent_logins
+        CREATE MAPPING IF NOT EXISTS persistent_logins (
+            __key       VARCHAR,
+            series      VARCHAR,
+            username    VARCHAR,
+            token       VARCHAR,
+            "date"      TIMESTAMP
+        )
         TYPE IMap
         OPTIONS (
             'keyFormat'='varchar',
