@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
+import org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken;
 
 import java.util.Date;
 
@@ -35,30 +36,34 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
-        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
-        tokens.put(token.getSeries(), token);
+        IMap<String, HzPersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        tokens.put(token.getSeries(), new HzPersistentRememberMeToken(token));
     }
 
     @Override
     public void updateToken(String series, String tokenValue, Date lastUsed) {
-        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
-        var token = tokens.get(series);
-        if (token != null) {
-            tokens.replace(series, token, new PersistentRememberMeToken(token.getUsername(), series, tokenValue, lastUsed));
+        IMap<String, HzPersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        var hzToken = tokens.get(series);
+        if (hzToken != null && hzToken.getToken() != null) {
+            tokens.replace(
+                series,
+                hzToken,
+                new HzPersistentRememberMeToken(new PersistentRememberMeToken(hzToken.getToken().getUsername(), series, tokenValue, lastUsed)));
         }
     }
 
     @Override
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
-        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
-        return tokens.get(seriesId);
+        IMap<String, HzPersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        return tokens.get(seriesId).getToken();
     }
 
     @Override
     public void removeUserTokens(String username) {
-        IMap<String, PersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
+        IMap<String, HzPersistentRememberMeToken> tokens = client.getMap(MAP_NAME);
         tokens.removeAll(entry -> entry.getValue() != null
-            && entry.getValue().getUsername() != null
-            && entry.getValue().getUsername().equals(username));
+            && entry.getValue().getToken() != null
+            && entry.getValue().getToken().getUsername() != null
+            && entry.getValue().getToken().getUsername().equals(username));
     }
 }
