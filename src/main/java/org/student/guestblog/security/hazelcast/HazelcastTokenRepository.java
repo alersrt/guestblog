@@ -34,7 +34,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         """;
     private static final String SQL_INSERT = """
         INSERT INTO persistent_logins (__key, series, username, token, "date")
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
         """;
     private static final String SQL_UPDATE = """
         UPDATE persistent_logins
