@@ -1,4 +1,4 @@
-package org.student.guestblog.security;
+package org.student.guestblog.security.hazelcast;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
