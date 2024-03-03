@@ -17,11 +17,9 @@ public class HazelcastSessionRegistry implements SessionRegistry {
 
     private static final String MAP_NAME = "user_session";
 
-    private final HazelcastInstance hazelcastInstance;
     private final IMap<String, Object> sessions;
 
     public HazelcastSessionRegistry(@Qualifier("configuredHazelcastInstance") HazelcastInstance hazelcastInstance) {
-        this.hazelcastInstance = hazelcastInstance;
         this.sessions = hazelcastInstance.getMap(MAP_NAME);
     }
 

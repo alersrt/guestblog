@@ -54,22 +54,22 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         """;
 
     private final SqlService sql;
-    private final IMap<String, HzPersistentRememberMeToken> tokens;
 
     public HazelcastTokenRepository(@Qualifier("configuredHazelcastInstance") HazelcastInstance hazelcastInstance) {
         this.sql = hazelcastInstance.getSql();
         this.sql.execute(SQL_MAPPING);
-        this.tokens = hazelcastInstance.getMap(MAP_NAME);
     }
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
-        this.sql.execute(SQL_INSERT,
+        this.sql.execute(
+            SQL_INSERT,
             token.getSeries(),
             token.getSeries(),
             token.getUsername(),
             token.getTokenValue(),
-            token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        );
     }
 
     @Override
