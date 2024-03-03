@@ -3,6 +3,7 @@ package org.student.guestblog.security.hazelcast;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
+import lombok.Getter;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
 import java.io.IOException;
@@ -11,19 +12,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
+@Getter
 public class HzPersistentRememberMeToken implements DataSerializable {
-
-    private final static DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-        // date/time
-        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        // offset (hh:mm - "+00:00" when it's zero)
-        .optionalStart().appendOffset("+HH:MM", "+00:00").optionalEnd()
-        // offset (hhmm - "+0000" when it's zero)
-        .optionalStart().appendOffset("+HHMM", "+0000").optionalEnd()
-        // offset (hh - "Z" when it's zero)
-        .optionalStart().appendOffset("+HH", "Z").optionalEnd()
-        // create formatter
-        .toFormatter();
 
     private String username;
     private String series;
@@ -66,6 +56,6 @@ public class HzPersistentRememberMeToken implements DataSerializable {
         this.series = in.readString();
         this.username = in.readString();
         this.tokenValue = in.readString();
-        this.date = LocalDateTime.parse(in.readObject(LocalDateTime.class), formatter);
+        this.date = in.readObject(LocalDateTime.class);
     }
 }
