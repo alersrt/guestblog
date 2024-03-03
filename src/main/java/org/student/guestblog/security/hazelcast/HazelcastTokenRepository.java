@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class HazelcastTokenRepository implements PersistentTokenRepository {
 
-    private final String MAP_NAME = "persistent_logins";
+    private final static String MAP_NAME = "persistent_logins";
     private final HazelcastInstance client;
     private final IMap<String, HzPersistentRememberMeToken> tokens;
 
