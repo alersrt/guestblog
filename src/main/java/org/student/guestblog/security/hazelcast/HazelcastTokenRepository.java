@@ -1,7 +1,6 @@
 package org.student.guestblog.security.hazelcast;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
 import com.hazelcast.sql.SqlService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
