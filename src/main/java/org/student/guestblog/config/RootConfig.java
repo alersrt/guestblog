@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.core.HazelcastInstance;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,5 +52,19 @@ public class RootConfig {
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
         return registrationBean;
+    }
+
+    @Bean
+    public HazelcastInstance configuredHazelcastInstance(
+        @Value("${hazelcast.server-address}") String hzServerAddress,
+        @Value("${hazelcast.cluster-name}") String hzClusterName
+    ) {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setClusterName(hzClusterName);
+        clientConfig
+            .getNetworkConfig()
+            .addAddress(hzServerAddress);
+
+        return HazelcastClient.newHazelcastClient(clientConfig);
     }
 }

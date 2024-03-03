@@ -1,10 +1,9 @@
 package org.student.guestblog.security.hazelcast;
 
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import org.springframework.beans.factory.annotation.Value;
+import com.hazelcast.sql.SqlService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
@@ -17,51 +16,84 @@ import java.util.Date;
 @Component
 public class HazelcastTokenRepository implements PersistentTokenRepository {
 
-    private final static String MAP_NAME = "persistent_logins";
-    private final HazelcastInstance client;
+    private static final String MAP_NAME = "persistent_logins";
+    private static final String SQL_MAPPING = """
+        CREATE MAPPING IF NOT EXISTS persistent_logins (
+            __key       VARCHAR,
+            series      VARCHAR,
+            username    VARCHAR,
+            token       VARCHAR,
+            "date"      TIMESTAMP
+        )
+        TYPE IMap
+        OPTIONS (
+            'keyFormat'='varchar',
+            'valueFormat'='java',
+            'valueJavaClass'='org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken'
+        )
+        """;
+    private static final String SQL_INSERT = """
+        INSERT INTO persistent_logins (__key, series, username, token, date)
+        VALUES (?, ?, ?, ?)
+        """;
+    private static final String SQL_UPDATE = """
+        UPDATE persistent_logins
+        SET token = ?,
+            date = ?
+        WHERE series = ?
+        """;
+    private static final String SQL_DELETE = """
+        DELETE FROM persistent_logins
+        WHERE username = ?
+        """;
+    private static final String SQL_SELECT = """
+        SELECT *
+        FROM persistent_logins
+        WHERE series = ?
+        """;
+
+    private final SqlService sql;
     private final IMap<String, HzPersistentRememberMeToken> tokens;
 
-    public HazelcastTokenRepository(
-        @Value("${hazelcast.server-address}") String hzServerAddress,
-        @Value("${hazelcast.cluster-name}") String hzClusterName
-    ) {
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setClusterName(hzClusterName);
-        clientConfig
-            .getNetworkConfig()
-            .addAddress(hzServerAddress);
-
-        client = HazelcastClient.newHazelcastClient(clientConfig);
-
-        tokens = client.getMap(MAP_NAME);
+    public HazelcastTokenRepository(@Qualifier("configuredHazelcastInstance") HazelcastInstance hazelcastInstance) {
+        this.sql = hazelcastInstance.getSql();
+        this.sql.execute(SQL_MAPPING);
+        this.tokens = hazelcastInstance.getMap(MAP_NAME);
     }
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
-        tokens.put(token.getSeries(), new HzPersistentRememberMeToken(token));
+        this.sql.execute(SQL_INSERT,
+            token.getSeries(),
+            token.getSeries(),
+            token.getUsername(),
+            token.getTokenValue(),
+            token.getDate());
     }
 
     @Override
     public void updateToken(String series, String tokenValue, Date lastUsed) {
-        var hzToken = tokens.get(series);
-        if (hzToken != null && hzToken.getToken() != null) {
-            tokens.replace(
-                series,
-                hzToken,
-                new HzPersistentRememberMeToken(new PersistentRememberMeToken(hzToken.getToken().getUsername(), series, tokenValue, lastUsed)));
-        }
+        this.sql.execute(SQL_UPDATE,
+            tokenValue,
+            lastUsed,
+            series);
     }
 
     @Override
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
-        return tokens.get(seriesId).getToken();
+        var sqlResult = this.sql.execute(SQL_SELECT, seriesId);
+
+        var row = sqlResult.iterator().next();
+        return new PersistentRememberMeToken(
+            row.getObject("username"),
+            row.getObject("series"),
+            row.getObject("token"),
+            row.getObject("date")
+        );
     }
 
     @Override
     public void removeUserTokens(String username) {
-        tokens.removeAll(entry -> entry.getValue() != null
-            && entry.getValue().getToken() != null
-            && entry.getValue().getToken().getUsername() != null
-            && entry.getValue().getToken().getUsername().equals(username));
+        this.sql.execute(SQL_DELETE, username);
     }
 }

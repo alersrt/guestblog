@@ -3,7 +3,6 @@ package org.student.guestblog.security.hazelcast;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
-import lombok.Getter;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Date;
 
 public class HzPersistentRememberMeToken implements DataSerializable {
 
@@ -27,32 +25,47 @@ public class HzPersistentRememberMeToken implements DataSerializable {
         // create formatter
         .toFormatter();
 
-    @Getter
-    private PersistentRememberMeToken token;
+    private String username;
+    private String series;
+    private String tokenValue;
+    private LocalDateTime date;
 
     public HzPersistentRememberMeToken() {
-        this.token = null;
+        this(null, null, null, null);
     }
 
     public HzPersistentRememberMeToken(PersistentRememberMeToken token) {
-        this.token = token;
+        this(
+            token.getUsername(),
+            token.getSeries(),
+            token.getTokenValue(),
+            token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        );
+    }
+
+    private HzPersistentRememberMeToken(String username,
+                                        String series,
+                                        String tokenValue,
+                                        LocalDateTime date) {
+        this.username = username;
+        this.series = series;
+        this.tokenValue = tokenValue;
+        this.date = date;
     }
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
-        out.writeString(token.getSeries());
-        out.writeString(token.getUsername());
-        out.writeString(token.getTokenValue());
-        out.writeString(token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(formatter));
+        out.writeString(this.series);
+        out.writeString(this.username);
+        out.writeString(this.tokenValue);
+        out.writeObject(this.date);
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
-        var series = in.readString();
-        var username = in.readString();
-        var tokenValue = in.readString();
-        var date = Date.from(LocalDateTime.parse(in.readString(), formatter).atZone(ZoneId.systemDefault()).toInstant());
-
-        this.token = new PersistentRememberMeToken(username, series, tokenValue, date);
+        this.series = in.readString();
+        this.username = in.readString();
+        this.tokenValue = in.readString();
+        this.date = LocalDateTime.parse(in.readObject(LocalDateTime.class), formatter);
     }
 }

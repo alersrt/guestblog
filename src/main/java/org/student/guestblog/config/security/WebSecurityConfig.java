@@ -4,11 +4,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -50,6 +53,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     };
 
     private final AccountRepository accountRepository;
+    private final SessionRegistry sessionRegistry;
     private final PersistentTokenRepository persistentTokenRepository;
 
     @Bean
@@ -86,18 +90,19 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .csrf(AbstractHttpConfigurer::disable)
             // Set session management to never created
             .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .sessionFixation()
-                .migrateSession())
+                .migrateSession()
+//                .sessionConcurrency(concurrencyControlConfigurer -> concurrencyControlConfigurer.sessionRegistry(sessionRegistry))
+            )
             // Set request cache to null
             .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))
             // Setup login
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(formLoginConfigurer -> formLoginConfigurer
                 .loginProcessingUrl("/api/auth/login")
-                .successHandler((request, response, authentication) -> {
-                })
-                .failureHandler((request, response, exception) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)))
+                .successHandler((request, response, authentication) -> {})
+                .failureHandler(new SimpleUrlAuthenticationFailureHandler()))
             .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
                 .alwaysRemember(true)
                 .tokenValiditySeconds(24 * 60 * 60)
