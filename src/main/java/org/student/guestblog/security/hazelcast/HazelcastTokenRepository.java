@@ -8,6 +8,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -68,7 +69,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
             token.getSeries(),
             token.getUsername(),
             token.getTokenValue(),
-            token.getDate());
+            token.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
 
     @Override
