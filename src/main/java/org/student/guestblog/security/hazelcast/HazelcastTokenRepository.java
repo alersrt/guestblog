@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
@@ -29,8 +28,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         TYPE IMap
         OPTIONS (
             'keyFormat'='varchar',
-            'valueFormat'='compact',
-            'valueCompactTypeName'='org.student.guestblog.security.hazelcast.HzPersistentRememberMeToken'
+            'valueFormat'='json-flat'
         )
         """;
     private static final String SQL_INSERT = """
@@ -86,9 +84,9 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
 
         var row = sqlResult.iterator().next();
         return new PersistentRememberMeToken(
-            (String) row.getObject("username"),
-            (String) row.getObject("seriesId"),
-            (String) row.getObject("tokenValue"),
+            row.getObject("username"),
+            row.getObject("seriesId"),
+            row.getObject("tokenValue"),
             Date.from(((LocalDateTime) row.getObject("lastUsedDate")).atZone(ZoneId.systemDefault()).toInstant())
         );
     }
