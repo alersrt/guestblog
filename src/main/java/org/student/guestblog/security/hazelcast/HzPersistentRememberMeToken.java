@@ -45,11 +45,11 @@ public class HzPersistentRememberMeToken implements DataSerializable {
         this.series = series;
     }
 
-    public String getTokenValue() {
+    public String getToken() {
         return token;
     }
 
-    public void setTokenValue(String tokenValue) {
+    public void setToken(String tokenValue) {
         this.token = tokenValue;
     }
 
