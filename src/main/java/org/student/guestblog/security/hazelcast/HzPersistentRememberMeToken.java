@@ -46,7 +46,7 @@ public class HzPersistentRememberMeToken implements DataSerializable {
         return lastUsedDate;
     }
 
-    public void seLastUsedDate(LocalDateTime lastUsedDate) {
+    public void setLastUsedDate(LocalDateTime lastUsedDate) {
         this.lastUsedDate = lastUsedDate;
     }
 
