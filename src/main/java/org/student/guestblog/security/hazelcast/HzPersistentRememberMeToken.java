@@ -12,21 +12,10 @@ public class HzPersistentRememberMeToken implements DataSerializable {
 
     private String username;
     private String series;
-    private String token;
-    private LocalDateTime date;
+    private String tokenValue;
+    private LocalDateTime lastUsedDate;
 
     public HzPersistentRememberMeToken() {
-        this(null, null, null, null);
-    }
-
-    private HzPersistentRememberMeToken(String username,
-                                        String series,
-                                        String token,
-                                        LocalDateTime date) {
-        this.username = username;
-        this.series = series;
-        this.token = token;
-        this.date = date;
     }
 
     public String getUsername() {
@@ -45,35 +34,35 @@ public class HzPersistentRememberMeToken implements DataSerializable {
         this.series = series;
     }
 
-    public String getToken() {
-        return token;
+    public String getTokenValue() {
+        return tokenValue;
     }
 
-    public void setToken(String tokenValue) {
-        this.token = tokenValue;
+    public void setTokenValue(String tokenValue) {
+        this.tokenValue = tokenValue;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getLastUsedDate() {
+        return lastUsedDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void seLastUsedDate(LocalDateTime lastUsedDate) {
+        this.lastUsedDate = lastUsedDate;
     }
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeString(this.series);
         out.writeString(this.username);
-        out.writeString(this.token);
-        out.writeObject(this.date);
+        out.writeString(this.tokenValue);
+        out.writeObject(this.lastUsedDate);
     }
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
         this.series = in.readString();
         this.username = in.readString();
-        this.token = in.readString();
-        this.date = in.readObject(LocalDateTime.class);
+        this.tokenValue = in.readString();
+        this.lastUsedDate = in.readObject(LocalDateTime.class);
     }
 }

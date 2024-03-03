@@ -20,11 +20,11 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
 
     private static final String SQL_MAPPING = """
         CREATE MAPPING IF NOT EXISTS persistent_logins (
-            __key       VARCHAR,
-            series      VARCHAR,
-            username    VARCHAR,
-            token       VARCHAR,
-            "date"      TIMESTAMP
+            __key           VARCHAR,
+            series          VARCHAR,
+            username        VARCHAR,
+            tokenValue      VARCHAR,
+            lastUsedDate    TIMESTAMP
         )
         TYPE IMap
         OPTIONS (
@@ -34,13 +34,13 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
         )
         """;
     private static final String SQL_INSERT = """
-        INSERT INTO persistent_logins (__key, series, username, token, "date")
+        INSERT INTO persistent_logins (__key, series, username, tokenValue, lastUsedDate)
         VALUES (?, ?, ?, ?, ?)
         """;
     private static final String SQL_UPDATE = """
         UPDATE persistent_logins
-        SET token = ?,
-            "date" = ?
+        SET tokenValue = ?,
+            lastUsedDate = ?
         WHERE series = ?
         """;
     private static final String SQL_DELETE = """
