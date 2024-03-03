@@ -89,7 +89,7 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
             (String) row.getObject("username"),
             (String) row.getObject("series"),
             (String) row.getObject("token"),
-            Date.from(((LocalDateTime) row.getObject("\"date\"")).atZone(ZoneId.systemDefault()).toInstant())
+            Date.from(((LocalDateTime) row.getObject("lastUsedDate")).atZone(ZoneId.systemDefault()).toInstant())
         );
     }
 
