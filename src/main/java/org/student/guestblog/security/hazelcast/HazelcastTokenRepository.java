@@ -7,7 +7,9 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
@@ -84,10 +86,10 @@ public class HazelcastTokenRepository implements PersistentTokenRepository {
 
         var row = sqlResult.iterator().next();
         return new PersistentRememberMeToken(
-            row.getObject("username"),
-            row.getObject("series"),
-            row.getObject("token"),
-            row.getObject("date")
+            (String) row.getObject("username"),
+            (String) row.getObject("series"),
+            (String) row.getObject("token"),
+            Date.from(((LocalDateTime) row.getObject("\"date\"")).atZone(ZoneId.systemDefault()).toInstant())
         );
     }
 
