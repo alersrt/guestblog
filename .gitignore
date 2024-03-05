@@ -14,6 +14,7 @@
 !tsconfig.json
 
 # Infrastructure
+!db
 !docker
 !docker/.env
 !.editorconfig

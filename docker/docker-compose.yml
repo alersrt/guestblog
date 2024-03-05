@@ -21,8 +21,8 @@ services:
       - OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED=true
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     depends_on:
-      postgresql:
-        condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
       hazelcast:
         condition: service_healthy
       kafka:
