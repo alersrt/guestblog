@@ -36,12 +36,14 @@ public abstract class AbstractIntegrationTest {
     private static final int HAZELCAST_PORT = 5701;
     private static final String KAFKA_SERVICE = "kafka";
     private static final int KAFKA_PORT = 29092;
+    private static final String FLYWAY_SERVICE = "flyway";
 
     static {
         ENVIRONMENT
             .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
             .withExposedService(HAZELCAST_SERVICE, HAZELCAST_PORT)
-            .withExposedService(KAFKA_SERVICE, KAFKA_PORT);
+            .withExposedService(KAFKA_SERVICE, KAFKA_PORT)
+            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy());
 
         Startables.deepStart(Stream.of(ENVIRONMENT)).join();
     }
