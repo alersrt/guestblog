@@ -97,7 +97,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .csrf(AbstractHttpConfigurer::disable)
             // Set session management to never created
             .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .sessionFixation()
                 .migrateSession()
                 .sessionConcurrency(concurrencyControlConfigurer -> {
