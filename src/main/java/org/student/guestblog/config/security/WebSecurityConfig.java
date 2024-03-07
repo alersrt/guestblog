@@ -84,6 +84,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Bean
     public SpringSessionBackedSessionRegistry<?> sessionRegistry() {
         var sessionRepository = new HazelcastIndexedSessionRepository(hazelcastInstance);
+        sessionRepository.setSessionMapName("persistent_sessions");
         return new SpringSessionBackedSessionRegistry<>(sessionRepository);
     }
 

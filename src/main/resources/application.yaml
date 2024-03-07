@@ -46,7 +46,7 @@ spring:
           use_jdbc_metadata_defaults: true
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
   datasource:
     hikari:
       leak-detection-threshold: 60000

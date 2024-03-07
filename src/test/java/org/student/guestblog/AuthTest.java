@@ -1,5 +1,6 @@
 package org.student.guestblog;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -63,8 +64,10 @@ public class AuthTest extends AbstractIntegrationTest {
         );
 
         /*------ Asserts ------*/
-        loginAction.andExpect(status().isOk());
-        currentUserAction.andExpect(status().isOk());
+        var resultLogin = loginAction.andExpect(status().isOk()).andReturn();
+        var resultCurrentUser = currentUserAction.andExpect(status().isOk()).andReturn();
+        log.info(Arrays.toString(resultLogin.getResponse().getCookies()));
+        log.info(Arrays.toString(resultCurrentUser.getResponse().getCookies()));
         assertAll("check response",
             () -> assertThat(Arrays.stream(authResponse.getCookies())
                 .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
