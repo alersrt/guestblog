@@ -31,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.security.User;
 import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
+import org.student.guestblog.security.session.SimpleSessionInformationExpiredStrategy;
 import org.student.guestblog.util.Cookie;
 
 @RequiredArgsConstructor
@@ -96,10 +97,13 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .csrf(AbstractHttpConfigurer::disable)
             // Set session management to never created
             .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .sessionFixation()
                 .migrateSession()
-                .sessionConcurrency(concurrencyControlConfigurer -> concurrencyControlConfigurer.sessionRegistry(sessionRegistry()))
+                .sessionConcurrency(concurrencyControlConfigurer -> {
+                    concurrencyControlConfigurer.sessionRegistry(sessionRegistry());
+                    concurrencyControlConfigurer.expiredSessionStrategy(new SimpleSessionInformationExpiredStrategy());
+                })
             )
             // Set request cache to null
             .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))

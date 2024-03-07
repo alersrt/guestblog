@@ -1,6 +1,5 @@
 package org.student.guestblog;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -44,6 +43,7 @@ public class AuthTest extends AbstractIntegrationTest {
                 .param("password", password)
         );
         var authResponse = loginAction.andReturn().getResponse();
+        log.info(Arrays.toString(authResponse.getCookies()));
 
         var authCookie = Arrays.stream(authResponse.getCookies())
             .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
@@ -55,19 +55,11 @@ public class AuthTest extends AbstractIntegrationTest {
             get("/api/account/me")
                 .cookie(authCookie)
         );
-        UserResponse meDto = objectMapper.readValue(
-            currentUserAction
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            UserResponse.class
-        );
+        var currentUserResponse = currentUserAction.andReturn().getResponse();
+        log.info(Arrays.toString(currentUserResponse.getCookies()));
+        UserResponse meDto = objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
 
         /*------ Asserts ------*/
-        var resultLogin = loginAction.andExpect(status().isOk()).andReturn();
-        var resultCurrentUser = currentUserAction.andExpect(status().isOk()).andReturn();
-        log.info(Arrays.toString(resultLogin.getResponse().getCookies()));
-        log.info(Arrays.toString(resultCurrentUser.getResponse().getCookies()));
         assertAll("check response",
             () -> assertThat(Arrays.stream(authResponse.getCookies())
                 .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
