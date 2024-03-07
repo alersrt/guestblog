@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -85,9 +86,10 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SpringSessionBackedSessionRegistry<?> sessionRegistry() {
+    public SessionRegistry sessionRegistry() {
         var sessionRepository = new HazelcastIndexedSessionRepository(hazelcastInstance);
         sessionRepository.setSessionMapName("persistent_sessions");
+        sessionRepository.afterPropertiesSet();
         return new SpringSessionBackedSessionRegistry<>(sessionRepository);
     }
 

@@ -18,6 +18,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.session.MapSession;
+import org.springframework.session.hazelcast.SessionUpdateEntryProcessor;
 
 /**
  * The root configuration of the application.
@@ -63,6 +65,11 @@ public class RootConfig {
         clientConfig
             .getNetworkConfig()
             .addAddress(hzServerAddress);
+        clientConfig
+            .getUserCodeDeploymentConfig()
+            .setEnabled(true)
+            .addClass(SessionUpdateEntryProcessor.class)
+            .addClass(MapSession.class);
 
         return HazelcastClient.newHazelcastClient(clientConfig);
     }
