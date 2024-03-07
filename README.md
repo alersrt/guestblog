@@ -35,6 +35,10 @@ The default credentials are
 - username: `admin@test.dev`
 - password: `admin`
 
+There is also the user's account in testing purposes:
+- username: `user@test.dev`
+- password: `password`
+
 Its possible to change it later.
 
 
