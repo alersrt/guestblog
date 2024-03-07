@@ -49,11 +49,15 @@ public class AuthTest extends AbstractIntegrationTest {
             .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
             .findFirst()
             .get();
+        var sessionCookie = Arrays.stream(authResponse.getCookies())
+            .filter(cookie -> cookie.getName().equals(Cookie.X_SESSION_ID))
+            .findFirst()
+            .get();
 
         log.info("===> CURRENT USER");
         ResultActions currentUserAction = mockMvc.perform(
             get("/api/account/me")
-                .cookie(authCookie)
+                .cookie(authCookie, sessionCookie)
         );
         var currentUserResponse = currentUserAction.andReturn().getResponse();
         log.info(Arrays.toString(currentUserResponse.getCookies()));

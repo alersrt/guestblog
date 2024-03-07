@@ -2,6 +2,7 @@ package org.student.guestblog.config.security;
 
 import com.hazelcast.core.HazelcastInstance;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -54,6 +55,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     private final AccountRepository accountRepository;
     private final PersistentTokenRepository persistentTokenRepository;
+    @Qualifier("configuredHazelcastInstance")
     private final HazelcastInstance hazelcastInstance;
 
     @Bean

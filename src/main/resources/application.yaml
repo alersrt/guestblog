@@ -9,6 +9,7 @@ server:
       cookie:
         http-only: true
         secure: true
+        name: X-Session-Id
 spring:
   main:
     allow-circular-references: true
