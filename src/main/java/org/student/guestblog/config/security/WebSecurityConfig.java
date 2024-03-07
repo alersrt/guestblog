@@ -1,16 +1,14 @@
 package org.student.guestblog.config.security;
 
-import jakarta.servlet.http.HttpServletResponse;
+import com.hazelcast.core.HazelcastInstance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,21 +20,22 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.session.hazelcast.HazelcastIndexedSessionRepository;
+import org.springframework.session.hazelcast.config.annotation.web.http.EnableHazelcastHttpSession;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.security.User;
 import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
 import org.student.guestblog.util.Cookie;
 
-import javax.sql.DataSource;
-
 @RequiredArgsConstructor
 @Configuration
+@EnableHazelcastHttpSession
 @EnableMethodSecurity(
     proxyTargetClass = true,
     prePostEnabled = true,
@@ -53,8 +52,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     };
 
     private final AccountRepository accountRepository;
-    private final SessionRegistry sessionRegistry;
     private final PersistentTokenRepository persistentTokenRepository;
+    private final HazelcastInstance hazelcastInstance;
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {
@@ -83,6 +82,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public SpringSessionBackedSessionRegistry<?> sessionRegistry() {
+        var sessionRepository = new HazelcastIndexedSessionRepository(hazelcastInstance);
+        return new SpringSessionBackedSessionRegistry<>(sessionRepository);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
             // Disable CORS and disable CSRF
@@ -93,7 +98,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .sessionFixation()
                 .migrateSession()
-//                .sessionConcurrency(concurrencyControlConfigurer -> concurrencyControlConfigurer.sessionRegistry(sessionRegistry))
+                .sessionConcurrency(concurrencyControlConfigurer -> concurrencyControlConfigurer.sessionRegistry(sessionRegistry()))
             )
             // Set request cache to null
             .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))
@@ -101,7 +106,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(formLoginConfigurer -> formLoginConfigurer
                 .loginProcessingUrl("/api/auth/login")
-                .successHandler((request, response, authentication) -> {})
+                .successHandler((request, response, authentication) -> {
+                })
                 .failureHandler(new SimpleUrlAuthenticationFailureHandler()))
             .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
                 .alwaysRemember(true)
