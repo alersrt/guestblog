@@ -15,7 +15,7 @@ import org.student.guestblog.util.Cookie;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.lifecycle.Startables;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.stream.Stream;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(new File("./docker/docker-compose.env.yml"));
+    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(Path.of(".", "docker", "docker-compose.env.yml").toFile());
 
     private static final String POSTGRESQL_SERVICE = "postgresql";
     private static final int POSTGRESQL_PORT = 5432;
@@ -40,6 +40,7 @@ public abstract class AbstractIntegrationTest {
 
     static {
         ENVIRONMENT
+            .withBuild(true)
             .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
             .withExposedService(HAZELCAST_SERVICE, HAZELCAST_PORT)
             .withExposedService(KAFKA_SERVICE, KAFKA_PORT)
