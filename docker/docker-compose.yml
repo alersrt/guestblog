@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/opentelemetry-config.yml
+      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/opt/opentelemetry.properties
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
       - ./opentelemetry/opentelemetry-javaagent-2.1.0.jar:/opt/opentelemetry-javaagent.jar
