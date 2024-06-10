@@ -1,8 +1,6 @@
 entry-pipeline:
   delay: "100"
   source:
-    http_source:
-      ssl: false
     otel_trace_source:
       ssl: false
     otel_metrics_source:
