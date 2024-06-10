@@ -11,8 +11,10 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
-      - OTEL_EXPORTER_OTLP_ENDPOINT=data-prepper:21891
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://data-prepper:21890
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://data-prepper:21891
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://data-prepper:21892
       - OTEL_RESOURCE_ATTRIBUTES=service.name=guestblog
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
