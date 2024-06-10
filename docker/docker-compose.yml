@@ -21,7 +21,7 @@ services:
         condition: service_completed_successfully
       kafka:
         condition: service_healthy
-      data-prepper:
+      otel-collector:
         condition: service_started
     networks:
       - gb-internal
