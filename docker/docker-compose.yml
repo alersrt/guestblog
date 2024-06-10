@@ -11,7 +11,10 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/opt/opentelemetry.properties
+      - OTEL_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=guestblog
+      - OTLP=otel-collector
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
       - ./opentelemetry/opentelemetry-javaagent-2.1.0.jar:/opt/opentelemetry-javaagent.jar
