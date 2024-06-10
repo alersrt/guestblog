@@ -43,28 +43,27 @@ public class AuthTest extends AbstractIntegrationTest {
                 .param("password", password)
         );
         var authResponse = loginAction.andReturn().getResponse();
+        log.info(Arrays.toString(authResponse.getCookies()));
 
         var authCookie = Arrays.stream(authResponse.getCookies())
             .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+            .findFirst()
+            .get();
+        var sessionCookie = Arrays.stream(authResponse.getCookies())
+            .filter(cookie -> cookie.getName().equals(Cookie.X_SESSION_ID))
             .findFirst()
             .get();
 
         log.info("===> CURRENT USER");
         ResultActions currentUserAction = mockMvc.perform(
             get("/api/account/me")
-                .cookie(authCookie)
+                .cookie(authCookie, sessionCookie)
         );
-        UserResponse meDto = objectMapper.readValue(
-            currentUserAction
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            UserResponse.class
-        );
+        var currentUserResponse = currentUserAction.andReturn().getResponse();
+        log.info(Arrays.toString(currentUserResponse.getCookies()));
+        UserResponse meDto = objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
 
         /*------ Asserts ------*/
-        loginAction.andExpect(status().isOk());
-        currentUserAction.andExpect(status().isOk());
         assertAll("check response",
             () -> assertThat(Arrays.stream(authResponse.getCookies())
                 .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))

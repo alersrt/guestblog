@@ -12,15 +12,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.student.guestblog.util.Cookie;
-import org.testcontainers.containers.Network;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.images.PullPolicy;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.lifecycle.Startables;
-import org.testcontainers.utility.DockerImageName;
 
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.stream.Stream;
@@ -33,31 +28,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-    /**
-     * Container with the PostgreSQL database.
-     */
-    protected static final PostgreSQLContainer<?> DB;
+    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(Path.of(".", "docker", "docker-compose.env.yml").toFile());
+
+    private static final String POSTGRESQL_SERVICE = "postgresql";
+    private static final int POSTGRESQL_PORT = 5432;
+    private static final String HAZELCAST_SERVICE = "hazelcast";
+    private static final int HAZELCAST_PORT = 5701;
+    private static final String KAFKA_SERVICE = "kafka";
+    private static final int KAFKA_PORT = 29092;
+    private static final String FLYWAY_SERVICE = "flyway";
 
     static {
-        var network = Network.newNetwork();
+        ENVIRONMENT
+            .withBuild(true)
+            .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
+            .withExposedService(HAZELCAST_SERVICE, HAZELCAST_PORT)
+            .withExposedService(KAFKA_SERVICE, KAFKA_PORT)
+            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy());
 
-        var dbImage = new ImageFromDockerfile("test-debt-court-db", false)
-            .withFileFromPath(".", Path.of("./docker/postgres/.").toAbsolutePath());
-        dbImage.get();
-        DB = new PostgreSQLContainer<>(DockerImageName.parse(dbImage.getDockerImageName()).asCompatibleSubstituteFor("postgres"))
-            .withDatabaseName("postgres")
-            .withUsername("postgres")
-            .withPassword("postgres")
-            .withImagePullPolicy(PullPolicy.ageBased(Duration.ofDays(30)))
-            .withNetwork(network)
-            .withFileSystemBind(Path.of("./docker/postgres/postgresql.conf").toAbsolutePath().toString(), "/etc/postgresql/postgresql.conf")
-            .withCommand("postgres", "-c", "max_prepared_transactions=100", "-c", "config_file=/etc/postgresql/postgresql.conf");
-
-        Startables.deepStart(Stream.of(DB)).join();
-
-        System.setProperty("GB_POSTGRES_URL", DB.getJdbcUrl());
-        System.setProperty("GB_POSTGRES_USERNAME", DB.getUsername());
-        System.setProperty("GB_POSTGRES_PASSWORD", DB.getPassword());
+        Startables.deepStart(Stream.of(ENVIRONMENT)).join();
     }
 
     /**

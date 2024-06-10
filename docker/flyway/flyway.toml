@@ -1,0 +1,6 @@
+[environments.postgresql]
+url = "jdbc:postgresql://postgresql:5432/gbdb?user=postgres&password=postgres"
+sqlMigrationSuffixes = [".sql"]
+
+[flyway]
+environment = "postgresql"

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.student.guestblog.data.entity.FileEntity;
 import org.student.guestblog.data.repository.FileRepository;
-import org.student.guestblog.service.internal.FileResource;
+import org.student.guestblog.model.internal.FileResource;
 import org.student.guestblog.util.MimeTypesAndExtensions;
 
 import java.io.IOException;
