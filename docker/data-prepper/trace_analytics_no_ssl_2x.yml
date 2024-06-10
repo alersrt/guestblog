@@ -3,10 +3,6 @@ entry-pipeline:
   source:
     otel_trace_source:
       ssl: false
-    otel_metrics_source:
-      ssl: false
-    otel_logs_source:
-      ssl: false
   sink:
     - pipeline:
         name: "raw-pipeline"
@@ -17,8 +13,8 @@ raw-pipeline:
     pipeline:
       name: "entry-pipeline"
   processor:
-    - otel_traces_raw:
-    - otel_traces_group:
+    - otel_trace_raw:
+    - otel_trace_group:
         hosts: [ "http://opensearch:9200" ]
         username: "admin"
         password: "OpenSearch#0"
