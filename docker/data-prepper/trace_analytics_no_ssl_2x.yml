@@ -1,15 +1,34 @@
+otel-logs-pipeline:
+  delay: "100"
+  source:
+    otel_logs_source:
+      port: 21892
+      ssl: false
+      authentication:
+        unauthenticated:
+  sink:
+    - opensearch:
+        hosts: [ "http://opensearch:9200" ]
+        username: "admin"
+        password: "OpenSearch#0"
+        bulk_size: 10
+        index_type: custom
+        index: otel-v1-logs-%{yyyy.MM.dd}
+        number_of_replicas: 0
+
 entry-pipeline:
   delay: "100"
   source:
     otel_trace_source:
+      port: 21890
       ssl: false
+      authentication:
+        unauthenticated:
   sink:
     - pipeline:
         name: "raw-pipeline"
     - pipeline:
         name: "service-map-pipeline"
-    - pipeline:
-        name: "trace-to-metrics-pipeline"
 
 raw-pipeline:
   source:
@@ -37,27 +56,3 @@ service-map-pipeline:
         username: "admin"
         password: "OpenSearch#0"
         index_type: trace-analytics-service-map
-
-trace-to-metrics-pipeline:
-  source:
-    pipeline:
-      name: "entry-pipeline"
-  processor:
-    - aggregate:
-        # Pick the required identification keys
-        identification_keys: [ "serviceName" ]
-        action:
-          histogram:
-            # Pick the appropriate values for each of the following fields
-            key: "durationInNanos"
-            record_minmax: true
-            units: "seconds"
-            buckets: [ 0, 10000000, 50000000, 100000000 ]
-        # Specify an aggregation period
-        group_duration: "30s"
-  sink:
-    - opensearch:
-        hosts: [ "http://opensearch:9200" ]
-        username: "admin"
-        password: "OpenSearch#0"
-        index: "metrics_for_traces"

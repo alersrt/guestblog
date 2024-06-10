@@ -16,6 +16,7 @@ services:
       - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://data-prepper:21891
       - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://data-prepper:21892
       - OTEL_SERVICE_NAME=guestblog
+      - OTEL_TRACES_SAMPLER=always_on
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
       - ./opentelemetry/opentelemetry-javaagent-2.4.0.jar:/opt/opentelemetry-javaagent.jar
