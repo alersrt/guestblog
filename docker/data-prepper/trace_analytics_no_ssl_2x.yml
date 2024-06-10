@@ -16,6 +16,25 @@ otel-logs-pipeline:
         index: otel-v1-logs-%{yyyy.MM.dd}
         number_of_replicas: 0
 
+otel-metrics-pipeline:
+  delay: "100"
+  source:
+    otel_metrics_source:
+      port: 21891
+      ssl: false
+      authentication:
+        unauthenticated:
+  sink:
+    - opensearch:
+        hosts: [ "http://opensearch:9200" ]
+        username: "admin"
+        password: "OpenSearch#0"
+        bulk_size: 10
+        index_type: custom
+        index: otel-v1-metrics-%{yyyy.MM.dd}
+        number_of_replicas: 0
+
+
 entry-pipeline:
   delay: "100"
   source:
