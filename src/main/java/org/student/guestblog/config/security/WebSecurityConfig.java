@@ -1,6 +1,7 @@
 package org.student.guestblog.config.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -24,7 +25,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.security.User;
 import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
@@ -33,14 +33,14 @@ import org.student.guestblog.util.Cookie;
 import javax.sql.DataSource;
 
 @RequiredArgsConstructor
-@Configuration
 @EnableMethodSecurity(
     proxyTargetClass = true,
     prePostEnabled = true,
     jsr250Enabled = true
 )
 @EnableWebSecurity
-public class WebSecurityConfig implements WebMvcConfigurer {
+@Configuration
+public class WebSecurityConfig {
 
     private static final Directive[] SOURCE = {
         Directive.CACHE,
@@ -49,8 +49,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         Directive.EXECUTION_CONTEXTS
     };
 
-    private final AccountRepository accountRepository;
-    private final PersistentTokenRepository persistentTokenRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {

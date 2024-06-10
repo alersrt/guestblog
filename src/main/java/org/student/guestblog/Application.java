@@ -10,7 +10,7 @@ import java.lang.invoke.MethodHandles;
 /**
  * The main class of the application.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.student.*")
 public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
