@@ -3,6 +3,10 @@ entry-pipeline:
   source:
     otel_trace_source:
       ssl: false
+    otel_metrics_source:
+      ssl: false
+    otel_logs_source:
+      ssl: false
   sink:
     - pipeline:
         name: "raw-pipeline"

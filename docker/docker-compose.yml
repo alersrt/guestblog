@@ -11,20 +11,18 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
+      - OTEL_EXPORTER_OTLP_ENDPOINT=data-prepper:21891
       - OTEL_RESOURCE_ATTRIBUTES=service.name=guestblog
-      - OTLP=otel-collector
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
-      - ./opentelemetry/opentelemetry-javaagent-2.1.0.jar:/opt/opentelemetry-javaagent.jar
-      - ./opentelemetry/opentelemetry.properties:/opt/opentelemetry.properties
+      - ./opentelemetry/opentelemetry-javaagent-2.4.0.jar:/opt/opentelemetry-javaagent.jar
     depends_on:
       flyway:
         condition: service_completed_successfully
       kafka:
         condition: service_healthy
-      otel-collector:
+      data-prepper:
         condition: service_started
     networks:
       - gb-internal
