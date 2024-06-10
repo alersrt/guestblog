@@ -60,6 +60,3 @@ spring:
 # Springdoc
 springdoc:
   packages-to-scan: org.student.guestblog
-hazelcast:
-  server-address: ${HAZELCAST_SERVER_ADDRESS:localhost:5701}
-  cluster-name: ${HAZELCAST_CLUSTER_NAME:gb_hazelcast}

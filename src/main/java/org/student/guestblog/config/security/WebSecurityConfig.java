@@ -1,8 +1,6 @@
 package org.student.guestblog.config.security;
 
-import com.hazelcast.core.HazelcastInstance;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -10,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,23 +19,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
-import org.springframework.session.hazelcast.HazelcastIndexedSessionRepository;
-import org.springframework.session.hazelcast.config.annotation.web.http.EnableHazelcastHttpSession;
-import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.security.User;
 import org.student.guestblog.security.oauth2.CustomOAuth2UserService;
-import org.student.guestblog.security.session.SimpleSessionInformationExpiredStrategy;
 import org.student.guestblog.util.Cookie;
+
+import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @Configuration
-@EnableHazelcastHttpSession
 @EnableMethodSecurity(
     proxyTargetClass = true,
     prePostEnabled = true,
@@ -56,8 +51,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     private final AccountRepository accountRepository;
     private final PersistentTokenRepository persistentTokenRepository;
-    @Qualifier("configuredHazelcastInstance")
-    private final HazelcastInstance hazelcastInstance;
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {
@@ -86,11 +79,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SessionRegistry sessionRegistry() {
-        var sessionRepository = new HazelcastIndexedSessionRepository(hazelcastInstance);
-        sessionRepository.setSessionMapName("persistent_sessions");
-        sessionRepository.afterPropertiesSet();
-        return new SpringSessionBackedSessionRegistry<>(sessionRepository);
+    public JdbcTokenRepositoryImpl jdbcTokenRepository(DataSource dataSource) {
+        var repository = new JdbcTokenRepositoryImpl();
+        repository.setCreateTableOnStartup(false);
+        repository.setDataSource(dataSource);
+        return repository;
     }
 
     @Bean
@@ -101,14 +94,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
             .csrf(AbstractHttpConfigurer::disable)
             // Set session management to never created
             .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .sessionFixation()
-                .migrateSession()
-                .sessionConcurrency(concurrencyControlConfigurer -> {
-                    concurrencyControlConfigurer.sessionRegistry(sessionRegistry());
-                    concurrencyControlConfigurer.expiredSessionStrategy(new SimpleSessionInformationExpiredStrategy());
-                })
-            )
+                .migrateSession())
             // Set request cache to null
             .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))
             // Setup login

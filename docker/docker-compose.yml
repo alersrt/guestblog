@@ -10,7 +10,7 @@ services:
       context: ../
       dockerfile: docker/Dockerfile
     ports:
-      - "80:8080" # tomcat port
+      - "8080:8080" # tomcat port
     environment:
       - OTEL_SERVICE_NAME=guestblog
       - OTEL_METRICS_EXPORTER=none

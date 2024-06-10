@@ -5,10 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.core.HazelcastInstance;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +14,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.session.MapSession;
-import org.springframework.session.hazelcast.SessionUpdateEntryProcessor;
 
 /**
  * The root configuration of the application.
@@ -53,24 +47,5 @@ public class RootConfig {
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
         return registrationBean;
-    }
-
-    @Bean
-    public HazelcastInstance configuredHazelcastInstance(
-        @Value("${hazelcast.server-address}") String hzServerAddress,
-        @Value("${hazelcast.cluster-name}") String hzClusterName
-    ) {
-        var clientConfig = new ClientConfig();
-        clientConfig.setClusterName(hzClusterName);
-        clientConfig
-            .getNetworkConfig()
-            .addAddress(hzServerAddress);
-        clientConfig
-            .getUserCodeDeploymentConfig()
-            .setEnabled(true)
-            .addClass(SessionUpdateEntryProcessor.class)
-            .addClass(MapSession.class);
-
-        return HazelcastClient.newHazelcastClient(clientConfig);
     }
 }
