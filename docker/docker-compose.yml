@@ -4,8 +4,7 @@ include:
 services:
 
   guestblog:
-    image: ${COMPOSE_IMAGE_NAME}
-    user: ${CURRENT_UID}
+    image: guestblog
     build:
       context: ../
       dockerfile: docker/Dockerfile
@@ -23,13 +22,9 @@ services:
     depends_on:
       flyway:
         condition: service_completed_successfully
-      hazelcast:
-        condition: service_healthy
       kafka:
         condition: service_healthy
       zipkin:
         condition: service_healthy
-    env_file:
-      - .env
     networks:
       - gb-internal
