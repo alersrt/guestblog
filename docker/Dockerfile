@@ -16,7 +16,7 @@ RUN mvn -Dmaven.test.skip -Duser.home=/app package
 # https://hub.docker.com/_/tomcat
 FROM openjdk:latest AS runtime
 COPY --from=dist /app/target/guestblog.jar /opt/guestblog/
-COPY --from=dist /app/src/main/opentelemetry/opentelemetry-javaagent-2.1.0.jar /opt/opentelemetry-javaagent.jar
 EXPOSE 8080 8080
 
+VOLUME /opt/opentelemetry-javaagent.jar
 CMD exec java -javaagent:/opt/opentelemetry-javaagent.jar ${JAVA_CMD_ARGS} -jar /opt/guestblog/guestblog.jar

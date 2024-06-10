@@ -11,10 +11,11 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/otel-collector-config.yml
+      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/opentelemetry-config.yml
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
-      - ./otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ./opentelemetry/opentelemetry-javaagent-2.1.0.jar:/opt/opentelemetry-javaagent.jar
+      - ./opentelemetry/opentelemetry.properties:/opt/opentelemetry.properties
     depends_on:
       flyway:
         condition: service_completed_successfully
