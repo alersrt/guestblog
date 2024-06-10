@@ -16,8 +16,7 @@ raw-pipeline:
     - otel_trace_raw:
   sink:
     - opensearch:
-        hosts: [ "https://opensearch:9200" ]
-        cert: "/usr/share/data-prepper/root-ca.crt"
+        hosts: [ "http://opensearch:9200" ]
         username: "admin"
         password: "OpenSearch#0"
         index_type: trace-analytics-raw
@@ -30,8 +29,7 @@ service-map-pipeline:
     - service_map_stateful:
   sink:
     - opensearch:
-        hosts: ["https://opensearch:9200"]
-        cert: "/usr/share/data-prepper/root-ca.crt"
+        hosts: ["http://opensearch:9200"]
         username: "admin"
         password: "OpenSearch#0"
         index_type: trace-analytics-service-map

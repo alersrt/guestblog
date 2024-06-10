@@ -11,21 +11,17 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
-      - OTEL_SERVICE_NAME=guestblog
-      - OTEL_METRICS_EXPORTER=otlp
-      - OTEL_LOGS_EXPORTER=otlp
-      - OTEL_TRACES_EXPORTER=otlp
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://opensearch:21890
-      - OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED=true
-      - OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED=true
+      - OTEL_JAVAAGENT_CONFIGURATION_FILE=/etc/otel-collector-config.yml
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
+    volumes:
+      - ./otel-collector/otel-collector-config.yml:/etc/otel-collector-config.yml
     depends_on:
       flyway:
         condition: service_completed_successfully
       kafka:
         condition: service_healthy
       data-prepper:
-        condition: service_healthy
+        condition: service_started
     networks:
       - gb-internal
 
@@ -36,7 +32,7 @@ services:
     expose:
       - "5601" # Expose port 5601 for web access to OpenSearch Dashboards
     environment:
-      OPENSEARCH_HOSTS: '["https://opensearch:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
     networks:
       - gb-internal
     depends_on:
