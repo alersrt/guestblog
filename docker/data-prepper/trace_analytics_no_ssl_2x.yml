@@ -18,6 +18,10 @@ raw-pipeline:
       name: "entry-pipeline"
   processor:
     - otel_trace_raw:
+    - otel_traces_group:
+        hosts: [ "http://opensearch:9200" ]
+        username: "admin"
+        password: "OpenSearch#0"
   sink:
     - opensearch:
         hosts: [ "http://opensearch:9200" ]
