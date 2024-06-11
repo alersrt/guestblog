@@ -24,6 +24,8 @@ otel-metrics-pipeline:
       ssl: false
       authentication:
         unauthenticated:
+#  processor:
+#    - otel_metrics_raw_processor:
   sink:
     - opensearch:
         hosts: [ "http://opensearch:9200" ]
@@ -33,7 +35,6 @@ otel-metrics-pipeline:
         index_type: custom
         index: otel-v1-metrics-%{yyyy.MM.dd}
         number_of_replicas: 0
-
 
 entry-pipeline:
   delay: "100"

@@ -11,6 +11,9 @@ services:
     ports:
       - "8080:8080" # tomcat port
     environment:
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=otlp
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://data-prepper:21890
       - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://data-prepper:21891
@@ -18,6 +21,7 @@ services:
       - OTEL_SERVICE_NAME=guestblog
       - OTEL_TRACES_SAMPLER=parentbased_always_on
       - OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED=true
+      - OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL_SPAN_ATTRIBUTES=true
       - OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED=true
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
