@@ -23,6 +23,7 @@ services:
       - OTEL_INSTRUMENTATION_JDBC_DATASOURCE_ENABLED=true
       - OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL_SPAN_ATTRIBUTES=true
       - OTEL_INSTRUMENTATION_SPRING_BOOT_ACTUATOR_AUTOCONFIGURE_ENABLED=true
+      - OTEL_INSTRUMENTATION_RUNTIME_TELEMETRY_ENABLED=true
       - GB_POSTGRES_URL=jdbc:postgresql://postgresql:5432/gbdb
     volumes:
       - ./opentelemetry/opentelemetry-javaagent-2.4.0.jar:/opt/opentelemetry-javaagent.jar
