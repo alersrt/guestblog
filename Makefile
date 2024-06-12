@@ -170,7 +170,7 @@ docker.run:
 #	make docker.down
 
 docker.down:
-	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose down --rmi=local -v
+	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose -f ./docker/docker-compose.yml down --rmi=local -v
 
 # Run Docker Compose development environment.
 #
@@ -182,7 +182,7 @@ rebuild ?= yes
 background ?= no
 
 docker.up:
-	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose up \
+	CURRENT_UID=$(shell id -u):$(shell id -g) docker compose -f ./docker/docker-compose.yml up \
 		$(if $(call eq,$(rebuild),no),,--build) \
 		$(if $(call eq,$(background),yes),-d,--abort-on-container-exit)
 
