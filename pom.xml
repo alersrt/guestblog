@@ -6,7 +6,7 @@
 
     <groupId>org.student</groupId>
     <artifactId>guestblog</artifactId>
-    <version>3.2.0</version>
+    <version>3.3.1</version>
     <packaging>jar</packaging>
 
     <name>Simple guest blog</name>
