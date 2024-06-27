@@ -15,12 +15,12 @@ import org.student.guestblog.util.Cookie;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.lifecycle.Startables;
 
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.student.guestblog.DockerComposeFinder.findCompose;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -28,12 +28,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(Path.of(".", "docker", "docker-compose.env.yml").toFile());
+    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(findCompose("docker-compose.env.yml").toFile());
 
     private static final String POSTGRESQL_SERVICE = "postgresql";
     private static final int POSTGRESQL_PORT = 5432;
-    private static final String HAZELCAST_SERVICE = "hazelcast";
-    private static final int HAZELCAST_PORT = 5701;
     private static final String KAFKA_SERVICE = "kafka";
     private static final int KAFKA_PORT = 29092;
     private static final String FLYWAY_SERVICE = "flyway";
@@ -42,7 +40,6 @@ public abstract class AbstractIntegrationTest {
         ENVIRONMENT
             .withBuild(true)
             .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
-            .withExposedService(HAZELCAST_SERVICE, HAZELCAST_PORT)
             .withExposedService(KAFKA_SERVICE, KAFKA_PORT)
             .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy());
 

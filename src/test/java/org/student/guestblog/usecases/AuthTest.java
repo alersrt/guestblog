@@ -1,4 +1,4 @@
-package org.student.guestblog;
+package org.student.guestblog.usecases;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.student.guestblog.AbstractIntegrationTest;
 import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.util.Cookie;
 
@@ -49,15 +50,11 @@ public class AuthTest extends AbstractIntegrationTest {
             .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
             .findFirst()
             .get();
-        var sessionCookie = Arrays.stream(authResponse.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_SESSION_ID))
-            .findFirst()
-            .get();
 
         log.info("===> CURRENT USER");
         ResultActions currentUserAction = mockMvc.perform(
             get("/api/account/me")
-                .cookie(authCookie, sessionCookie)
+                .cookie(authCookie)
         );
         var currentUserResponse = currentUserAction.andReturn().getResponse();
         log.info(Arrays.toString(currentUserResponse.getCookies()));
