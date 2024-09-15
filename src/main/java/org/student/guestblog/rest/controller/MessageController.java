@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.student.guestblog.security.User;
 import org.student.guestblog.data.entity.MessageEntity;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
-import org.student.guestblog.service.AccountService;
+import org.student.guestblog.security.User;
 import org.student.guestblog.service.FileService;
 import org.student.guestblog.service.MessageService;
 
@@ -25,21 +24,17 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/api/message")
 public class MessageController {
 
     private final MessageService messageService;
-    private final AccountService accountService;
     private final FileService fileService;
 
-    public MessageController(
-        MessageService messageService,
-        AccountService accountService,
-        FileService fileService
-    ) {
+    public MessageController(MessageService messageService,
+                             FileService fileService) {
         this.messageService = messageService;
-        this.accountService = accountService;
         this.fileService = fileService;
     }
 
@@ -62,11 +57,10 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> addMessage(
-        Authentication authentication,
-        @RequestPart("metadata") MessageRequest metadata,
-        @RequestPart("file") Optional<MultipartFile> file
-    ) throws IOException {
+    public ResponseEntity<MessageResponse> addMessage(Authentication authentication,
+                                                      @RequestPart("metadata") MessageRequest metadata,
+                                                      @RequestPart("file") Optional<MultipartFile> file)
+        throws IOException {
         var storedFile = file.map(fileService::save);
         MessageEntity savedMessageEntity = null;
         try {
@@ -75,7 +69,12 @@ public class MessageController {
                 var user = (User) authentication.getPrincipal();
                 authorId = user.id();
             }
-            savedMessageEntity = messageService.addMessage(metadata.title(), metadata.text(), storedFile.orElse(null), authorId);
+            savedMessageEntity = messageService.addMessage(
+                metadata.title(),
+                metadata.text(),
+                storedFile.orElse(null),
+                authorId
+            );
         } catch (Exception e) {
             storedFile.ifPresent(fileService::delete);
             throw e;

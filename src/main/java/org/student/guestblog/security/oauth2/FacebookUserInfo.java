@@ -4,6 +4,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Map;
 
+
 public class FacebookUserInfo extends OAuth2UserInfo {
 
     public FacebookUserInfo(OAuth2User oauth2User) {
@@ -25,6 +26,7 @@ public class FacebookUserInfo extends OAuth2UserInfo {
         return (String) attributes.get("email");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String imageUrl() {
         if (attributes.containsKey("picture")) {

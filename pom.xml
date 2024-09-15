@@ -3,7 +3,7 @@
 
     <groupId>org.student</groupId>
     <artifactId>guestblog</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
     <packaging>jar</packaging>
 
     <name>Simple guest blog</name>
@@ -62,7 +62,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.3.3</version>
                 <configuration>
                     <finalName>${project.artifactId}</finalName>
                 </configuration>
@@ -82,7 +82,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.3.3</version>
     </parent>
 
     <dependencies>

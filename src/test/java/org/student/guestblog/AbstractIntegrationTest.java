@@ -1,7 +1,6 @@
 package org.student.guestblog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,8 +14,9 @@ import org.student.guestblog.util.Cookie;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.lifecycle.Startables;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,7 +65,6 @@ public abstract class AbstractIntegrationTest {
      * @throws Exception if something went wrong.
      */
     protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
-        String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
         ResultActions resultActions = mockMvc.perform(
             post("/api/auth/login")
                 .param("username", username)

@@ -2,8 +2,6 @@ package org.student.guestblog.usecases;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -12,8 +10,6 @@ import org.student.guestblog.AbstractIntegrationTest;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
 import org.student.guestblog.rest.dto.user.UserResponse;
-
-import java.lang.invoke.MethodHandles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,8 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @DisplayName("Message infrastructure test")
 public class MessageEntityTest extends AbstractIntegrationTest {
-
-    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Value("classpath:test.png")
     private Resource testFile;

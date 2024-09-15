@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 /**
  * Check working of the authentication configuration.
  */
@@ -34,7 +35,6 @@ public class AuthTest extends AbstractIntegrationTest {
         /*------ Arranges ------*/
         String username = "user@test.dev";
         String password = "password";
-        String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
 
         /*------ Actions ------*/
         log.info("===> LOGIN");
@@ -58,7 +58,8 @@ public class AuthTest extends AbstractIntegrationTest {
         );
         var currentUserResponse = currentUserAction.andReturn().getResponse();
         log.info(Arrays.toString(currentUserResponse.getCookies()));
-        UserResponse meDto = objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
+        UserResponse meDto =
+            objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
 
         /*------ Asserts ------*/
         assertAll("check response",
@@ -76,7 +77,8 @@ public class AuthTest extends AbstractIntegrationTest {
         /*------ Arranges ------*/
         String username = "user@test.dev";
         String password = "wrong_password";
-        String clientAuth = Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes());
+        String clientAuth = Base64.getEncoder()
+            .encodeToString(String.format("%s:%s", username, password).getBytes());
 
         /*------ Actions ------*/
         ResultActions resultActions = mockMvc.perform(
@@ -84,8 +86,6 @@ public class AuthTest extends AbstractIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", String.format("Basic %s", clientAuth))
         );
-
-        var authResponse = resultActions.andReturn().getResponse();
 
         /*------ Asserts ------*/
         resultActions.andExpect(status().isUnauthorized());

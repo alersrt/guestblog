@@ -1,10 +1,5 @@
 package org.student.guestblog.rest.controller;
 
-import java.lang.invoke.MethodHandles;
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,19 +11,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.student.guestblog.security.User;
 import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.rest.dto.register.RegisterRequest;
 import org.student.guestblog.rest.dto.register.RegisterResponse;
 import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.rest.dto.user.UserUpdateRequest;
+import org.student.guestblog.security.User;
 import org.student.guestblog.service.AccountService;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
-
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final AccountService accountService;
 
