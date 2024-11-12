@@ -1,6 +1,7 @@
 package org.student.guestblog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,10 +12,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.student.guestblog.util.Cookie;
-import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.ComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startables;
-
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -28,20 +28,21 @@ import static org.student.guestblog.DockerComposeFinder.findCompose;
 @Tag("integration")
 public abstract class AbstractIntegrationTest {
 
-    protected static final DockerComposeContainer<?> ENVIRONMENT = new DockerComposeContainer<>(findCompose("docker-compose.env.yml").toFile());
+    protected static final ComposeContainer ENVIRONMENT = new ComposeContainer(findCompose("docker-compose.env.yml").toFile());
 
     private static final String POSTGRESQL_SERVICE = "postgresql";
-    private static final int POSTGRESQL_PORT = 5432;
     private static final String KAFKA_SERVICE = "kafka";
-    private static final int KAFKA_PORT = 29092;
     private static final String FLYWAY_SERVICE = "flyway";
+    private static final int POSTGRESQL_PORT = 5432;
+    private static final int KAFKA_PORT = 29092;
 
     static {
         ENVIRONMENT
             .withBuild(true)
-            .withExposedService(POSTGRESQL_SERVICE, POSTGRESQL_PORT)
-            .withExposedService(KAFKA_SERVICE, KAFKA_PORT)
-            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy());
+            .waitingFor(KAFKA_SERVICE, Wait.forHealthcheck())
+            .waitingFor(POSTGRESQL_SERVICE, Wait.forHealthcheck())
+            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy())
+            .withLocalCompose(true);
 
         Startables.deepStart(Stream.of(ENVIRONMENT)).join();
     }
