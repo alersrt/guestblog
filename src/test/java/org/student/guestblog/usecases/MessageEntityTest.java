@@ -2,10 +2,13 @@ package org.student.guestblog.usecases;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.student.guestblog.AbstractIntegrationTest;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
@@ -17,10 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 /**
  * Check working of the message related stuff.
  */
 @DisplayName("Message infrastructure test")
+@ExtendWith({MockitoExtension.class, SpringExtension.class})
 class MessageEntityTest extends AbstractIntegrationTest {
 
     @Value("classpath:test.png")
@@ -37,42 +42,42 @@ class MessageEntityTest extends AbstractIntegrationTest {
 
         // Get current user
         var getCurrentUserAction = mockMvc.perform(
-            get("/api/account/me")
-                .cookie(authCookie)
+                get("/api/account/me")
+                        .cookie(authCookie)
         );
         var currentUser = objectMapper.readValue(
-            getCurrentUserAction.andReturn().getResponse().getContentAsString(),
-            UserResponse.class
+                getCurrentUserAction.andReturn().getResponse().getContentAsString(),
+                UserResponse.class
         );
         authCookie = prolongAuthCookie(getCurrentUserAction.andReturn().getResponse());
 
         // Create the new message
         MockMultipartFile file = new MockMultipartFile(
-            "file", testFile.getFilename(), MediaType.IMAGE_PNG_VALUE, testFile.getInputStream().readAllBytes()
+                "file", testFile.getFilename(), MediaType.IMAGE_PNG_VALUE, testFile.getInputStream().readAllBytes()
         );
         MockMultipartFile metadata = new MockMultipartFile(
-            "metadata", "metadata.json", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsBytes(messageMetadata)
+                "metadata", "metadata.json", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsBytes(messageMetadata)
         );
         var postMessageAction = mockMvc.perform(
-            multipart("/api/message")
-                .file(file)
-                .file(metadata)
-                .cookie(authCookie)
+                multipart("/api/message")
+                        .file(file)
+                        .file(metadata)
+                        .cookie(authCookie)
         );
         var createdMessage = objectMapper.readValue(
-            postMessageAction.andReturn().getResponse().getContentAsString(),
-            MessageResponse.class
+                postMessageAction.andReturn().getResponse().getContentAsString(),
+                MessageResponse.class
         );
         authCookie = prolongAuthCookie(postMessageAction.andReturn().getResponse());
 
         // Get all messages
         var getMessageAction = mockMvc.perform(
-            get(String.format("/api/message/%s", createdMessage.id().toString()))
-                .cookie(authCookie)
+                get(String.format("/api/message/%s", createdMessage.id().toString()))
+                        .cookie(authCookie)
         );
         var gotMessage = objectMapper.readValue(
-            getMessageAction.andReturn().getResponse().getContentAsString(),
-            MessageResponse.class
+                getMessageAction.andReturn().getResponse().getContentAsString(),
+                MessageResponse.class
         );
 
         /*------ Asserts ------*/
@@ -80,10 +85,10 @@ class MessageEntityTest extends AbstractIntegrationTest {
         postMessageAction.andExpect(status().isOk());
         getMessageAction.andExpect(status().isOk());
         assertAll(
-            () -> assertThat(currentUser.id()).isNotEmpty(),
-            () -> assertThat(createdMessage.id()).isNotNull(),
-            () -> assertThat(createdMessage.authorId()).isEqualTo(currentUser.id().get()),
-            () -> assertThat(gotMessage).isEqualTo(createdMessage)
+                () -> assertThat(currentUser.id()).isNotEmpty(),
+                () -> assertThat(createdMessage.id()).isNotNull(),
+                () -> assertThat(createdMessage.authorId()).isEqualTo(currentUser.id().get()),
+                () -> assertThat(gotMessage).isEqualTo(createdMessage)
         );
     }
 }

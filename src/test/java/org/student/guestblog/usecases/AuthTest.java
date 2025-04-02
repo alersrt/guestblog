@@ -2,9 +2,12 @@ package org.student.guestblog.usecases;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.ResultActions;
 import org.student.guestblog.AbstractIntegrationTest;
 import org.student.guestblog.rest.dto.user.UserResponse;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Check working of the authentication configuration.
  */
 @DisplayName("Authentication infrastructure test")
+@ExtendWith({MockitoExtension.class, SpringExtension.class})
 class AuthTest extends AbstractIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -39,35 +43,35 @@ class AuthTest extends AbstractIntegrationTest {
         /*------ Actions ------*/
         log.info("===> LOGIN");
         ResultActions loginAction = mockMvc.perform(
-            post("/api/auth/login")
-                .param("username", username)
-                .param("password", password)
+                post("/api/auth/login")
+                        .param("username", username)
+                        .param("password", password)
         );
         var authResponse = loginAction.andReturn().getResponse();
         log.info(Arrays.toString(authResponse.getCookies()));
 
         var authCookie = Arrays.stream(authResponse.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-            .findFirst()
-            .get();
+                .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+                .findFirst()
+                .get();
 
         log.info("===> CURRENT USER");
         ResultActions currentUserAction = mockMvc.perform(
-            get("/api/account/me")
-                .cookie(authCookie)
+                get("/api/account/me")
+                        .cookie(authCookie)
         );
         var currentUserResponse = currentUserAction.andReturn().getResponse();
         log.info(Arrays.toString(currentUserResponse.getCookies()));
         UserResponse meDto =
-            objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
+                objectMapper.readValue(currentUserResponse.getContentAsString(), UserResponse.class);
 
         /*------ Asserts ------*/
         assertAll("check response",
-            () -> assertThat(Arrays.stream(authResponse.getCookies())
-                .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-                .findFirst()).isNotEmpty(),
-            () -> assertThat(meDto.id()).isNotEmpty(),
-            () -> assertThat(meDto.email()).isNotBlank().isEqualTo(username)
+                () -> assertThat(Arrays.stream(authResponse.getCookies())
+                        .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+                        .findFirst()).isNotEmpty(),
+                () -> assertThat(meDto.id()).isNotEmpty(),
+                () -> assertThat(meDto.email()).isNotBlank().isEqualTo(username)
         );
     }
 
@@ -78,13 +82,13 @@ class AuthTest extends AbstractIntegrationTest {
         String username = "user@test.dev";
         String password = "wrong_password";
         String clientAuth = Base64.getEncoder()
-            .encodeToString(String.format("%s:%s", username, password).getBytes());
+                .encodeToString(String.format("%s:%s", username, password).getBytes());
 
         /*------ Actions ------*/
         ResultActions resultActions = mockMvc.perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", String.format("Basic %s", clientAuth))
+                post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", String.format("Basic %s", clientAuth))
         );
 
         /*------ Asserts ------*/
