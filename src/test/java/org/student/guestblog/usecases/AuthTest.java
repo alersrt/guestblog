@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Check working of the authentication configuration.
  */
 @DisplayName("Authentication infrastructure test")
-public class AuthTest extends AbstractIntegrationTest {
+class AuthTest extends AbstractIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

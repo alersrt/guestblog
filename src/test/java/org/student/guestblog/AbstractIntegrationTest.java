@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.student.guestblog.DockerComposeFinder.findCompose;
 
+
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -36,11 +37,11 @@ public abstract class AbstractIntegrationTest {
 
     static {
         ENVIRONMENT
-            .withBuild(true)
-            .waitingFor(KAFKA_SERVICE, Wait.forHealthcheck())
-            .waitingFor(POSTGRESQL_SERVICE, Wait.forHealthcheck())
-            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy())
-            .withLocalCompose(true);
+                .withBuild(true)
+                .waitingFor(KAFKA_SERVICE, Wait.forHealthcheck())
+                .waitingFor(POSTGRESQL_SERVICE, Wait.forHealthcheck())
+                .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy())
+                .withLocalCompose(true);
 
         Startables.deepStart(Stream.of(ENVIRONMENT)).join();
     }
@@ -61,27 +62,28 @@ public abstract class AbstractIntegrationTest {
      * Retrieve user authorization token
      *
      * @return authorization token.
+     * 
      * @throws Exception if something went wrong.
      */
     protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
         ResultActions resultActions = mockMvc.perform(
-            post("/api/auth/login")
-                .param("username", username)
-                .param("password", password)
+                post("/api/auth/login")
+                        .param("username", username)
+                        .param("password", password)
         );
 
         var authResponse = resultActions.andReturn().getResponse();
 
         return Arrays.stream(authResponse.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-            .findFirst()
-            .get();
+                .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+                .findFirst()
+                .get();
     }
 
     protected jakarta.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
         return Arrays.stream(response.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-            .findFirst()
-            .get();
+                .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
+                .findFirst()
+                .get();
     }
 }

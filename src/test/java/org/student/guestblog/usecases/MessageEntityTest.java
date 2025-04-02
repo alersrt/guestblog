@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Check working of the message related stuff.
  */
 @DisplayName("Message infrastructure test")
-public class MessageEntityTest extends AbstractIntegrationTest {
+class MessageEntityTest extends AbstractIntegrationTest {
 
     @Value("classpath:test.png")
     private Resource testFile;
