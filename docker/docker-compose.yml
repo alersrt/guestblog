@@ -35,4 +35,4 @@ services:
       data-prepper:
         condition: service_started
     networks:
-      - gb-internal
+      - internal-network
