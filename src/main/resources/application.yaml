@@ -36,7 +36,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 50MB
   jackson:
-    default-property-inclusion: non_null
+    default-property-inclusion: NON_NULL
   # There is problem with verification of postgres's CLOB by Hibernate. You can
   # to find more information here:
   # https://vkuzel.com/spring-boot-jpa-hibernate-atomikos-postgresql-exception
@@ -60,3 +60,4 @@ spring:
 # Springdoc
 springdoc:
   packages-to-scan: org.student.guestblog
+  swagger-ui.path: /swagger-ui.html
