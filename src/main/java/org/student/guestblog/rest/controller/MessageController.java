@@ -15,8 +15,8 @@ import org.student.guestblog.data.entity.MessageEntity;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
 import org.student.guestblog.security.User;
+import org.student.guestblog.service.MessageService;
 import org.student.guestblog.service.impl.FileServiceImpl;
-import org.student.guestblog.service.impl.MessageServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,11 +28,10 @@ import java.util.UUID;
 @RequestMapping("/api/message")
 public class MessageController {
 
-    private final MessageServiceImpl messageService;
+    private final MessageService messageService;
     private final FileServiceImpl fileService;
 
-    public MessageController(MessageServiceImpl messageService,
-            FileServiceImpl fileService) {
+    public MessageController(MessageService messageService, FileServiceImpl fileService) {
         this.messageService = messageService;
         this.fileService = fileService;
     }
@@ -56,10 +55,11 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> addMessage(Authentication authentication,
+    public ResponseEntity<MessageResponse> addMessage(
+            Authentication authentication,
             @RequestPart("metadata") MessageRequest metadata,
-            @RequestPart("file") Optional<MultipartFile> file)
-            throws IOException {
+            @RequestPart("file") Optional<MultipartFile> file
+    ) throws IOException {
         var storedFile = file.map(fileService::save);
         MessageEntity savedMessageEntity = null;
         try {

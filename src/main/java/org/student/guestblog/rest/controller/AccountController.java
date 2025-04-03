@@ -17,41 +17,42 @@ import org.student.guestblog.rest.dto.register.RegisterResponse;
 import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.rest.dto.user.UserUpdateRequest;
 import org.student.guestblog.security.User;
-import org.student.guestblog.service.impl.AccountServiceImpl;
+import org.student.guestblog.service.AccountService;
 
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
 
-  private final AccountServiceImpl accountService;
+    private final AccountService accountService;
 
-  public AccountController(AccountServiceImpl accountService) {
-    this.accountService = accountService;
-  }
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
-  @PreAuthorize("isAuthenticated()")
-  @GetMapping("/me")
-  public ResponseEntity<UserResponse> currentUser(Authentication authentication) {
-    return accountService.getByEmail(((User) authentication.getPrincipal()).email())
-        .map(UserResponse::new)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
-  }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> currentUser(Authentication authentication) {
+        return accountService.getByEmail(((User) authentication.getPrincipal()).email())
+                .map(UserResponse::new)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+    }
 
-  @PostMapping
-  public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
-    return accountService.create(registerRequest.email(), registerRequest.password())
-        .map(AccountEntity::getId)
-        .map(id -> ResponseEntity.ok(new RegisterResponse(id)))
-        .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
-  }
+    @PostMapping
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
+        return accountService.create(registerRequest.email(), registerRequest.password())
+                .map(AccountEntity::getId)
+                .map(id -> ResponseEntity.ok(new RegisterResponse(id)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
+    }
 
-  @PreAuthorize("hasAuthority('ADMIN')")
-  @PutMapping("/{id}")
-  public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody UserUpdateRequest request) {
-    var updated = accountService.update(id, request.username(), request.password());
-    return ResponseEntity.ok(new UserResponse(updated));
-  }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody UserUpdateRequest request) {
+        var updated = accountService.update(id, request.username(), request.password());
+        return ResponseEntity.ok(new UserResponse(updated));
+    }
 }

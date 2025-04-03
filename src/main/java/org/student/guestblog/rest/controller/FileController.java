@@ -8,22 +8,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.student.guestblog.model.internal.FileResource;
-import org.student.guestblog.service.impl.FileServiceImpl;
+import org.student.guestblog.service.FileService;
+
 
 @RestController
 @RequestMapping("/api/file")
 public class FileController {
 
-  private final FileServiceImpl fileService;
+    private final FileService fileService;
 
-  public FileController(FileServiceImpl fileService) {
-    this.fileService = fileService;
-  }
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
-  @GetMapping("/{filename}")
-  public ResponseEntity<FileResource> getFile(@PathVariable String filename) {
-    return fileService.getResource(filename)
-      .map(f -> ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(f.getMime())).body(f))
-      .orElseGet(() -> ResponseEntity.noContent().build());
-  }
+    @GetMapping("/{filename}")
+    public ResponseEntity<FileResource> getFile(@PathVariable String filename) {
+        return fileService.getResource(filename)
+                .map(f -> ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf(f.getMime())).body(f))
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
 }
