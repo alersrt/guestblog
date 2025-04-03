@@ -49,11 +49,7 @@ public class WebSecurityConfig {
             Directive.EXECUTION_CONTEXTS
     };
 
-    private AccountRepository accountRepository;
-
-    public WebSecurityConfig(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    private final AccountRepository accountRepository;
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {
