@@ -1,7 +1,6 @@
 package org.student.guestblog.rest.controller;
 
 import com.uber.cadence.client.WorkflowClient;
-import com.uber.cadence.workflow.Workflow;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
