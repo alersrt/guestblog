@@ -1,0 +1,60 @@
+package org.student.guestblog.service.impl;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.student.guestblog.data.entity.FileEntity;
+import org.student.guestblog.data.repository.FileRepository;
+import org.student.guestblog.model.internal.FileResource;
+import org.student.guestblog.service.FileService;
+import org.student.guestblog.util.MimeTypesAndExtensions;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
+
+
+@Service
+public class FileServiceImpl implements FileService {
+
+    private final FileRepository fileRepository;
+
+    public FileServiceImpl(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
+
+    @Override
+    public Optional<FileResource> getResource(String filename) {
+        return fileRepository
+                .findByFilename(filename)
+                .map(fileEntity -> new FileResource(fileEntity.getBlob(), fileEntity.getFilename(),
+                        fileEntity.getMime()));
+    }
+
+    @Override
+    public FileEntity save(MultipartFile file) {
+        try {
+            String extension = MimeTypesAndExtensions.getDefaultExt(file.getContentType());
+            var filename = UUID.randomUUID() + "." + extension;
+            return fileRepository.save(
+                    FileEntity.builder()
+                            .id(UUID.randomUUID())
+                            .filename(filename)
+                            .mime(file.getContentType())
+                            .blob(file.getBytes())
+                            .build()
+            );
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void delete(UUID id) {
+        fileRepository.deleteById(id);
+    }
+
+    @Override
+    public void delete(FileEntity model) {
+        fileRepository.delete(model);
+    }
+}

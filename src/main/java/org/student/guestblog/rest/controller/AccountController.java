@@ -17,7 +17,7 @@ import org.student.guestblog.rest.dto.register.RegisterResponse;
 import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.rest.dto.user.UserUpdateRequest;
 import org.student.guestblog.security.User;
-import org.student.guestblog.service.AccountService;
+import org.student.guestblog.service.impl.AccountServiceImpl;
 
 import java.util.UUID;
 
@@ -25,9 +25,9 @@ import java.util.UUID;
 @RequestMapping("/api/account")
 public class AccountController {
 
-  private final AccountService accountService;
+  private final AccountServiceImpl accountService;
 
-  public AccountController(AccountService accountService) {
+  public AccountController(AccountServiceImpl accountService) {
     this.accountService = accountService;
   }
 
