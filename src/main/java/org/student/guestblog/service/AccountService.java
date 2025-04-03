@@ -1,6 +1,11 @@
 package org.student.guestblog.service;
 
+import com.uber.cadence.activity.ActivityMethod;
+import org.student.guestblog.config.CadenceConfig;
 import org.student.guestblog.data.entity.AccountEntity;
+import org.student.guestblog.rest.dto.register.RegisterRequest;
+import org.student.guestblog.rest.dto.user.UserResponse;
+import org.student.guestblog.rest.dto.user.UserUpdateRequest;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -10,16 +15,11 @@ public interface AccountService {
 
     Optional<AccountEntity> getById(UUID accountId);
 
-    /**
-     * Return user by its email.
-     *
-     * @param email user's email.
-     * 
-     * @return user.
-     */
-    Optional<AccountEntity> getByEmail(String email);
+    @ActivityMethod(scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
+    Optional<UserResponse> getByEmail(String email);
 
-    Optional<AccountEntity> create(String email, String password);
+    @ActivityMethod(scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
+    Optional<UserResponse> create(RegisterRequest request);
 
-    AccountEntity update(UUID id, Optional<String> email, Optional<String> password);
+    AccountEntity update(UUID id, UserUpdateRequest request);
 }

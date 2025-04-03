@@ -4,13 +4,13 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.student.guestblog.security.User;
 import org.student.guestblog.data.entity.AccountEntity;
 import org.student.guestblog.data.entity.PassportEntity;
 import org.student.guestblog.data.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.exception.ErrorCode;
 import org.student.guestblog.model.PassportType;
+import org.student.guestblog.security.User;
 
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
