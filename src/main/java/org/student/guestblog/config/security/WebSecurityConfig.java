@@ -1,7 +1,6 @@
 package org.student.guestblog.config.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,35 +31,36 @@ import org.student.guestblog.util.Cookie;
 
 import javax.sql.DataSource;
 
+
 @RequiredArgsConstructor
 @EnableMethodSecurity(
-    proxyTargetClass = true,
-    prePostEnabled = true,
-    jsr250Enabled = true
+        proxyTargetClass = true,
+        prePostEnabled = true,
+        jsr250Enabled = true
 )
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
 
     private static final Directive[] SOURCE = {
-        Directive.CACHE,
-        Directive.COOKIES,
-        Directive.STORAGE,
-        Directive.EXECUTION_CONTEXTS
+            Directive.CACHE,
+            Directive.COOKIES,
+            Directive.STORAGE,
+            Directive.EXECUTION_CONTEXTS
     };
 
-    @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
-    private PersistentTokenRepository persistentTokenRepository;
+    public WebSecurityConfig(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     @Bean
     public UserDetailsService customUserDetailsServiceBean() {
         return username -> {
             var account = accountRepository
-                .findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+                    .findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(username));
 
             return new User(account);
         };
@@ -90,48 +90,48 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, PersistentTokenRepository persistentTokenRepository) throws Exception {
         return http
-            // Disable CORS and disable CSRF
-            .cors(AbstractHttpConfigurer::disable)
-            .csrf(AbstractHttpConfigurer::disable)
-            // Set session management to never created
-            .sessionManagement(smc -> smc
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .sessionFixation()
-                .migrateSession())
-            // Set request cache to null
-            .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))
-            // Setup login
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .formLogin(formLoginConfigurer -> formLoginConfigurer
-                .loginProcessingUrl("/api/auth/login")
-                .successHandler((request, response, authentication) -> {
-                })
-                .failureHandler(new SimpleUrlAuthenticationFailureHandler()))
-            .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
-                .alwaysRemember(true)
-                .tokenValiditySeconds(24 * 60 * 60)
-                .useSecureCookie(true)
-                .rememberMeCookieName(Cookie.X_AUTH_REMEMBER_ME)
-                .userDetailsService(customUserDetailsServiceBean())
-                .tokenRepository(persistentTokenRepository))
-            // Setup logout
-            .logout(logoutConfigurer -> logoutConfigurer
-                .permitAll()
-                .logoutUrl("/api/auth/logout")
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(SOURCE)))
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-            )
-            // Setup permissions on endpoints
-            .authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry.anyRequest().permitAll())
-            // OAuth2
-            .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
-                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuth2UserServiceBean()))
-            )
+                // Disable CORS and disable CSRF
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                // Set session management to never created
+                .sessionManagement(smc -> smc
+                        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                        .sessionFixation()
+                        .migrateSession())
+                // Set request cache to null
+                .requestCache(rcc -> rcc.requestCache(new NullRequestCache()))
+                // Setup login
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(formLoginConfigurer -> formLoginConfigurer
+                        .loginProcessingUrl("/api/auth/login")
+                        .successHandler((request, response, authentication) -> {
+                        })
+                        .failureHandler(new SimpleUrlAuthenticationFailureHandler()))
+                .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
+                        .alwaysRemember(true)
+                        .tokenValiditySeconds(24 * 60 * 60)
+                        .useSecureCookie(true)
+                        .rememberMeCookieName(Cookie.X_AUTH_REMEMBER_ME)
+                        .userDetailsService(customUserDetailsServiceBean())
+                        .tokenRepository(persistentTokenRepository))
+                // Setup logout
+                .logout(logoutConfigurer -> logoutConfigurer
+                        .permitAll()
+                        .logoutUrl("/api/auth/logout")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(SOURCE)))
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                )
+                // Setup permissions on endpoints
+                .authorizeHttpRequests(requestMatcherRegistry -> requestMatcherRegistry.anyRequest().permitAll())
+                // OAuth2
+                .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuth2UserServiceBean()))
+                )
 
-            .build();
+                .build();
     }
 }
