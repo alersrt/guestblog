@@ -1,5 +1,6 @@
 package org.student.guestblog.service.impl;
 
+import com.uber.cadence.activity.Activity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,8 +57,10 @@ public class AccountServiceImpl implements AccountService {
                 .hash(passwordEncoder.encode(request.password()))
                 .build();
         accountEntity.getPassports().add(passportEntity);
-
         var isExist = accountRepository.existsByEmail(accountEntity.getEmail()) || "admin@test.dev".equals(accountEntity.getEmail());
+        // if (isExist) {            
+        //     throw Activity.wrap(new Exception("Email is not available"));
+        // }
         return isExist ? Optional.empty() : Optional.of(accountRepository.save(accountEntity)).map(UserResponse::new);
     }
 
