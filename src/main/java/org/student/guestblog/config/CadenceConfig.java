@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.student.guestblog.service.AccountService;
-import org.student.guestblog.workflow.AccountWorkflowImpl;
+import org.student.guestblog.workflow.AccountCreateWorkflowImpl;
 
 
 @Configuration
@@ -49,7 +49,7 @@ public class CadenceConfig {
                         .build());
 
         // Workflows are stateful. So you need a type to create instances.
-        worker.registerWorkflowImplementationTypes(AccountWorkflowImpl.class);
+        worker.registerWorkflowImplementationTypes(AccountCreateWorkflowImpl.class);
         // Activities are stateless and thread safe. So a shared instance is used.
         worker.registerActivitiesImplementations(accountService);
         // Start listening to the workflow and activity task lists.

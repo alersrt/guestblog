@@ -13,13 +13,15 @@ import java.util.UUID;
 
 public interface AccountService {
 
+    @ActivityMethod(taskList = CadenceConfig.ACCOUNT_TASKS, scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
     Optional<AccountEntity> getById(UUID accountId);
 
-    @ActivityMethod(scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
+    @ActivityMethod(taskList = CadenceConfig.ACCOUNT_TASKS, scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
     Optional<UserResponse> getByEmail(String email);
 
-    @ActivityMethod(scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
+    @ActivityMethod(taskList = CadenceConfig.ACCOUNT_TASKS, scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
     Optional<UserResponse> create(RegisterRequest request);
 
+    @ActivityMethod(taskList = CadenceConfig.ACCOUNT_TASKS, scheduleToStartTimeoutSeconds = 300, startToCloseTimeoutSeconds = 300)
     AccountEntity update(UUID id, UserUpdateRequest request);
 }

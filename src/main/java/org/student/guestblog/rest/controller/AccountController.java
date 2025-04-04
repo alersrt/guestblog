@@ -18,7 +18,7 @@ import org.student.guestblog.rest.dto.user.UserResponse;
 import org.student.guestblog.rest.dto.user.UserUpdateRequest;
 import org.student.guestblog.security.User;
 import org.student.guestblog.service.AccountService;
-import org.student.guestblog.workflow.AccountWorkflow;
+import org.student.guestblog.workflow.AccountCreateWorkflow;
 
 import java.util.UUID;
 
@@ -45,7 +45,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
-        var accountWorkflow = workflowClient.newWorkflowStub(AccountWorkflow.class);
+        var accountWorkflow = workflowClient.newWorkflowStub(AccountCreateWorkflow.class);
         return accountWorkflow.create(registerRequest)
                 .flatMap(UserResponse::id)
                 .map(id -> ResponseEntity.ok(new RegisterResponse(id)))

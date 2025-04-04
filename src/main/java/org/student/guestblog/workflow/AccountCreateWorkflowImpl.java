@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public class AccountWorkflowImpl implements AccountWorkflow {
+public class AccountCreateWorkflowImpl implements AccountCreateWorkflow {
 
     private final AccountService accountActivities = Workflow.newActivityStub(AccountService.class);
 
