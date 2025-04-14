@@ -1,6 +1,7 @@
 package org.student.guestblog.rest.controller;
 
-import com.uber.cadence.client.WorkflowClient;
+import io.temporal.client.WorkflowClient;
+import io.temporal.client.WorkflowOptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,7 +46,13 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
-        var accountWorkflow = workflowClient.newWorkflowStub(AccountCreateWorkflow.class);
+        var accountWorkflow = workflowClient.newWorkflowStub(
+                AccountCreateWorkflow.class,
+                WorkflowOptions.getDefaultInstance().toBuilder()
+                        .setTaskQueue("DemoTaskQueue")
+                        .setWorkflowId("account:register")
+                        .build()
+        );
         return accountWorkflow.create(registerRequest)
                 .flatMap(UserResponse::id)
                 .map(id -> ResponseEntity.ok(new RegisterResponse(id)))

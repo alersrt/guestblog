@@ -1,6 +1,6 @@
 package org.student.guestblog.service.impl;
 
-import com.uber.cadence.activity.Activity;
+import io.temporal.spring.boot.ActivityImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +25,7 @@ import java.util.UUID;
 /**
  * Describes user's managing service and implements {@link UserDetailsService}.
  */
+@ActivityImpl(taskQueues = "DemoTaskQueue")
 @RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService {
