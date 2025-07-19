@@ -1,7 +1,7 @@
 package org.student.guestblog.rest.dto.user;
 
-import org.student.guestblog.data.entity.AccountEntity;
-import org.student.guestblog.model.Authority;
+import org.student.guestblog.storage.entity.AccountEntity;
+import org.student.guestblog.domain.Authority;
 
 import java.util.List;
 import java.util.Optional;

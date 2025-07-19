@@ -1,4 +1,4 @@
-package org.student.guestblog.data.entity;
+package org.student.guestblog.storage.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
-import org.student.guestblog.model.PassportType;
+import org.student.guestblog.domain.PassportType;
 
 @DynamicUpdate
 @Entity

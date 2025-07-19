@@ -3,13 +3,13 @@ package org.student.guestblog.service;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.student.guestblog.data.entity.AccountEntity;
-import org.student.guestblog.data.entity.PassportEntity;
-import org.student.guestblog.data.repository.AccountRepository;
+import org.student.guestblog.storage.entity.AccountEntity;
+import org.student.guestblog.storage.entity.PassportEntity;
+import org.student.guestblog.storage.repository.AccountRepository;
 import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.exception.ErrorCode;
-import org.student.guestblog.model.Authority;
-import org.student.guestblog.model.PassportType;
+import org.student.guestblog.domain.Authority;
+import org.student.guestblog.domain.PassportType;
 
 import java.util.List;
 import java.util.Optional;

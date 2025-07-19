@@ -1,6 +1,6 @@
 package org.student.guestblog.rest.dto.message;
 
-import org.student.guestblog.data.entity.MessageEntity;
+import org.student.guestblog.storage.entity.MessageEntity;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

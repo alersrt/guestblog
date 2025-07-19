@@ -47,6 +47,17 @@
                             <version>${micronaut.core.version}</version>
                         </path>
                         <path>
+                            <groupId>io.micronaut.serde</groupId>
+                            <artifactId>micronaut-serde-processor</artifactId>
+                            <version>${micronaut.serialization.version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>io.micronaut</groupId>
+                                    <artifactId>micronaut-inject</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </path>
+                        <path>
                             <groupId>io.micronaut.security</groupId>
                             <artifactId>micronaut-security-annotations</artifactId>
                             <version>${micronaut.security.version}</version>
@@ -122,6 +133,11 @@
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-jackson-databind</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut.security</groupId>
+            <artifactId>micronaut-security-oauth2</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

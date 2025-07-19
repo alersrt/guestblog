@@ -1,22 +1,23 @@
 package org.student.guestblog.rest.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Part;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.multipart.CompletedFileUpload;
+import io.micronaut.security.authentication.Authentication;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.student.guestblog.data.entity.MessageEntity;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
 import org.student.guestblog.security.User;
 import org.student.guestblog.service.FileService;
 import org.student.guestblog.service.MessageService;
+import org.student.guestblog.storage.entity.MessageEntity;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,8 +26,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
-@RestController
-@RequestMapping("/api/message")
+@Controller("/api/message")
 public class MessageController {
 
     private final MessageService messageService;
@@ -38,28 +38,30 @@ public class MessageController {
         this.fileService = fileService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<MessageResponse>> getMessages() {
-        var messages =
-            messageService.getAllMessages().stream()
-                .map(MessageResponse::new)
-                .collect(Collectors.toList());
-        var httpStatus = !messages.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-        return ResponseEntity.status(httpStatus).body(messages);
+    @Get
+    public HttpResponse<List<MessageResponse>> getMessages() {
+        var messages = messageService.getAllMessages().stream()
+            .map(MessageResponse::new)
+            .collect(Collectors.toList());
+        if (messages.isEmpty()) {
+            return HttpResponse.noContent();
+        } else {
+            return HttpResponse.ok(messages);
+        }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MessageResponse> getMessage(@PathVariable UUID id) {
+    @Get("/{id}")
+    public HttpResponse<MessageResponse> getMessage(@PathVariable UUID id) {
         var message = messageService.getMessage(id);
         return message.map(MessageResponse::new)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.noContent().build());
+            .map(HttpResponse::ok)
+            .orElse(HttpResponse.noContent());
     }
 
-    @PostMapping
-    public ResponseEntity<MessageResponse> addMessage(Authentication authentication,
-                                                      @RequestPart("metadata") MessageRequest metadata,
-                                                      @RequestPart("file") Optional<MultipartFile> file)
+    @Post
+    public HttpResponse<MessageResponse> addMessage(Authentication authentication,
+                                                    @Part("metadata") MessageRequest metadata,
+                                                    @Part("file") Optional<CompletedFileUpload> file)
         throws IOException {
         var storedFile = file.map(fileService::save);
         MessageEntity savedMessageEntity = null;
@@ -79,12 +81,12 @@ public class MessageController {
             storedFile.ifPresent(fileService::delete);
             throw e;
         }
-        return ResponseEntity.ok(new MessageResponse(savedMessageEntity));
+        return HttpResponse.ok(new MessageResponse(savedMessageEntity));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMessage(@PathVariable UUID id) {
+    @Delete("/{id}")
+    public HttpResponse<?> deleteMessage(@PathVariable UUID id) {
         messageService.deleteMessage(id);
-        return ResponseEntity.ok().build();
+        return HttpResponse.ok();
     }
 }

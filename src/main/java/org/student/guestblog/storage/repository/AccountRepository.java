@@ -1,8 +1,8 @@
-package org.student.guestblog.data.repository;
+package org.student.guestblog.storage.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.student.guestblog.data.entity.AccountEntity;
+import org.student.guestblog.storage.entity.AccountEntity;
 
 import java.util.Optional;
 import java.util.UUID;

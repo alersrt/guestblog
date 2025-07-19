@@ -1,4 +1,4 @@
-package org.student.guestblog.data.entity;
+package org.student.guestblog.storage.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;

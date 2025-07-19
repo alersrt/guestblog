@@ -3,9 +3,9 @@ package org.student.guestblog.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.student.guestblog.data.entity.AccountEntity;
-import org.student.guestblog.model.Authority;
-import org.student.guestblog.model.PassportType;
+import org.student.guestblog.storage.entity.AccountEntity;
+import org.student.guestblog.domain.Authority;
+import org.student.guestblog.domain.PassportType;
 
 import java.util.Collection;
 import java.util.List;

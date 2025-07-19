@@ -3,9 +3,9 @@ package org.student.guestblog.service;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.student.guestblog.data.entity.FileEntity;
-import org.student.guestblog.data.repository.FileRepository;
-import org.student.guestblog.model.internal.FileResource;
+import org.student.guestblog.storage.entity.FileEntity;
+import org.student.guestblog.storage.repository.FileRepository;
+import org.student.guestblog.domain.internal.FileResource;
 import org.student.guestblog.util.MimeTypesAndExtensions;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class FileService {
      * Returns file as {@link Resource}.
      *
      * @param filename name of the file.
-     * 
+     *
      * @return Resource.
      */
     public Optional<FileResource> getResource(String filename) {

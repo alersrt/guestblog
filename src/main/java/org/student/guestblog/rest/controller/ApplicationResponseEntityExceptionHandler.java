@@ -1,28 +1,29 @@
 package org.student.guestblog.rest.controller;
 
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.annotation.Produces;
+import io.micronaut.http.server.exceptions.ExceptionHandler;
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.student.guestblog.exception.ApplicationException;
 import org.student.guestblog.rest.dto.error.ErrorResponse;
 
 @Slf4j
-@ControllerAdvice
-public class ApplicationResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+@Produces
+@Singleton
+@Requires(classes = {ExceptionHandler.class, ApplicationException.class})
+public class ApplicationResponseEntityExceptionHandler implements ExceptionHandler<ApplicationException, HttpResponse<ErrorResponse>> {
 
-    @ExceptionHandler(value = {ApplicationException.class})
-    protected ResponseEntity<Object> handleApplicationException(ApplicationException ex, WebRequest request) {
+    @Override
+    public HttpResponse<ErrorResponse> handle(HttpRequest request, ApplicationException exception) {
+        log.error(exception.getMessage(), exception);
         ErrorResponse bodyOfResponse = new ErrorResponse(
-            ex.getCodeValue(),
-            ex.getClass().getName(),
-            ex.getMessage()
+            exception.getCodeValue(),
+            exception.getClass().getName(),
+            exception.getMessage()
         );
-        log.error(ex.getMessage(), ex);
-        return handleExceptionInternal(ex, bodyOfResponse, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return HttpResponse.serverError(bodyOfResponse);
     }
 }

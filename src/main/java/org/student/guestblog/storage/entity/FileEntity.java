@@ -1,4 +1,4 @@
-package org.student.guestblog.data.entity;
+package org.student.guestblog.storage.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

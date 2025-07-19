@@ -1,4 +1,4 @@
-package org.student.guestblog.model;
+package org.student.guestblog.domain;
 
 import jakarta.validation.constraints.NotNull;
 

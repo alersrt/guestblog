@@ -1,8 +1,6 @@
-package org.student.guestblog.model;
+package org.student.guestblog.domain;
 
-import org.springframework.security.core.GrantedAuthority;
-
-public enum Authority implements GrantedAuthority {
+public enum Authority {
 
     /**
      * Default authority for the unauthorized user.
@@ -19,7 +17,6 @@ public enum Authority implements GrantedAuthority {
      */
     ADMIN;
 
-    @Override
     public String getAuthority() {
         return this.name();
     }
