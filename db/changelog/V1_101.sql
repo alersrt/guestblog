@@ -1,52 +1,52 @@
 create table if not exists gbsm.account
 (
-    id          uuid                     not null unique,
+    gid         uuid                     not null unique,
     create_date timestamp with time zone not null,
     update_date timestamp with time zone not null,
-    authorities character varying[],
+    authorities varchar(255)[],
     email       varchar(255)             not null unique,
     name        text,
     avatar      text,
-    constraint account_id_pk primary key (id)
+    constraint account_gid_pk primary key (gid)
 );
 
 create table if not exists gbsm.passport
 (
-    id          uuid                     not null unique,
+    gid         uuid                     not null unique,
     create_date timestamp with time zone not null,
     update_date timestamp with time zone not null,
-    account_id  uuid                     not null,
+    account_gid uuid                     not null,
     type        varchar(255)             not null,
     hash        varchar(255),
-    constraint passport_id primary key (id),
-    constraint passport_account_id_fk foreign key (account_id)
-        references gbsm.account (id)
+    constraint passport_gid_pk primary key (gid),
+    constraint passport_account_gid_fk foreign key (account_gid)
+        references gbsm.account (gid)
         on delete cascade
 );
 
 create table if not exists gbsm.file
 (
-    id          uuid                     not null unique,
+    gid         uuid                     not null unique,
     create_date timestamp with time zone not null,
     update_date timestamp with time zone not null,
     blob        bytea,
     filename    varchar(255)             not null unique,
     mime        varchar(255),
-    constraint file_id_pk primary key (id)
+    constraint file_gid_pk primary key (gid)
 );
 
 create table if not exists gbsm.message
 (
-    id          uuid                     not null unique,
+    gid         uuid                     not null unique,
     create_date timestamp with time zone not null,
     update_date timestamp with time zone not null,
     text        text,
     title       text,
-    author_id   uuid,
-    file_id     uuid,
-    constraint message_id_pk primary key (id),
-    constraint message_author_id_fk foreign key (author_id) references gbsm.account (id),
-    constraint message_file_id_fk foreign key (file_id) references gbsm.file (id)
+    author_gid  uuid,
+    file_gid    uuid,
+    constraint message_gid_pk primary key (gid),
+    constraint message_author_gid_fk foreign key (author_gid) references gbsm.account (gid),
+    constraint message_file_gid_fk foreign key (file_gid) references gbsm.file (gid)
 );
 
 create table if not exists gbsm.persistent_logins
@@ -63,12 +63,12 @@ $$
         admin_id uuid := gen_random_uuid();
         user_id  uuid := gen_random_uuid();
     begin
-        insert into gbsm.account(id, create_date, update_date, email, authorities)
+        insert into gbsm.account(gid, create_date, update_date, email, authorities)
         values (admin_id, current_timestamp, current_timestamp, 'admin@test.dev', '{ADMIN}'),
                (user_id, current_timestamp, current_timestamp, 'user@test.dev', '{USER}')
         on conflict do nothing;
 
-        insert into gbsm.passport(id, create_date, update_date, account_id, type, hash)
+        insert into gbsm.passport(gid, create_date, update_date, account_gid, type, hash)
         values (gen_random_uuid(),
                 current_timestamp,
                 current_timestamp,

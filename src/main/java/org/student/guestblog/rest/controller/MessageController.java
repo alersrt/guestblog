@@ -1,20 +1,21 @@
 package org.student.guestblog.rest.controller;
 
 import io.micronaut.http.HttpResponse;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Part;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.multipart.CompletedFileUpload;
+import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
+import io.micronaut.security.rules.SecurityRule;
 import org.student.guestblog.rest.dto.message.MessageRequest;
 import org.student.guestblog.rest.dto.message.MessageResponse;
-import org.student.guestblog.security.User;
 import org.student.guestblog.service.FileService;
 import org.student.guestblog.service.MessageService;
 import org.student.guestblog.storage.entity.MessageEntity;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 
 
 @Controller("/api/message")
+@Produces(MediaType.APPLICATION_JSON)
+@Secured(SecurityRule.IS_ANONYMOUS)
 public class MessageController {
 
     private final MessageService messageService;
@@ -59,6 +62,7 @@ public class MessageController {
     }
 
     @Post
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<MessageResponse> addMessage(Authentication authentication,
                                                     @Part("metadata") MessageRequest metadata,
                                                     @Part("file") Optional<CompletedFileUpload> file)
@@ -67,9 +71,11 @@ public class MessageController {
         MessageEntity savedMessageEntity = null;
         try {
             UUID authorId = null;
-            if (authentication != null && authentication.isAuthenticated()) {
-                var user = (User) authentication.getPrincipal();
-                authorId = user.id();
+            if (authentication != null) {
+                Object id = authentication.getAttributes().get("id");
+                if (id != null) {
+                    authorId = UUID.fromString(id.toString());
+                }
             }
             savedMessageEntity = messageService.addMessage(
                 metadata.title(),

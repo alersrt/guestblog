@@ -22,8 +22,12 @@ function fetcher(input: RequestInfo, init?: RequestInit): Promise<any> {
 }
 
 export async function login(email: string, password: string): Promise<UserDto> {
-    const response = await fetcher(`/api/auth/login?username=${email}&password=${password}`, {
-        method: 'POST'
+    const response = await fetcher('/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({username: email, password: password}).toString()
     })
 
     switch (response.status) {

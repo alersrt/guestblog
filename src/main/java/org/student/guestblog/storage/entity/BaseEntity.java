@@ -1,20 +1,15 @@
 package org.student.guestblog.storage.entity;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@MappedSuperclass
 @Getter
 @Setter
 @SuperBuilder
@@ -22,13 +17,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BaseEntity implements Serializable {
 
-    @Id
     protected UUID id;
 
-    @CreationTimestamp
     protected OffsetDateTime createDate;
 
-    @UpdateTimestamp
     protected OffsetDateTime updateDate;
 
     @Override
@@ -40,13 +32,13 @@ public class BaseEntity implements Serializable {
             return false;
         }
 
-        BaseEntity account = (BaseEntity) o;
+        BaseEntity entity = (BaseEntity) o;
 
-        return this.id.equals(account.id);
+        return id != null && id.equals(entity.id);
     }
 
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 }

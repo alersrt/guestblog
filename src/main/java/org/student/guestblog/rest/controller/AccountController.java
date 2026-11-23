@@ -38,6 +38,7 @@ public class AccountController {
             .orElse(HttpResponse.status(HttpStatus.FORBIDDEN));
     }
 
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Post
     public HttpResponse<RegisterResponse> register(@Body RegisterRequest registerRequest) {
         return accountService.create(registerRequest.email(), registerRequest.password())
@@ -46,7 +47,7 @@ public class AccountController {
             .orElse(HttpResponse.status(HttpStatus.CONFLICT));
     }
 
-    @Secured(SecurityRule.IS_AUTHENTICATED)
+    @Secured("ADMIN")
     @Put("/{id}")
     public HttpResponse<UserResponse> update(@PathVariable UUID id, @Body UserUpdateRequest request) {
         var updated = accountService.update(id, request.username(), request.password());

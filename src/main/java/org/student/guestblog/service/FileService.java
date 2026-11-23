@@ -1,11 +1,13 @@
 package org.student.guestblog.service;
 
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.multipart.CompletedFileUpload;
+import jakarta.inject.Singleton;
+import org.student.guestblog.domain.internal.FileResource;
+import org.student.guestblog.exception.ApplicationException;
+import org.student.guestblog.exception.ErrorCode;
 import org.student.guestblog.storage.entity.FileEntity;
 import org.student.guestblog.storage.repository.FileRepository;
-import org.student.guestblog.domain.internal.FileResource;
 import org.student.guestblog.util.MimeTypesAndExtensions;
 
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@Service
+@Singleton
 public class FileService {
 
     private final FileRepository fileRepository;
@@ -23,10 +25,9 @@ public class FileService {
     }
 
     /**
-     * Returns file as {@link Resource}.
+     * Returns file as {@link FileResource}.
      *
      * @param filename name of the file.
-     *
      * @return Resource.
      */
     public Optional<FileResource> getResource(String filename) {
@@ -36,20 +37,23 @@ public class FileService {
                 fileEntity.getMime()));
     }
 
-    public FileEntity save(MultipartFile file) {
+    public FileEntity save(CompletedFileUpload file) {
         try {
-            String extension = MimeTypesAndExtensions.getDefaultExt(file.getContentType());
+            String mime = file.getContentType()
+                .map(MediaType::toString)
+                .orElse(MimeTypesAndExtensions.MIME_APPLICATION_OCTET_STREAM);
+            String extension = MimeTypesAndExtensions.getDefaultExt(mime);
             var filename = UUID.randomUUID() + "." + extension;
             return fileRepository.save(
                 FileEntity.builder()
                     .id(UUID.randomUUID())
                     .filename(filename)
-                    .mime(file.getContentType())
+                    .mime(mime)
                     .blob(file.getBytes())
                     .build()
             );
         } catch (IOException e) {
-            return null;
+            throw new ApplicationException(ErrorCode.GENERIC_ERROR_CODE);
         }
     }
 

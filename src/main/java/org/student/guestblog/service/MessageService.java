@@ -1,5 +1,6 @@
 package org.student.guestblog.service;
 
+import jakarta.inject.Singleton;
 import org.student.guestblog.storage.entity.FileEntity;
 import org.student.guestblog.storage.entity.MessageEntity;
 import org.student.guestblog.storage.repository.MessageRepository;
@@ -13,6 +14,7 @@ import java.util.UUID;
  * Service manages of messages. Here is implemented such features as adding, deleting, editing,
  * getting of messages.
  */
+@Singleton
 public class MessageService {
 
     private final MessageRepository messageRepository;

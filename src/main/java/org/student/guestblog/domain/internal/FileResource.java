@@ -21,6 +21,10 @@ public class FileResource {
         this.mime = mime;
     }
 
+    public byte[] getContent() {
+        return Arrays.copyOf(content, content.length);
+    }
+
     public String getMime() {
         return mime;
     }

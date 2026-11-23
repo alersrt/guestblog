@@ -1,23 +1,11 @@
 package org.student.guestblog.storage.entity;
 
-
-import io.hypersistence.utils.hibernate.type.array.ListArrayType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +14,6 @@ import java.util.List;
 /**
  * Represents information about user which is stored in the database.
  */
-@DynamicUpdate
-@Entity
-@Table(schema = "gbsm", name = "account")
 @Getter
 @Setter
 @SuperBuilder
@@ -37,14 +22,11 @@ import java.util.List;
 public class AccountEntity extends BaseEntity {
 
     @Builder.Default
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PassportEntity> passports = new ArrayList<>();
 
     /**
      * E-mail of the user.
      */
-    @NotBlank
-    @Email
     private String email;
 
     private String name;
@@ -55,14 +37,11 @@ public class AccountEntity extends BaseEntity {
      * List of the user's messages.
      */
     @Builder.Default
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MessageEntity> messages = new ArrayList<>();
 
     /**
      * Authorities of this user.
      */
     @Builder.Default
-    @Type(ListArrayType.class)
-    @Column(columnDefinition = "varchar[]")
     private List<String> authorities = new ArrayList<>();
 }

@@ -1,14 +1,15 @@
 package org.student.guestblog.rest.controller;
 
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
-import org.student.guestblog.domain.internal.FileResource;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import org.student.guestblog.service.FileService;
 
 @Controller("/api/file")
+@Secured(SecurityRule.IS_ANONYMOUS)
 public class FileController {
 
     private final FileService fileService;
@@ -18,9 +19,9 @@ public class FileController {
     }
 
     @Get("/{filename}")
-    public HttpResponse<FileResource> getFile(@PathVariable String filename) {
+    public HttpResponse<byte[]> getFile(@PathVariable String filename) {
         return fileService.getResource(filename)
-            .map(f -> HttpResponse.ok().contentType(MediaType.of(f.getMime())).body(f))
+            .map(f -> HttpResponse.ok(f.getContent()).contentType(f.getMime()))
             .orElseGet(HttpResponse::noContent);
     }
 }

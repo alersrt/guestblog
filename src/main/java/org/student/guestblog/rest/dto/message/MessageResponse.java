@@ -1,10 +1,12 @@
 package org.student.guestblog.rest.dto.message;
 
+import io.micronaut.serde.annotation.Serdeable;
 import org.student.guestblog.storage.entity.MessageEntity;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+@Serdeable
 public record MessageResponse(
     UUID id,
     UUID authorId,

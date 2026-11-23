@@ -1,5 +1,6 @@
 package org.student.guestblog.rest.dto.user;
 
+import io.micronaut.serde.annotation.Serdeable;
 import org.student.guestblog.storage.entity.AccountEntity;
 import org.student.guestblog.domain.Authority;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Serdeable
 public record UserResponse(Optional<UUID> id,
                            String email,
                            List<Authority> authorities,

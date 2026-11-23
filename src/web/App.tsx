@@ -33,8 +33,8 @@ export function App(props: any) {
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <button type={"submit"}>Submit</button>
                         </form>
-                        <button><a href={"/oauth2/authorization/google"}>Google</a></button>
-                        <button><a href={"/oauth2/authorization/facebook"}>Facebook</a></button>
+                        <button><a href={"/oauth/login/google"}>Google</a></button>
+                        <button><a href={"/oauth/login/github"}>GitHub</a></button>
                     </div>
                 )}
             </UserContext.Consumer>

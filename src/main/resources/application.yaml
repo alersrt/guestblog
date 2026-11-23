@@ -1,4 +1,6 @@
 micronaut:
+  application:
+    name: guestblog
 
   server:
     port: ${GB_SERVER_PORT:8080}
@@ -8,17 +10,21 @@ micronaut:
       threshold: 2048
 
   security:
+    authentication: cookie
+
     oauth2:
       clients:
         google:
-          client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
-          client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+          client-id: ${OAUTH2_GOOGLE_CLIENT_ID:}
+          client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET:}
           scopes:
             - https://www.googleapis.com/auth/userinfo.email
             - https://www.googleapis.com/auth/userinfo.profile
+          openid:
+            issuer: https://accounts.google.com
         github:
-          client-id: ${OAUTH2_GITHUB_CLIENT_ID}
-          client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
+          client-id: ${OAUTH2_GITHUB_CLIENT_ID:}
+          client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET:}
           scopes:
             - user:email
             - read:user
@@ -28,16 +34,26 @@ micronaut:
           token:
             url: https://github.com/login/oauth/access_token
             auth-method: CLIENT_SECRET_POST
-    authentication: cookie
+
+    endpoints:
+      login:
+        path: /api/auth/login
+      logout:
+        path: /api/auth/logout
+        get-allowed: true
+
     token:
+      cookie:
+        cookie-name: X-Auth-Remember-Me
+        cookie-path: /
+        cookie-secure: ${GB_COOKIE_SECURE:true}
+        cookie-http-only: true
+        cookie-same-site: None
       jwt:
         signatures:
           secret:
             generator:
               secret: ${JWT_GENERATOR_SIGNATURE_SECRET:${random.uuid}}
-    endpoints:
-      logout:
-        get-allowed: true
 
 datasources:
   default:

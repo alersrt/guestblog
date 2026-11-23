@@ -1,24 +1,23 @@
 package org.student.guestblog.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import jakarta.inject.Singleton;
+import org.student.guestblog.domain.Authority;
+import org.student.guestblog.domain.PassportType;
+import org.student.guestblog.exception.ApplicationException;
+import org.student.guestblog.exception.ErrorCode;
+import org.student.guestblog.security.PasswordEncoder;
 import org.student.guestblog.storage.entity.AccountEntity;
 import org.student.guestblog.storage.entity.PassportEntity;
 import org.student.guestblog.storage.repository.AccountRepository;
-import org.student.guestblog.exception.ApplicationException;
-import org.student.guestblog.exception.ErrorCode;
-import org.student.guestblog.domain.Authority;
-import org.student.guestblog.domain.PassportType;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Describes user's managing service and implements {@link UserDetailsService}.
+ * Describes user's managing service.
  */
-@Service
+@Singleton
 public class AccountService {
 
     private final AccountRepository accountRepository;
@@ -70,6 +69,39 @@ public class AccountService {
             .orElseThrow()
             .setHash(s)
         );
+        return accountRepository.save(account);
+    }
+
+    /**
+     * Finds an account by the e-mail or creates a new one, and binds the external identity to it.
+     *
+     * @param provider   registration id of the OAuth2 provider.
+     * @param email      e-mail of the external account.
+     * @param name       display name of the external account.
+     * @param avatar     avatar URL of the external account.
+     * @param externalId identifier of the external account.
+     * @return the stored account.
+     */
+    public AccountEntity findOrCreateOauthAccount(String provider, String email, String name, String avatar, String externalId) {
+        var account = accountRepository.findByEmail(email).orElseGet(() -> AccountEntity.builder()
+            .id(UUID.randomUUID())
+            .email(email)
+            .authorities(List.of(Authority.USER.getAuthority()))
+            .build());
+
+        if (name != null) {
+            account.setName(name);
+        }
+        if (avatar != null) {
+            account.setAvatar(avatar);
+        }
+
+        boolean identityExists = account.getPassports().stream()
+            .anyMatch(passport -> provider.equals(passport.getType().id()));
+        if (!identityExists) {
+            account.getPassports().add(new PassportEntity(account, PassportType.get(provider), externalId));
+        }
+
         return accountRepository.save(account);
     }
 }

@@ -6,7 +6,7 @@
 
 # Backend
 !pom.xml
-!system.properties
+!aot-jat.properties
 
 # Frontend
 !package.json
@@ -30,11 +30,6 @@
 
 # Test API example
 !src/main/http/example.http
-
-# Maven wrapper
-!mvnw
-!mvnw.cmd
-!.mvn
 
 ## Exclude IDE files
 # JetBrains

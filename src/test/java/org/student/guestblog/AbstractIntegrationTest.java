@@ -1,89 +1,107 @@
 package org.student.guestblog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.constraints.NotNull;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.student.guestblog.util.Cookie;
-import org.testcontainers.containers.ComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
+
+import jakarta.inject.Inject;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.student.guestblog.DockerComposeFinder.findCompose;
-
-@AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@MicronautTest
 @Tag("integration")
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest implements TestPropertyProvider {
 
-    protected static final ComposeContainer ENVIRONMENT = new ComposeContainer(findCompose("docker-compose.env.yml").toFile());
-
-    private static final String POSTGRESQL_SERVICE = "postgresql";
-    private static final String KAFKA_SERVICE = "kafka";
-    private static final String FLYWAY_SERVICE = "flyway";
-    private static final int POSTGRESQL_PORT = 5432;
-    private static final int KAFKA_PORT = 29092;
-
-    static {
-        ENVIRONMENT
-            .withBuild(true)
-            .waitingFor(KAFKA_SERVICE, Wait.forHealthcheck())
-            .waitingFor(POSTGRESQL_SERVICE, Wait.forHealthcheck())
-            .waitingFor(FLYWAY_SERVICE, new IndefiniteWaitOneShotWaitStrategy())
-            .withLocalCompose(true);
-
-        Startables.deepStart(Stream.of(ENVIRONMENT)).join();
-    }
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
+            DockerImageName.parse("postgres:15.3-alpine"))
+            .withDatabaseName("gbdb")
+            .withUsername("postgres")
+            .withPassword("postgres");
 
     /**
      * The main testing tool.
      */
-    @Autowired
-    protected MockMvc mockMvc;
+    @Inject
+    @Client("/")
+    protected HttpClient client;
 
     /**
      * Needs for the mapping of the responses.
      */
-    @Autowired
+    @Inject
     protected ObjectMapper objectMapper;
 
-    /**
-     * Retrieve user authorization token
-     *
-     * @return authorization token.
-     * @throws Exception if something went wrong.
-     */
-    protected jakarta.servlet.http.Cookie getUserAuthorization(@NotNull String username, @NotNull String password) throws Exception {
-        ResultActions resultActions = mockMvc.perform(
-            post("/api/auth/login")
-                .param("username", username)
-                .param("password", password)
-        );
-
-        var authResponse = resultActions.andReturn().getResponse();
-
-        return Arrays.stream(authResponse.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-            .findFirst()
-            .get();
+    @Override
+    public Map<String, String> getProperties() {
+        return testProperties();
     }
 
-    protected jakarta.servlet.http.Cookie prolongAuthCookie(MockHttpServletResponse response) {
-        return Arrays.stream(response.getCookies())
-            .filter(cookie -> cookie.getName().equals(Cookie.X_AUTH_REMEMBER_ME))
-            .findFirst()
-            .get();
+    static Map<String, String> testProperties() {
+        var postgres = postgres();
+        return Map.of(
+                "datasources.default.url", postgres.getJdbcUrl(),
+                "datasources.default.username", "gb_user_rw",
+                "datasources.default.password", "gb_user_rw",
+                "micronaut.security.token.cookie.cookie-secure", "false",
+                "micronaut.security.redirect.enabled", "false",
+                "micronaut.security.oauth2.clients.google.enabled", "false",
+                "micronaut.security.oauth2.clients.github.enabled", "false",
+                "micronaut.security.token.jwt.signatures.secret.generator.secret", "test-jwt-secret-test-jwt-secret-1234"
+        );
+    }
+
+    /**
+     * Retrieve user's authorization cookie.
+     *
+     * @param username user's e-mail.
+     * @param password user's password.
+     * @return authorization cookie.
+     */
+    protected String getUserAuthorization(String username, String password) {
+        var form = "username=" + java.net.URLEncoder.encode(username, java.nio.charset.StandardCharsets.UTF_8)
+               + "&password=" + java.net.URLEncoder.encode(password, java.nio.charset.StandardCharsets.UTF_8);
+        try {
+            var response = client.toBlocking().exchange(
+                    HttpRequest.POST("/api/auth/login", form)
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED_TYPE),
+                    String.class
+            );
+            return extractAuthCookie(response);
+        } catch (io.micronaut.http.client.exceptions.HttpClientResponseException e) {
+            String body = e.getResponse().getBody(String.class).orElse("");
+            throw new AssertionError("Login failed: " + e.getStatus() + " " + body, e);
+        }
+    }
+
+    protected String extractAuthCookie(HttpResponse<?> response) {
+        return response.getHeaders().getAll("Set-Cookie").stream()
+                .flatMap(header -> Arrays.stream(header.split(";")))
+                .map(String::trim)
+                .filter(cookie -> cookie.startsWith(Cookie.X_AUTH_REMEMBER_ME + "="))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Authentication cookie is not present"));
+    }
+
+    private static PostgreSQLContainer<?> postgres() {
+        if (!POSTGRES.isRunning()) {
+            POSTGRES.start();
+            Flyway.configure()
+                    .dataSource(POSTGRES.getJdbcUrl(), "postgres", "postgres")
+                    .locations("filesystem:db/changelog")
+                    .load()
+                    .migrate();
+        }
+        return POSTGRES;
     }
 }
